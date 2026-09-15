@@ -241,7 +241,7 @@ async def start(client, message):
             k = await client.send_message(chat_id=message.from_user.id, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
             from utils import delayed_delete
             delayed_delete([k], 900)
-        return
+            return
             
     user = message.from_user.id
     files_ = await get_file_details(file_id)           
