@@ -28,8 +28,8 @@ BUTTONS2 = TTLCache(maxsize=2000, ttl=3600)
 def get_header_buttons(key):
     return [
         [
-            InlineKeyboardButton("ᴍᴏᴠɪᴇꜱ ʙᴏᴛ", url="https://t.me/TIC_Movies_Bot"),
-            InlineKeyboardButton("ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ʙᴏᴛ", url="https://t.me/TIC_Web_Series_Anime_Bot")
+            InlineKeyboardButton("ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ʙᴏᴛ", url="https://t.me/TIC_Web_Series_Anime_Bot"),
+            InlineKeyboardButton("ʟᴀᴛᴇsᴛ ᴍᴏᴠɪᴇꜱ ʙᴏᴛ", url="https://t.me/TIC_Latest_Movies_Bot")
         ],
         [
             InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇꜱ", callback_data=f"languages#{key}"),
