@@ -163,7 +163,11 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 
             # Fetch messages in chunks of 200 (Telegram API limit for Bots)
             chunk = list(range(current, min(current + 200, lst_msg_id + 1)))
-            messages = await bot.get_messages(chat, chunk)
+            try:
+                messages = await bot.get_messages(chat, chunk)
+            except FloodWait as e:
+                await asyncio.sleep(e.value)
+                continue
             
             for message in messages:
                 if temp.CANCEL.get(chat):
