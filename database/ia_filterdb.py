@@ -33,6 +33,7 @@ async def setup_indices():
     global _indices_setup
     if _indices_setup:
         return
+    success = True
     for collection in [col, sec_col, thi_col]:
         if collection is not None:
             try:
@@ -40,7 +41,9 @@ async def setup_indices():
                 await collection.create_index("file_name", unique=True)
             except Exception as e:
                 print(f"Error creating indices: {e}")
-    _indices_setup = True
+                success = False
+    if success:
+        _indices_setup = True
 
 async def save_file(media):
     """Save file in the database."""
