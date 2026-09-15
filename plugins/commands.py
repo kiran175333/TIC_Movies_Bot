@@ -961,7 +961,7 @@ async def trending(bot, message):
 
 @Client.on_message(filters.command("recent") & filters.user(ADMINS))
 async def recent_uploads(client, message):
-    HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ʟᴀᴛᴇsᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ]</u> 🔥"
+    HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ᴍᴏᴠɪᴇꜱ</u> 🔥"
 
     try:
         limit = 100
