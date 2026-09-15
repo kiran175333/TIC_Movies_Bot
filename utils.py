@@ -104,41 +104,44 @@ async def is_subscribed(bot, query):
     return False
 
 async def broadcast_messages(user_id, message):
-    try:
-        await message.copy(chat_id=user_id)
-        return True, "ꜱᴜᴄᴄᴇꜱꜱ"
-    except FloodWait as e:
-        # Pyrogram v2 uses e.value instead of e.x
-        await asyncio.sleep(e.value)
-        return await broadcast_messages(user_id, message)
-    except UserDeactivated:
-        await db.delete_user(int(user_id))
-        logging.info(f"{user_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ᴛʜᴇ ᴀᴄᴄᴏᴜɴᴛ ᴡᴀꜱ ᴅᴇʟᴇᴛᴇᴅ.")
-        return False, "ᴅᴇʟᴇᴛᴇᴅ"
-    except UserIsBlocked:
-        await db.delete_user(int(user_id))
-        logging.info(f"{user_id} - ʙʟᴏᴄᴋᴇᴅ ᴛʜᴇ ʙᴏᴛ.")
-        return False, "ʙʟᴏᴄᴋᴇᴅ"
-    except PeerIdInvalid:
-        await db.delete_user(int(user_id))
-        logging.info(f"{user_id} - PeerIdInvalid")
-        return False, "ᴇʀʀᴏʀ"
-    except Exception as e:
-        return False, "ᴇʀʀᴏʀ"
+    for _ in range(3):
+        try:
+            await message.copy(chat_id=user_id)
+            return True, "ꜱᴜᴄᴄᴇꜱꜱ"
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            continue
+        except UserDeactivated:
+            await db.delete_user(int(user_id))
+            logging.info(f"{user_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ᴛʜᴇ ᴀᴄᴄᴏᴜɴᴛ ᴡᴀꜱ ᴅᴇʟᴇᴛᴇᴅ.")
+            return False, "ᴅᴇʟᴇᴛᴇᴅ"
+        except UserIsBlocked:
+            await db.delete_user(int(user_id))
+            logging.info(f"{user_id} - ʙʟᴏᴄᴋᴇᴅ ᴛʜᴇ ʙᴏᴛ.")
+            return False, "ʙʟᴏᴄᴋᴇᴅ"
+        except PeerIdInvalid:
+            await db.delete_user(int(user_id))
+            logging.info(f"{user_id} - PeerIdInvalid")
+            return False, "ᴇʀʀᴏʀ"
+        except Exception as e:
+            return False, "ᴇʀʀᴏʀ"
+    return False, "ᴇʀʀᴏʀ"
 
 async def broadcast_messages_group(chat_id, message):
-    try:
-        kd = await message.copy(chat_id=chat_id)
+    for _ in range(3):
         try:
-            await kd.pin()
-        except Exception:
-            pass
-        return True, "ꜱᴜᴄᴄᴇꜱꜱ"
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-        return await broadcast_messages_group(chat_id, message)
-    except Exception as e:
-        return False, "ᴇʀʀᴏʀ"
+            kd = await message.copy(chat_id=chat_id)
+            try:
+                await kd.pin()
+            except Exception:
+                pass
+            return True, "ꜱᴜᴄᴄᴇꜱꜱ"
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            continue
+        except Exception as e:
+            return False, "ᴇʀʀᴏʀ"
+    return False, "ᴇʀʀᴏʀ"
     
 async def get_settings(group_id):
     settings = await db.get_settings(group_id)
