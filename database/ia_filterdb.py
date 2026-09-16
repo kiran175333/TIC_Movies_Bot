@@ -33,17 +33,14 @@ async def setup_indices():
     global _indices_setup
     if _indices_setup:
         return
-    success = True
     for collection in [col, sec_col, thi_col]:
         if collection is not None:
             try:
-                await collection.create_index("file_id", unique=True)
-                await collection.create_index("file_name", unique=True)
+                await collection.create_index("file_id", unique=True, sparse=True)
+                await collection.create_index("file_name", unique=True, sparse=True)
             except Exception as e:
                 print(f"Error creating indices: {e}")
-                success = False
-    if success:
-        _indices_setup = True
+    _indices_setup = True
 
 async def save_file(media):
     """Save file in the database."""
@@ -104,8 +101,7 @@ def clean_file_name(file_name):
     file_name = re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b|t\.me[^\s]+|https?://[^\s]+)", "", str(file_name))
     file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
     old_file_name = ' '.join(file_name.split())
-    new_file_name = add_space_between_e_and_number(old_file_name)
-    return new_file_name
+    return old_file_name
 
 def add_space_between_e_and_number(input_string):
     output_string = re.sub(r'(e|E)([0-9])', r'\1 \2', input_string)
