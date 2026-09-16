@@ -71,7 +71,7 @@ class script(object):
 ᴊᴏɪɴ ➠ @TheInsomniacsClub</b>"""
 
     RESTART_TXT = """
-<b>ᴛɪᴄ ʟᴀᴛᴇsᴛ ᴍᴏᴠɪᴇꜱ ʙᴏᴛ ʜᴀs ʙᴇᴇɴ ʀᴇsᴛᴀʀᴛᴇᴅ 1️⃣
+<b>ᴛɪᴄ ᴍᴏᴠɪᴇꜱ ʙᴏᴛ ʜᴀs ʙᴇᴇɴ ʀᴇsᴛᴀʀᴛᴇᴅ 1️⃣
 
 📅 ᴅᴀᴛᴇ: <code>{}</code>
 ⏰ ᴛɪᴍᴇ: <code>{}</code></b>"""
