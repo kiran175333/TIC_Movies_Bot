@@ -1112,36 +1112,42 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data.startswith("killfilesdq"):
         if not query.from_user or not is_admin(query.from_user.id):
             return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
+            
+        await query.answer("Starting deletion...", show_alert=True)
+        
         try:
             ident, keyword = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+            return await query.message.edit_text("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ")
+            
         files, total = await get_bad_files(keyword)
         await query.message.edit_text("<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴡɪʟʟ ꜱᴛᴀʀᴛ ɪɴ 5 ꜱᴇᴄᴏɴᴅꜱ</b>")
         await asyncio.sleep(5)
+        
         deleted = 0
         async with lock:
             try:
                 for file in files:
-                    file_ids = file["file_id"]
-                    file_name = file["file_name"]
-                    result = await col.delete_one({
-                        'file_id': file_ids,
-                    })
+                    file_name = file.get("file_name", "Unknown")
+                    
+                    result = await col.delete_one({'_id': file['_id']})
                     if not result.deleted_count and sec_col is not None:
-                        result = await sec_col.delete_one({'file_id': file_ids})
+                        result = await sec_col.delete_one({'_id': file['_id']})
                     if not result.deleted_count and thi_col is not None:
-                        result = await thi_col.delete_one({'file_id': file_ids})
+                        result = await thi_col.delete_one({'_id': file['_id']})
+                        
                     if result.deleted_count:
-                        logger.info(f'File Found for your query {keyword}! Successfully deleted {file_name} from database.')
-                    deleted += 1
-                    if deleted % 50 == 0:
+                        logger.info(f"File Found for your query {keyword}! Successfully deleted {file_name} from database.")
+                        deleted += 1
+                        
+                    if deleted > 0 and deleted % 50 == 0:
                         await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ. ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
             except Exception as e:
                 logger.exception(e)
                 await query.message.edit_text(f'ᴇʀʀᴏʀ: {e}')
             else:
                 await query.message.edit_text(f"<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ!\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{keyword}'.</b>")
+        return
     
     elif query.data.startswith("opnsetgrp"):
         try:
