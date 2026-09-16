@@ -11,7 +11,7 @@ class script(object):
 
     HOW_TO_USE_TXT = """<b>
 ▪️ <u>ᴍᴇᴛʜᴏᴅ 1: ᴅɪʀᴇᴄᴛ ᴍᴇꜱꜱᴀɢᴇ ꜱᴇᴀʀᴄʜ</u>
-ꜱᴇɴᴅ ᴛʜᴇ ᴇxᴀᴄᴛ ᴍᴏᴠɪᴇ, ꜱᴇʀɪᴇꜱ, ᴏʀ ᴀɴɪᴍᴇ ɴᴀᴍᴇ ᴅɪʀᴇᴄᴛʟʏ ᴛᴏ ᴍᴇ ʜᴇʀᴇ ɪɴ ᴛʜɪꜱ ᴄʜᴀᴛ.
+ꜱᴇɴᴅ ᴛʜᴇ ᴇxᴀᴄᴛ ᴍᴏᴠɪᴇ, ᴡᴇʙ sᴇʀɪᴇs ᴏʀ ᴀɴɪᴍᴇ ɴᴀᴍᴇ ᴅɪʀᴇᴄᴛʟʏ ᴛᴏ ᴍᴇ ʜᴇʀᴇ ɪɴ ᴛʜɪꜱ ᴄʜᴀᴛ.
 
 ▪️ <u>ᴍᴇᴛʜᴏᴅ 2: ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ</u>
 1. ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ɢʀᴏᴜᴘ & ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ.
@@ -36,7 +36,7 @@ class script(object):
     COMMANDS_TXT = """<b>🤖 <u>ᴜꜱᴇʀ ᴄᴏᴍᴍᴀɴᴅꜱ:</u>
 
 /start - ꜱᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ
-/trending - ᴠɪᴇᴡ ᴘᴏᴘᴜʟᴀʀ ᴍᴏᴠɪᴇꜱ & ꜱᴇʀɪᴇꜱ
+/trending - ᴠɪᴇᴡ ᴘᴏᴘᴜʟᴀʀ ᴜᴘʟᴏᴀᴅs
 /plan - ᴄʜᴇᴄᴋ ᴘʟᴀɴ ᴅᴇᴛᴀɪʟꜱ
 /myplan - ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴘʟᴀɴ ꜱᴛᴀᴛꜱ
 /request - ʀᴇǫᴜᴇꜱᴛ ᴀ ᴍɪꜱꜱɪɴɢ ᴍᴏᴠɪᴇ
@@ -45,14 +45,14 @@ class script(object):
 /connect - ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴘᴍ
 /disconnect - ᴅɪꜱᴄᴏɴɴᴇᴄᴛ ꜰʀᴏᴍ ᴘᴍ</b>"""
 
-    REQUEST_TXT = """<b>📝 ʜᴏᴡ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ ᴍᴏᴠɪᴇꜱ, ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ
+    REQUEST_TXT = """<b>📝 ʜᴏᴡ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ
 
 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ᴀ ꜰɪʟᴇ, ꜱᴇɴᴅ ᴀ ʀᴇǫᴜᴇꜱᴛ ᴛᴏ ᴏᴜʀ ᴀᴅᴍɪɴꜱ ʀɪɢʜᴛ ʜᴇʀᴇ ɪɴ ᴘᴍ ᴏʀ ᴀɴʏ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ!
 
 📍 ʜᴏᴡ ᴛᴏ ᴅᴏ ɪᴛ:
 ᴛʏᴘᴇ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ, ғᴏʟʟᴏᴡᴇᴅ ɪᴍᴍᴇᴅɪᴀᴛᴇʟʏ ʙʏ ᴛʜᴇ ɴᴀᴍᴇ ᴀɴᴅ ʏᴇᴀʀ/sᴇᴀsᴏɴ:
-/request <code>Movie/Series/Anime Name</code> & <code>Year/Season</code> 
-#request <code>Movie/Series/Anime Name</code> & <code>Year/Season</code>
+/request <code>Movie/Web Series/Anime Name</code> & <code>Year/Season</code> 
+#request <code>Movie/Web Series/Anime Name</code> & <code>Year/Season</code>
 
 ⏳ ᴡʜᴀᴛ ʜᴀᴘᴘᴇɴꜱ ɴᴇxᴛ?
 ᴀᴅᴍɪɴꜱ ᴡɪʟʟ ʀᴇᴠɪᴇᴡ ɪᴛ, ᴀɴᴅ ɪ ᴡɪʟʟ ᴘᴇʀꜱᴏɴᴀʟʟʏ ᴍᴇꜱꜱᴀɢᴇ ʏᴏᴜ ʙᴀᴄᴋ ᴏɴᴄᴇ ɪᴛ ɪꜱ ᴜᴘʟᴏᴀᴅᴇᴅ, ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ, ᴏʀ ɴᴏᴛ ꜰᴏᴜɴᴅ.</b>"""
