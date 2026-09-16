@@ -1688,7 +1688,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
                     
                     # Generate the Google Search link
                     google_search_url = f"https://www.google.com/search?q={quote_plus(name)}"
-                    btn = [[InlineKeyboardButton("Google", url=google_search_url)]]
+                    btn = [[InlineKeyboardButton("ɢᴏᴏɢʟᴇ", url=google_search_url)]]
                     
                     # Send the Spelling Text and Button (Image removed)
                     spell_check_msg = await message.reply_text(
