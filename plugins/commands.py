@@ -361,12 +361,16 @@ async def channel_info(bot, message):
 
 @Client.on_message(filters.command('delete') & filters.user(ADMINS))
 async def delete(bot, message):
-    reply = await bot.ask(message.from_user.id, "ɴᴏᴡ, ꜱᴇɴᴅ ᴍᴇ ᴛʜᴇ ᴍᴇᴅɪᴀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ.")
-    if reply.media:
+    if message.reply_to_message and message.reply_to_message.media:
+        reply = message.reply_to_message
         msg = await message.reply("ᴘʀᴏᴄᴇꜱꜱɪɴɢ...", quote=True)
     else:
-        await message.reply('ᴘʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴍᴇ ᴀ ᴠɪᴅᴇᴏ, ꜰɪʟᴇ, ᴏʀ ᴅᴏᴄᴜᴍᴇɴᴛ.', quote=True)
-        return
+        reply = await bot.ask(message.from_user.id, "ɴᴏᴡ, ꜱᴇɴᴅ ᴍᴇ ᴛʜᴇ ᴍᴇᴅɪᴀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ.")
+        if reply.media:
+            msg = await message.reply("ᴘʀᴏᴄᴇꜱꜱɪɴɢ...", quote=True)
+        else:
+            await message.reply('ᴘʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴍᴇ ᴀ ᴠɪᴅᴇᴏ, ꜰɪʟᴇ, ᴏʀ ᴅᴏᴄᴜᴍᴇɴᴛ.', quote=True)
+            return
 
     for file_type in ("document", "video", "audio"):
         media = getattr(reply, file_type, None)
