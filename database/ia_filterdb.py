@@ -145,9 +145,9 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             filter_and = []
             for word in query_words:
                 escaped_word = re.escape(word)
-                escaped_word = escaped_word.replace(r"\'", "['’]").replace("'", "['’]").replace("’", "['’]").replace("‘", "['’]")
-                if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
-                    escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
+                escaped_word = re.sub(r"\\?['’‘`]", "['’`]", escaped_word)
+                if escaped_word.endswith("['’`]s") or escaped_word.endswith("s"):
+                    escaped_word = re.sub(r"(\['’`\]s|s)$", r"(?:['’`]s|s)", escaped_word)
                 filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
             
             filter = {"$and": filter_and}
