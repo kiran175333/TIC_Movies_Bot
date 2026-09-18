@@ -1722,7 +1722,8 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
     key = f"{message.chat.id}-{message.id}"
     req = message.from_user.id if message.from_user else 0
     FRESH[key] = search
-    temp.SHORT[message.from_user.id] = message.chat.id
+    if message.from_user:
+        temp.SHORT[message.from_user.id] = message.chat.id
     if settings["button"]:
         btn = [
             [
