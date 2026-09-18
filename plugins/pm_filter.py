@@ -6,7 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
-from utils import get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
+from utils import remove_junk, get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
 from database.users_chats_db import db
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, get_search_results, get_bad_files, add_search_query
 from database.filters_mdb import del_all, find_filter, get_filters
@@ -15,7 +15,7 @@ from database.gfilters_mdb import find_gfilter, get_gfilters, del_allg
 from urllib.parse import quote_plus
 from cachetools import TTLCache
 def clean_filename(name):
-    return ' '.join(re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b)", "", str(name)).split())
+    return remove_junk(name)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 lock = asyncio.Lock()
@@ -1005,7 +1005,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if not files_:
             return await query.answer('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.')
         files = files_
-        clean_name = ' '.join(re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b)", "", str(files["file_name"])).split())
+        clean_name = remove_junk(files["file_name"])
         title = clean_name
         size = get_size(files["file_size"])
         f_caption = files["caption"]
@@ -1080,7 +1080,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if not files_:
             return await query.answer('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ')
         files = files_
-        clean_name = ' '.join(re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b)", "", str(files["file_name"])).split())
+        clean_name = remove_junk(files["file_name"])
         title = clean_name
         size = get_size(files['file_size'])
         f_caption = files['caption']
@@ -1677,6 +1677,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
                     search = search + x + " "
             search = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|film(s)?|new|latest|bro(o+)?|bruh|helo|hello|hey|hi|sir|admin|that|find|dubbed|link|any(one)|with\ssubtitle(s)?|want|need|available|upload(ed)?|watch|download)", "", search, flags=re.IGNORECASE)
             search = re.sub(r"\s+", " ", search).strip()
+            search = search.replace("’", "'").replace("‘", "'")
             search = search.replace("-", " ")
             search = search.replace(":", "")
             search = search.replace(".", "")
