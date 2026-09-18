@@ -41,6 +41,7 @@ class script(object):
     COMMANDS_TXT = """<b>🤖 <u>ᴜꜱᴇʀ ᴄᴏᴍᴍᴀɴᴅꜱ:</u>
 
 /start - ꜱᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ
+/id - ɢᴇᴛ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ
 /trending - ᴠɪᴇᴡ ᴘᴏᴘᴜʟᴀʀ ᴜᴘʟᴏᴀᴅs
 /plan - ᴄʜᴇᴄᴋ ᴘʟᴀɴ ᴅᴇᴛᴀɪʟꜱ
 /myplan - ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴘʟᴀɴ ꜱᴛᴀᴛꜱ
