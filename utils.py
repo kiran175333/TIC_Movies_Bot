@@ -11,6 +11,14 @@ from database.users_chats_db import db
 from shortzy import Shortzy
 from cachetools import TTLCache
 
+def remove_junk(file_name):
+    file_name = str(file_name)
+    file_name = re.sub(r"(?i)\b(?:[a-z0-9-]+\.)+(?:com|net|in|org|yt|pw|mx|live|bid|city|cz|io|eu|biz|tax|site|vip|tv|me|info|lol|xyz|app)\b", "", file_name)
+    file_name = re.sub(r"(?i)\b(1tamilmv|movierulz|tamilblasters|tamilmv|hdhub4u|vegamovies|bollyflix|katmoviehd|themoviesboss|moviesflix|moviesmod|dotmovies|uhdmovies|ibomma|filmyzilla|9xmovies|jalshamoviez|mkvcinemas)\b", "", file_name)
+    file_name = re.sub(r"(?i)(www\.?|@\w+|t\.me/[^\s]+|https?://[^\s]+)", "", file_name)
+    file_name = re.sub(r"\[\s*\]|\(\s*\)", "", file_name)
+    return ' '.join(file_name.split())
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))")
