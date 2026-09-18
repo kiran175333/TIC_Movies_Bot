@@ -103,9 +103,6 @@ def clean_file_name(file_name):
     old_file_name = ' '.join(file_name.split())
     return old_file_name
 
-def add_space_between_e_and_number(input_string):
-    output_string = re.sub(r'(e|E)([0-9])', r'\1 \2', input_string)
-    return output_string
     
 async def is_file_already_saved(file_id, file_name):
     """Check if the file is already saved in any active collection."""
@@ -131,19 +128,29 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
         query_words = query.split()
         if len(query_words) == 1:
             # Single word search (strict matching)
-            raw_pattern = r'(\b|[\.\+\-_])' + re.escape(query) + r'(\b|[\.\+\-_])'
+            escaped_word = re.escape(query)
+            escaped_word = escaped_word.replace(r"\'", "['’]").replace("'", "['’]").replace("’", "['’]").replace("‘", "['’]")
+            if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
+                escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
+                
+            raw_pattern = r'(\b|[\.\+\-_])' + escaped_word + r'(\b|[\.\+\-_])'
             try:
                 regex = re.compile(raw_pattern, flags=re.IGNORECASE)
             except Exception:
-                regex = re.compile(re.escape(query), flags=re.IGNORECASE)
+                regex = re.compile(escaped_word, flags=re.IGNORECASE)
             filter = {'file_name': regex}
         else:
             # Multi-word search (finds all words in ANY order)
-            filter = {
-                "$and": [
-                    {"file_name": {"$regex": re.escape(word), "$options": "i"}} for word in query_words
-                ]
-            }
+            filter_and = []
+            for word in query_words:
+                escaped_word = re.escape(word)
+                escaped_word = escaped_word.replace(r"\'", "['’]").replace("'", "['’]").replace("’", "['’]").replace("‘", "['’]")
+                if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
+                    escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
+                filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
+            
+            filter = {"$and": filter_and}
+            
             
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
     
