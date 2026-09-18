@@ -6,7 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files, get_trending_searches
 from database.users_chats_db import db
 from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
-from utils import (get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds)
+from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds)
 from database.connections_mdb import active_connection
 
 logger = logging.getLogger(__name__)
@@ -14,15 +14,10 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 
 def make_search_slug(title: str) -> str:
-    # Strip special characters and replace spaces with hyphens
-    clean = re.sub(r"[^a-zA-Z0-9\s\-]", "", title).strip()
-    slug = re.sub(r"[\s\-]+", "-", clean).strip("-")
-    
-    # Strictly truncate to 50 chars to avoid Telegram's 64-char payload crash
-    if len(slug) > 50:
-        # Cut cleanly at the last whole word if possible
-        slug = slug[:50].rsplit("-", 1)[0] if "-" in slug[:50] else slug[:50]
-    return f"getsrc-{slug}"
+    import base64
+    truncated = title[:45]
+    encoded = base64.urlsafe_b64encode(truncated.encode()).decode().rstrip("=")
+    return f"b64-{encoded}"
 
 @Client.on_message(filters.new_chat_members & filters.group)
 async def save_group(bot, message):
@@ -166,6 +161,19 @@ async def start(client, message):
         
         await auto_filter(client, search_query, message, None, True)
         return
+    elif data.startswith("b64-"):
+        import base64
+        encoded = data.replace("b64-", "", 1)
+        encoded += "=" * ((4 - len(encoded) % 4) % 4)
+        search_query = base64.urlsafe_b64decode(encoded).decode()
+        message.text = search_query
+        try:
+            from plugins.pm_filter import auto_filter
+        except ImportError:
+            from pm_filter import auto_filter
+            
+        await auto_filter(client, search_query, message, None, True)
+        return
     # --------------------------------
 
     try:
@@ -275,7 +283,7 @@ async def start(client, message):
             )
             filetype = msg.media
             file = getattr(msg, filetype.value)
-            clean_name = ' '.join(re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b)", "", file.file_name).split())
+            clean_name = remove_junk(file.file_name)
             title = clean_name
             size = get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
@@ -295,7 +303,7 @@ async def start(client, message):
         return await message.reply('<b>ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.</b>')
         
     files = files_
-    clean_name = ' '.join(re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b)", "", files["file_name"]).split())
+    clean_name = remove_junk(files["file_name"])
     title = clean_name
     size = get_size(files["file_size"])
     f_caption = files["caption"]
@@ -392,9 +400,8 @@ async def delete(bot, message):
     if result.deleted_count:
         await msg.edit('ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.')
     else:
-        file_name = re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b|t\.me[^\s]+|https?://[^\s]+)", "", str(media.file_name))
-        file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
-        file_name = ' '.join(file_name.split())
+        from database.ia_filterdb import clean_file_name
+        file_name = clean_file_name(media.file_name)
     
         result = await col.delete_many({
             'file_name': file_name,
