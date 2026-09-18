@@ -4,6 +4,7 @@ from pyrogram.file_id import FileId
 import motor.motor_asyncio
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from info import DATABASE_URI, DATABASE_URI2, DATABASE_URI3, DATABASE_NAME, COLLECTION_NAME, MULTIPLE_DATABASE, USE_CAPTION_FILTER, MAX_B_TN
+from utils import remove_junk
 
 # First Database For File Saving 
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
