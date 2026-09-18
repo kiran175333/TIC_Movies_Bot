@@ -129,7 +129,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
         if len(query_words) == 1:
             # Single word search (strict matching)
             escaped_word = re.escape(query)
-            escaped_word = escaped_word.replace(r"\'", "['’]").replace("'", "['’]").replace("’", "['’]").replace("‘", "['’]")
+            escaped_word = re.sub(r"\\?['’‘]", "['’]", escaped_word)
             if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
                 escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
                 
