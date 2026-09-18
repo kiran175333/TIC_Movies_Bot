@@ -99,7 +99,7 @@ async def save_file(media):
 
 def clean_file_name(file_name):
     """Clean and format the file name."""
-    file_name = re.sub(r"(?i)(www\.?|1tamilmv|movierulz|tamilblasters|tamilmv|@\w+|\.com|\.net|\.in|\bvet\b|\bpl\b|t\.me[^\s]+|https?://[^\s]+)", "", str(file_name))
+    file_name = remove_junk(file_name)
     file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
     old_file_name = ' '.join(file_name.split())
     return old_file_name
