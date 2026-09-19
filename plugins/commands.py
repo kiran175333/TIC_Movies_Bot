@@ -592,7 +592,7 @@ async def settings(client, message):
         except Exception:
             pass
 
-@Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & (filters.group | filters.private))
+@Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & filters.private)
 async def requests(bot, message):
     reporter = str(message.from_user.id)
     mention = message.from_user.mention
