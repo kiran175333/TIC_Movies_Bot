@@ -24,7 +24,10 @@ async def save_group(bot, message):
     r_j_check = [u.id for u in message.new_chat_members]
     if temp.ME in r_j_check:
         if not await db.get_chat(message.chat.id):
-            total=await bot.get_chat_members_count(message.chat.id)
+            try:
+                total = await bot.get_chat_members_count(message.chat.id)
+            except Exception:
+                total = 0
             r_j = message.from_user.mention if message.from_user else "Anonymous" 
             await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, r_j))       
             await db.add_chat(message.chat.id, message.chat.title)
@@ -59,7 +62,10 @@ async def start(client, message):
         )
         
         if not await db.get_chat(message.chat.id):
-            total = await client.get_chat_members_count(message.chat.id)
+            try:
+                total = await client.get_chat_members_count(message.chat.id)
+            except Exception:
+                total = 0
             await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
             await db.add_chat(message.chat.id, message.chat.title)
             
