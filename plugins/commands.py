@@ -756,7 +756,7 @@ async def remove_premium_cmd_handler(client, message):
     else:
         await message.reply_text("ᴜꜱᴀɢᴇ: /remove_premium user_id")
         
-@Client.on_message(filters.command("plan"))
+@Client.on_message(filters.command("plan") & filters.private)
 async def plans_cmd_handler(client, message): 
     if PREMIUM_MODE == False:
         return 
@@ -770,15 +770,8 @@ async def plans_cmd_handler(client, message):
         reply_markup=reply_markup,
         parse_mode=enums.ParseMode.HTML
     )
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        await asyncio.sleep(60)
-        try:
-            await msg.delete()
-            await message.delete()
-        except Exception:
-            pass
         
-@Client.on_message(filters.command("myplan"))
+@Client.on_message(filters.command("myplan") & filters.private)
 async def check_plans_cmd(client, message):
     if PREMIUM_MODE == False:
         return 
@@ -824,14 +817,6 @@ async def check_plans_cmd(client, message):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-        
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        await asyncio.sleep(60)
-        try:
-            await msg.delete()
-            await message.delete()
-        except Exception:
-            pass
 
 @Client.on_message(filters.command("stats") & filters.user(ADMINS))
 async def get_bot_stats(bot, message):
