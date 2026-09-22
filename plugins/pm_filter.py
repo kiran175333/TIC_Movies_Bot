@@ -851,9 +851,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except UserIsBlocked:
             await query.answer('ᴘʟᴇᴀꜱᴇ ᴜɴʙʟᴏᴄᴋ ᴛʜᴇ ʙᴏᴛ', show_alert=True)
         except PeerIdInvalid:
-            await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
+            try:
+                await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
+            except Exception:
+                pass
         except Exception as e:
-            await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
+            try:
+                await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
+            except Exception:
+                pass
             
     elif query.data.startswith("unmuteme"):
         try:
