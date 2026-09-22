@@ -139,10 +139,6 @@ async def broadcast_messages_group(chat_id, message):
     for _ in range(3):
         try:
             kd = await message.copy(chat_id=chat_id)
-            try:
-                await kd.pin()
-            except Exception:
-                pass
             return True, "ꜱᴜᴄᴄᴇꜱꜱ"
         except FloodWait as e:
             await asyncio.sleep(e.value)
