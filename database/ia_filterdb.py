@@ -37,7 +37,7 @@ async def setup_indices():
     for collection in [col, sec_col, thi_col]:
         if collection is not None:
             try:
-                await collection.create_index("file_id", unique=True, sparse=True)
+                await collection.create_index("file_id", unique=True)
                 await collection.create_index("file_name")
             except Exception as e:
                 print(f"Error creating indices: {e}")
