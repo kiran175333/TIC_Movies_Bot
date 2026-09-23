@@ -1103,7 +1103,7 @@ async def group_request_warning(client, message):
         "❌ **ʀᴇQᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!**\n\n"
         "📍 ɢᴏ ᴛᴏ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ ᴘᴍ ᴀɴᴅ ᴜꜱᴇ ᴛʜɪꜱ ꜰᴏʀᴍᴀᴛ:\n"
         "<code>/request Name & Year/Season</code> ᴏʀ <code>#request Name & Year/Season</code>\n\n"
-        "⛔ ᴅᴏ ɴᴏᴛ ʀᴇQᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
+        "⛔ ᴅᴏ ɴᴏᴛ ʀᴇǫᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇs ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
         "🍿 @TIC_Movies_Bot | 📺 @TIC_Web_Series_Anime_Bot | 🔥 @TIC_Latest_Movies_Bot",
         disable_web_page_preview=True,
         parse_mode=enums.ParseMode.HTML
