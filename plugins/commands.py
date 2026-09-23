@@ -719,7 +719,7 @@ async def give_premium_cmd_handler(client, message):
             try:
                 await client.send_message(
                     chat_id=user_id,
-                    text=f"""<b><u>🎉 ʏᴏᴜʀ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ɪꜱ ɴᴏᴡ ᴀᴄᴛɪᴠᴇ!</u></b>\n\nʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪꜱ ᴜᴘɢʀᴀᴅᴇᴅ ꜰᴏʀ <b><u>{display_time}</u></b>. ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ, ɪɴꜱᴛᴀɴᴛ, ᴀɴᴅ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴏᴜʀ ʙᴏᴛꜱ!\n\n🍿 ᴍᴏᴠɪᴇꜱ: @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ, ᴀɴɪᴍᴇ & ᴋᴅʀᴀᴍᴀ: @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ: @TIC_Latest_Movies_Bot\n\n💡 ᴛʏᴘᴇ /myplan ᴛᴏ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ.\n\n<blockquote><b>🍿🎬 ᴇɴᴊᴏʏ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>""",
+                    text=f"""<b><u>🎉 ʏᴏᴜʀ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ɪꜱ ɴᴏᴡ ᴀᴄᴛɪᴠᴇ!</u></b>\n\nʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪꜱ ᴜᴘɢʀᴀᴅᴇᴅ ꜰᴏʀ <b><u>{display_time}</u></b>. ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ, ɪɴꜱᴛᴀɴᴛ, ᴀɴᴅ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴏᴜʀ ʙᴏᴛꜱ!\n\n🍿 ᴍᴏᴠɪᴇꜱ: @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ: @TIC_Latest_Movies_Bot\n\n💡 ᴛʏᴘᴇ /myplan ᴛᴏ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ.\n\n<blockquote><b>🍿🎬 ᴇɴᴊᴏʏ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>""",
                     parse_mode=enums.ParseMode.HTML
                 )
             except Exception:
