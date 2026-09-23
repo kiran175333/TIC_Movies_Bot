@@ -1100,7 +1100,7 @@ async def group_request_warning(client, message):
     
     # 2. Send the helpful warning message
     msg = await message.reply_text(
-        "❌ **ʀᴇQᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!**\n\n"
+        "❌ <b>ʀᴇǫᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!</b>\n\n"
         "📍 ɢᴏ ᴛᴏ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ ᴘᴍ ᴀɴᴅ ᴜꜱᴇ ᴛʜɪꜱ ꜰᴏʀᴍᴀᴛ:\n"
         "<code>/request Name & Year/Season</code> ᴏʀ <code>#request Name & Year/Season</code>\n\n"
         "⛔ ᴅᴏ ɴᴏᴛ ʀᴇǫᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇs ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
