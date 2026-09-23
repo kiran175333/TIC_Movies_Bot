@@ -715,10 +715,12 @@ async def give_premium_cmd_handler(client, message):
             user_data = {"id": user_id, "expiry_time": expiry_time} 
             await db.update_user(user_data)
             await message.reply_text(f"ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ (ɪᴅ: {user_id}).")            
+            display_time = time_str.replace("day", " Days").replace("month", " Months").replace("year", " Years")
             try:
                 await client.send_message(
                     chat_id=user_id,
-                    text=f"<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ꜰᴏʀ {time_str}.\n\nᴇɴᴊᴏʏ!\n</b>",                
+                    text=f"""<b><u>🎉 ʏᴏᴜʀ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ɪꜱ ɴᴏᴡ ᴀᴄᴛɪᴠᴇ!</u></b>\n\nʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪꜱ ᴜᴘɢʀᴀᴅᴇᴅ ꜰᴏʀ <b><u>{display_time}</u></b>. ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ, ɪɴꜱᴛᴀɴᴛ, ᴀɴᴅ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴏᴜʀ ʙᴏᴛꜱ!\n\n🍿 ᴍᴏᴠɪᴇꜱ: @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ, ᴀɴɪᴍᴇ & ᴋᴅʀᴀᴍᴀ: @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ: @TIC_Latest_Movies_Bot\n\n💡 ᴛʏᴘᴇ /myplan ᴛᴏ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ.\n\n<blockquote><b>🍿🎬 ᴇɴᴊᴏʏ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>""",
+                    parse_mode=enums.ParseMode.HTML
                 )
             except Exception:
                 pass
