@@ -155,6 +155,10 @@ async def start(client, message):
         return 
     
     data = message.command[1]
+
+    if data == "plan":
+        await plans_cmd_handler(client, message)
+        return
     
     # --- NEW SEARCH TRIGGER BLOCK ---
     if data.startswith("getsrc-"):
