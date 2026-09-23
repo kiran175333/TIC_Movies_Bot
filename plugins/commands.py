@@ -1087,3 +1087,32 @@ async def premium_users_list(client, message):
             await msg.delete()
         else:
             await msg.edit_text(text)
+
+
+# --- GROUP /REQUEST WARNING BLOCK ---
+@Client.on_message(filters.group & filters.regex(r"(?i)^[/#]request"))
+async def group_request_warning(client, message):
+    # 1. Instantly delete the user's accidental command
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    
+    # 2. Send the helpful warning message
+    msg = await message.reply_text(
+        "❌ **ʀᴇQᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!**\n\n"
+        "📍 ɢᴏ ᴛᴏ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ ᴘᴍ ᴀɴᴅ ᴜꜱᴇ ᴛʜɪꜱ ꜰᴏʀᴍᴀᴛ:\n"
+        "<code>/request Name & Year/Season</code> ᴏʀ <code>#request Name & Year/Season</code>\n\n"
+        "⛔ ᴅᴏ ɴᴏᴛ ʀᴇQᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
+        "🍿 @TIC_Movies_Bot | 📺 @TIC_Web_Series_Anime_Bot | 🔥 @TIC_Latest_Movies_Bot",
+        disable_web_page_preview=True,
+        parse_mode=enums.ParseMode.HTML
+    )
+    
+    # 3. Wait 30 seconds, then delete the warning message
+    await asyncio.sleep(30)
+    try:
+        await msg.delete()
+    except Exception:
+        pass
+# ------------------------------------
