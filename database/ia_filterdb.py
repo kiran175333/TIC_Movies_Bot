@@ -40,7 +40,15 @@ async def setup_indices():
                 await collection.create_index("file_id", unique=True)
                 await collection.create_index("file_name")
             except Exception as e:
-                print(f"Error creating indices: {e}")
+                if "IndexKeySpecsConflict" in str(e) or "already exists with different options" in str(e):
+                    try:
+                        await collection.drop_index("file_id_1")
+                        await collection.create_index("file_id", unique=True)
+                        await collection.create_index("file_name")
+                    except Exception:
+                        pass
+                else:
+                    print(f"Error creating indices: {e}")
     _indices_setup = True
 
 async def save_file(media):
