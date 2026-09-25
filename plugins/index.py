@@ -129,7 +129,7 @@ async def send_for_index(bot, message):
     reply_markup = InlineKeyboardMarkup(buttons)
     await bot.send_message(
         LOG_CHANNEL,
-        f'#IndexRequest\n\nʙʏ: {message.from_user.mention} (<code>{message.from_user.id}</code>)\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code> {chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>\nɪɴᴠɪᴛᴇ ʟɪɴᴋ: {link}',
+        f'#ɪɴᴅᴇxʀᴇǫᴜᴇꜱᴛ\n\nʙʏ: {message.from_user.mention} (<code>{message.from_user.id}</code>)\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code> {chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>\nɪɴᴠɪᴛᴇ ʟɪɴᴋ: {link}',
         reply_markup=reply_markup
     )
     await message.reply('ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʏᴏᴜʀ ᴄᴏɴᴛʀɪʙᴜᴛɪᴏɴ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴛᴏ ᴠᴇʀɪꜰʏ ᴛʜᴇ ꜰɪʟᴇꜱ.')
@@ -239,3 +239,4 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     os.remove("duplicates.txt")
                 except Exception:
                     pass
+
