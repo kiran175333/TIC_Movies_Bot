@@ -235,7 +235,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 try:
                     with open("duplicates.txt", "w", encoding="utf-8") as f:
                         f.write("\n".join(duplicate_names))
-                    await msg.reply_document(document="duplicates.txt", caption="**✅ Indexing Complete! Here is the list of all duplicate files skipped.**")
+                    await msg.reply_document(document="duplicates.txt", caption="<b>✅ ɪɴᴅᴇxɪɴɢ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>\n\nᴛʜᴇ ʙᴀᴄᴋɢʀᴏᴜɴᴅ ᴘʀᴏᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ꜱᴀꜰᴇʟʏ ᴀʙᴏʀᴛᴇᴅ.")
                     os.remove("duplicates.txt")
                 except Exception:
                     pass
