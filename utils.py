@@ -14,7 +14,7 @@ from cachetools import TTLCache
 def remove_junk(file_name):
     file_name = str(file_name)
     file_name = re.sub(r"(?i)\b(1tamilmv|movierulz|tamilblasters|tamilmv|hdhub4u|vegamovies|bollyflix|katmoviehd|themoviesboss|moviesflix|moviesmod|dotmovies|uhdmovies|ibomma|filmyzilla|9xmovies|jalshamoviez|mkvcinemas|pahe)(?:\.[a-z]{2,4})?\b", "", file_name)
-    file_name = re.sub(r"(?i)(www\.?|@\w+|t\.me/[^\s]+|https?://[^\s]+)", "", file_name)
+    file_name = re.sub(r"(?i)(www\.?|@[a-zA-Z0-9]+|t\.me/[^\s]+|https?://[^\s]+)", "", file_name)
     file_name = re.sub(r"\[\s*\]|\(\s*\)", "", file_name)
     return ' '.join(file_name.split())
 
