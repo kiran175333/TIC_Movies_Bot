@@ -67,7 +67,7 @@ async def delete_filter(message, text, group_id):
     if query == 1:
         await mycol.delete_one(myquery)
         await message.reply_text(
-            f"'{text}' ʜᴀs ʙᴇᴇɴ ᴅᴇʟᴇᴛᴇᴅ. ɪ ᴡɪʟʟ ɴᴏ ʟᴏɴɢᴇʀ ʀᴇsᴘᴏɴᴅ ᴛᴏ ᴛʜᴀᴛ ғɪʟᴛᴇʀ.",
+            f"'{text}' ʜᴀꜱ ʙᴇᴇɴ ᴅᴇʟᴇᴛᴇᴅ. ɪ ᴡɪʟʟ ɴᴏ ʟᴏɴɢᴇʀ ʀᴇꜱᴘᴏɴᴅ ᴛᴏ ᴛʜᴀᴛ ғɪʟᴛᴇʀ.",
             quote=True
         )
     else:
@@ -76,15 +76,15 @@ async def delete_filter(message, text, group_id):
 
 async def del_all(message, group_id, title):
     if str(group_id) not in await mydb.list_collection_names():
-        await message.edit_text(f"ᴛʜᴇʀᴇ ɪs ɴᴏᴛʜɪɴɢ ᴛᴏ ʀᴇᴍᴏᴠᴇ ɪɴ {title}!")
+        await message.edit_text(f"ᴛʜᴇʀᴇ ɪꜱ ɴᴏᴛʜɪɴɢ ᴛᴏ ʀᴇᴍᴏᴠᴇ ɪɴ {title}!")
         return
 
     mycol = mydb[str(group_id)]
     try:
         await mycol.drop()
-        await message.edit_text(f"ᴀʟʟ ғɪʟᴛᴇʀs ꜰʀᴏᴍ {title} ʜᴀᴠᴇ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ.")
+        await message.edit_text(f"ᴀʟʟ ғɪʟᴛᴇʀꜱ ꜰʀᴏᴍ {title} ʜᴀᴠᴇ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ.")
     except Exception:
-        await message.edit_text("ɪ ᴄᴏᴜʟᴅɴ'ᴛ ʀᴇᴍᴏᴠᴇ ᴀʟʟ ғɪʟᴛᴇʀs ғʀᴏᴍ ᴛʜᴇ ɢʀᴏᴜᴘ!")
+        await message.edit_text("ɪ ᴄᴏᴜʟᴅɴ'ᴛ ʀᴇᴍᴏᴠᴇ ᴀʟʟ ғɪʟᴛᴇʀꜱ ғʀᴏᴍ ᴛʜᴇ ɢʀᴏᴜᴘ!")
         return
 
 
@@ -110,3 +110,4 @@ async def filter_stats():
     totalcollections = len(collections)
 
     return totalcollections, totalcount
+
