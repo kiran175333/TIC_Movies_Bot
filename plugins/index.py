@@ -1,4 +1,4 @@
-import logging, re, asyncio
+import logging, re, asyncio, os
 from utils import temp
 from info import ADMINS, is_admin
 from pyrogram import Client, filters, enums
@@ -151,6 +151,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     deleted = 0
     no_media = 0
     unsupported = 0
+    duplicate_names = []
     try:
         current = int(temp.CURRENT)
         lst_msg_id = int(lst_msg_id)
@@ -208,6 +209,8 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     total_files += 1
                 elif vnay == 0:
                     duplicate += 1
+                    if hasattr(media, "file_name") and media.file_name:
+                        duplicate_names.append(media.file_name)
                 elif vnay == 2:
                     errors += 1
                     
@@ -222,3 +225,12 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     else:
         if not temp.CANCEL.get(chat):
             await msg.edit(f'ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code>')
+            
+            if duplicate_names:
+                try:
+                    with open("duplicates.txt", "w", encoding="utf-8") as f:
+                        f.write("\n".join(duplicate_names))
+                    await msg.reply_document(document="duplicates.txt", caption="**✅ Indexing Complete! Here is the list of all duplicate files skipped.**")
+                    os.remove("duplicates.txt")
+                except Exception:
+                    pass
