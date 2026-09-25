@@ -67,7 +67,7 @@ async def delete_gfilter(message, text, gfilters):
     if query == 1:
         await mycol.delete_one(myquery)
         await message.reply_text(
-            f"'{text}' ʜᴀs ʙᴇᴇɴ ᴅᴇʟᴇᴛᴇᴅ. ɪ ᴡɪʟʟ ɴᴏ ʟᴏɴɢᴇʀ ʀᴇsᴘᴏɴᴅ ᴛᴏ ᴛʜᴀᴛ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀ.",
+            f"'{text}' ʜᴀꜱ ʙᴇᴇɴ ᴅᴇʟᴇᴛᴇᴅ. ɪ ᴡɪʟʟ ɴᴏ ʟᴏɴɢᴇʀ ʀᴇꜱᴘᴏɴᴅ ᴛᴏ ᴛʜᴀᴛ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀ.",
             quote=True
         )
     else:
@@ -75,15 +75,15 @@ async def delete_gfilter(message, text, gfilters):
 
 async def del_allg(message, gfilters):
     if str(gfilters) not in await mydb.list_collection_names():
-        await message.edit_text("ᴛʜᴇʀᴇ ɪs ɴᴏᴛʜɪɴɢ ᴛᴏ ʀᴇᴍᴏᴠᴇ!")
+        await message.edit_text("ᴛʜᴇʀᴇ ɪꜱ ɴᴏᴛʜɪɴɢ ᴛᴏ ʀᴇᴍᴏᴠᴇ!")
         return
 
     mycol = mydb[str(gfilters)]
     try:
         await mycol.drop()
-        await message.edit_text(f"ᴀʟʟ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀs ʜᴀᴠᴇ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ!")
+        await message.edit_text(f"ᴀʟʟ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀꜱ ʜᴀᴠᴇ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ!")
     except Exception:
-        await message.edit_text("ɪ ᴄᴏᴜʟᴅ ɴᴏᴛ ʀᴇᴍᴏᴠᴇ ᴀʟʟ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀs!")
+        await message.edit_text("ɪ ᴄᴏᴜʟᴅ ɴᴏᴛ ʀᴇᴍᴏᴠᴇ ᴀʟʟ ɢʟᴏʙᴀʟ ғɪʟᴛᴇʀꜱ!")
         return
 
 async def count_gfilters(gfilters):
@@ -108,3 +108,4 @@ async def gfilter_stats():
     totalcollections = len(collections)
 
     return totalcollections, totalcount
+
