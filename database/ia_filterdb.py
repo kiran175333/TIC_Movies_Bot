@@ -108,19 +108,18 @@ async def save_file(media):
 def clean_file_name(file_name):
     """Clean and format the file name."""
     file_name = remove_junk(file_name)
-    file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
+    file_name = re.sub(r"(_|\-|\.)", " ", file_name)
     old_file_name = ' '.join(file_name.split())
     return old_file_name
 
     
 async def is_file_already_saved(file_id, file_name):
     """Check if the file is already saved in any active collection."""
-    found1 = {'file_name': file_name}
-    found = {'file_id': file_id}
+    query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
 
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
     for collection in active_collections:
-        if await collection.find_one(found1) or await collection.find_one(found):
+        if await collection.find_one(query):
             print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
             return True
             
