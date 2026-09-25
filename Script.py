@@ -57,8 +57,8 @@ class script(object):
 
 📍 ʜᴏᴡ ᴛᴏ ᴅᴏ ɪᴛ:
 ᴛʏᴘᴇ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ ᴡɪᴛʜ ᴛʜᴇ ɴᴀᴍᴇ ᴀɴᴅ ʏᴇᴀʀ/ꜱᴇᴀꜱᴏɴ:
-/request <code>ᴍᴏᴠɪᴇ/Web ꜱᴇʀɪᴇꜱ/Anime ɴᴀᴍᴇ</code> & <code>ʏᴇᴀʀ/Season</code>
-#ʀᴇǫᴜᴇꜱᴛ <code>ᴍᴏᴠɪᴇ/Web ꜱᴇʀɪᴇꜱ/Anime ɴᴀᴍᴇ</code> & <code>ʏᴇᴀʀ/Season</code>
+/request <code>Movie/Web Series/Anime Name</code> & <code>Year/Season</code>
+#request <code>Movie/Web Series/Anime Name</code> & <code>Year/Season</code>
 
 ⛔️ ᴅᴏ ɴᴏᴛ ʀᴇǫᴜᴇꜱᴛ:
 • ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ
