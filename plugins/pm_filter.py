@@ -936,7 +936,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if not query.from_user or not is_admin(query.from_user.id):
             return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
             
-        await query.answer("Starting deletion...", show_alert=True)
+        await query.answer("ꜱᴛᴀʀᴛɪɴɢ ᴅᴇʟᴇᴛɪᴏɴ...", show_alert=True)
         
         try:
             ident, keyword = query.data.split("#")
@@ -964,12 +964,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         deleted += 1
                         
                     if deleted > 0 and deleted % 50 == 0:
-                        await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ. ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
+                        await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ. ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
             except Exception as e:
                 logger.exception(e)
                 await query.message.edit_text(f'ᴇʀʀᴏʀ: {e}')
             else:
-                await query.message.edit_text(f"<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ!\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{keyword}'.</b>")
+                await query.message.edit_text(f"<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ!\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'.</b>")
         return
     
     elif query.data.startswith("opnsetgrp"):
@@ -1791,3 +1791,4 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
