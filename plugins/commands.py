@@ -66,7 +66,7 @@ async def start(client, message):
                 total = await client.get_chat_members_count(message.chat.id)
             except Exception:
                 total = 0
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "ᴜɴᴋɴᴏᴡɴ"))       
             await db.add_chat(message.chat.id, message.chat.title)
             
         await asyncio.sleep(60)
@@ -616,7 +616,7 @@ async def requests(bot, message):
             success = True
     
     if not success:
-        return await message.reply_text("<b>ʏᴏᴜ ᴍᴜꜱᴛ ᴛʏᴘᴇ ʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ (ᴍɪɴɪᴍᴜᴍ 3 ᴄʜᴀʀᴀᴄᴛᴇʀꜱ). ʀᴇQᴜᴇꜱᴛꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ᴇᴍᴘᴛʏ.</b>")
+        return await message.reply_text("<b>ʏᴏᴜ ᴍᴜꜱᴛ ᴛʏᴘᴇ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ (ᴍɪɴɪᴍᴜᴍ 3 ᴄʜᴀʀᴀᴄᴛᴇʀꜱ). ʀᴇǫᴜᴇꜱᴛꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ᴇᴍᴘᴛʏ.</b>")
     
     try:
         btn = [[
@@ -628,9 +628,9 @@ async def requests(bot, message):
             text=f"<b>ʀᴇᴘᴏʀᴛᴇʀ : {mention} ({reporter})\n\nᴍᴇꜱꜱᴀɢᴇ : {content.strip().replace('<', '&lt;').replace('>', '&gt;')}</b>", 
             reply_markup=InlineKeyboardMarkup(btn)
         )
-        await message.reply_text("<b>ʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
+        await message.reply_text("<b>ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
-        await message.reply_text(f"Error submitting request: {e}")
+        await message.reply_text(f"ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}")
         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         await asyncio.sleep(60)
@@ -659,7 +659,7 @@ async def send_msg(bot, message):
         except Exception as e:
             await message.reply_text(f"<b>ᴇʀʀᴏʀ: {e}</b>")
     else:
-        await message.reply_text("<b>ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴀꜱ ᴀ ʀᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇꜱꜱᴀɢᴇ ᴜꜱɪɴɢ ᴛʜᴇ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛ ɪᴅ. ꜰᴏʀ ᴇxᴀᴍᴘʟᴇ: /send userid</b>")
+        await message.reply_text("<b>ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴀꜱ ᴀ ʀᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇꜱꜱᴀɢᴇ ᴜꜱɪɴɢ ᴛʜᴇ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛ ɪᴅ. ꜰᴏʀ ᴇxᴀᴍᴘʟᴇ: /send ᴜꜱᴇʀɪᴅ</b>")
 
 @Client.on_message(filters.command("deletefiles") & filters.user(ADMINS))
 async def deletemultiplefiles(bot, message):
@@ -673,7 +673,7 @@ async def deletemultiplefiles(bot, message):
     except Exception:
         return await message.reply_text(f"<b>ʜᴇʏ {message.from_user.mention}, ᴘʟᴇᴀꜱᴇ ɢɪᴠᴇ ᴍᴇ ᴀ ᴋᴇʏᴡᴏʀᴅ ᴀʟᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴅᴇʟᴇᴛᴇ ꜰɪʟᴇꜱ.</b>")
     safe_keyword = keyword.replace('<', '&lt;').replace('>', '&gt;')
-    k = await bot.send_message(chat_id=message.chat.id, text=f"<b>ꜰᴇᴛᴄʜɪɴɢ ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{safe_keyword}' ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
+    k = await bot.send_message(chat_id=message.chat.id, text=f"<b>ꜰᴇᴛᴄʜɪɴɢ ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}' ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
     files, total = await get_bad_files(keyword)
     await k.delete()
     btn = [[
@@ -682,7 +682,7 @@ async def deletemultiplefiles(bot, message):
        InlineKeyboardButton("ᴄᴀɴᴄᴇʟ", callback_data="close_data")
     ]]
     await message.reply_text(
-        text=f"<b>ꜰᴏᴜɴᴅ {total} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ '{safe_keyword}'!\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ?</b>",
+        text=f"<b>ꜰᴏᴜɴᴅ {total} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}'!\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         parse_mode=enums.ParseMode.HTML
     )
@@ -723,7 +723,7 @@ async def give_premium_cmd_handler(client, message):
             try:
                 await client.send_message(
                     chat_id=user_id,
-                    text=f"""<b><u>🎉 ʏᴏᴜʀ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ɪꜱ ɴᴏᴡ ᴀᴄᴛɪᴠᴇ!</u></b>\n\nʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪꜱ ᴜᴘɢʀᴀᴅᴇᴅ ꜰᴏʀ <b><u>{display_time}</u></b>. ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ, ɪɴꜱᴛᴀɴᴛ, ᴀɴᴅ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴏᴜʀ ʙᴏᴛꜱ!\n\n🍿 ᴍᴏᴠɪᴇꜱ: @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ: @TIC_Latest_Movies_Bot\n\n💡 ᴛʏᴘᴇ /myplan ᴛᴏ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ.\n\n<blockquote><b>🍿🎬 ᴇɴᴊᴏʏ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>""",
+                    text=f"""<b><u>🎉 ʏᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ɪꜱ ɴᴏᴡ ᴀᴄᴛɪᴠᴇ!</u></b>\n\nʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪꜱ ᴜᴘɢʀᴀᴅᴇᴅ ꜰᴏʀ <b><u>{display_time}</u></b>. ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ, ɪɴꜱᴛᴀɴᴛ, ᴀɴᴅ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ ᴏᴜʀ ʙᴏᴛꜱ!\n\n🍿 ᴍᴏᴠɪᴇꜱ: @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ: @TIC_Latest_Movies_Bot\n\n💡 ᴛʏᴘᴇ /myplan ᴛᴏ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ.\n\n<blockquote><b>🍿🎬 ᴇɴᴊᴏʏ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>""",
                     parse_mode=enums.ParseMode.HTML
                 )
             except Exception:
@@ -731,7 +731,7 @@ async def give_premium_cmd_handler(client, message):
         else:
             await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ ꜰᴏʀᴍᴀᴛ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ '1day', '1hour', '1min', '1month', ᴏʀ '1year'.")
     else:
-        await message.reply_text("<b>ᴜꜱᴀɢᴇ: /add_premium user_id time \n\nᴇxᴀᴍᴘʟᴇ: /add_premium 1252789 10day \n\n(ᴇ.ɢ. '1day', '1hour', '1min', '1month', ᴏʀ '1year')</b>")
+        await message.reply_text("<b>ᴜꜱᴀɢᴇ: /add_premium user_id time \n\nᴇxᴀᴍᴘʟᴇ: /add_premium 1252789 10day \n\n(E.g. '1day', '1hour', '1min', '1month', or '1year')</b>")
         
 @Client.on_message(filters.command("remove_premium"))
 async def remove_premium_cmd_handler(client, message):
@@ -754,7 +754,7 @@ async def remove_premium_cmd_handler(client, message):
         try:
             await client.send_message(
                 chat_id=target_id,
-                text="<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ ʙʏ ᴀᴅᴍɪɴꜱ.\n\nᴄᴏɴᴛᴀᴄᴛ ᴜs ɪꜰ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.\n</b>",
+                text="<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ ʙʏ ᴀᴅᴍɪɴꜱ.\n\nᴄᴏɴᴛᴀᴄᴛ ᴜꜱ ɪꜰ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.\n</b>",
                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)]])
             )
         except Exception:
@@ -976,7 +976,7 @@ async def recent_uploads(client, message):
         if len(message.command) > 1:
             limit = int(message.command[1])
             
-        processing_msg = await message.reply(f"sᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀsᴛ {limit} ғɪʟᴇs ғʀᴏᴍ ᴅᴀᴛᴀʙᴀsᴇ")
+        processing_msg = await message.reply(f"ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ")
         
         recent_files = col.find({}).sort('$natural', -1).limit(limit)
         
@@ -1027,7 +1027,7 @@ async def recent_uploads(client, message):
                 unique_titles.append(formatted_string)
 
         if not unique_titles:
-            return await processing_msg.edit("No files found in the requested range!")
+            return await processing_msg.edit("ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!")
 
         # Format final text using the universal template
         final_text = f"<b>{HEADER_TEXT}</b>\n\n"
@@ -1049,7 +1049,7 @@ async def recent_uploads(client, message):
         )
         
     except Exception as e:
-        await message.reply(f"Error during extraction: {e}")
+        await message.reply(f"ᴇʀʀᴏʀ ᴅᴜʀɪɴɢ ᴇxᴛʀᴀᴄᴛɪᴏɴ: {e}")
 
 @Client.on_message(filters.command("premium_list") & filters.user(ADMINS))
 async def premium_users_list(client, message):
@@ -1058,7 +1058,7 @@ async def premium_users_list(client, message):
     count = await db.users.count_documents({"expiry_time": {"$gt": datetime.datetime.now()}})
     
     if count == 0:
-        return await msg.edit_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ ᴀᴛ ᴛʜᴇ ᴍᴏᴍᴇɴᴛ.</b>")
+        return await msg.edit_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ ᴀᴛ ᴛʜᴇ ᴍᴏᴍᴇɴᴛ.</b>")
     
     premium_users = db.users.find({"expiry_time": {"$gt": datetime.datetime.now()}}).sort("expiry_time", 1)
     text = f"<b>🌟 <u>ᴀᴄᴛɪᴠᴇ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ</u></b>\n\n<b>ᴛᴏᴛᴀʟ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ: {count}</b>\n\n"
@@ -1116,3 +1116,5 @@ async def group_request_warning(client, message):
     except Exception:
         pass
 # ------------------------------------
+
+
