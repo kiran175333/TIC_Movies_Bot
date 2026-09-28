@@ -1189,7 +1189,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nꜱᴏʀʀʏ, ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\nᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴄᴀɴɴᴏᴛ ᴜᴘʟᴏᴀᴅ ɪᴛ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\nᴡʜᴇɴ ɪᴛ ᴅᴏᴇꜱ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1220,7 +1220,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1251,7 +1251,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ɪɴ ᴏᴜʀ ᴅᴀᴛᴀʙᴀꜱᴇ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
