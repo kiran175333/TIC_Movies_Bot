@@ -1189,7 +1189,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nꜱᴏʀʀʏ, ʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\nᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴄᴀɴɴᴏᴛ ᴜᴘʟᴏᴀᴅ ɪᴛ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nꜱᴏʀʀʏ, ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\nᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴄᴀɴɴᴏᴛ ᴜᴘʟᴏᴀᴅ ɪᴛ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1220,7 +1220,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1251,7 +1251,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ɪɴ ᴏᴜʀ ᴅᴀᴛᴀʙᴀꜱᴇ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\nʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ɪɴ ᴏᴜʀ ᴅᴀᴛᴀʙᴀꜱᴇ.\n\nᴋɪɴᴅʟʏ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1584,7 +1584,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
     remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
     
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
-    cap = f"<b>🫡 ʜᴇʏ {message.from_user.mention},\n\n📬 ʜᴇʀᴇ ɪꜱ ᴡʜᴀᴛ ɪ ꜰᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ Qᴜᴇʀʏ {search.replace('<', '&lt;').replace('>', '&gt;')}.</b>"
+    cap = f"<b>🫡 ʜᴇʏ {message.from_user.mention},\n\n📬 ʜᴇʀᴇ ɪꜱ ᴡʜᴀᴛ ɪ ꜰᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {search.replace('<', '&lt;').replace('>', '&gt;')}.</b>"
     
     # Attach the warning immediately after the header
     cap += warn_text
