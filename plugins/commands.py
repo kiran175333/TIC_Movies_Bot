@@ -729,9 +729,9 @@ async def give_premium_cmd_handler(client, message):
             except Exception:
                 pass
         else:
-            await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ ꜰᴏʀᴍᴀᴛ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ '1day', '1hour', '1min', '1month', ᴏʀ '1year'.")
+            await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ ꜰᴏʀᴍᴀᴛ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ '1min', '1hour', '1day', '1week', '1month', ᴏʀ '1year'.")
     else:
-        await message.reply_text("<b>ᴜꜱᴀɢᴇ: /add_premium user_id time \n\nᴇxᴀᴍᴘʟᴇ: /add_premium 1252789 10day \n\n(E.g. '1day', '1hour', '1min', '1month', or '1year')</b>")
+        await message.reply_text("<b>ᴜꜱᴀɢᴇ: /add_premium user_id time \n\nᴇxᴀᴍᴘʟᴇ: /add_premium 1252789 10day \n\n(E.g. '1min', '1hour', '1day', '1week', '1month', or '1year')</b>")
         
 @Client.on_message(filters.command("remove_premium"))
 async def remove_premium_cmd_handler(client, message):
