@@ -109,9 +109,7 @@ def clean_file_name(file_name):
     """Clean and format the file name."""
     file_name = remove_junk(file_name)
     file_name = re.sub(r"(_|\-|\.)", " ", file_name)
-    old_file_name = ' '.join(file_name.split())
-    return old_file_name
-
+    return ' '.join(file_name.split())
     
 async def is_file_already_saved(file_id, file_name):
     """Check if the file is already saved in any active collection."""
@@ -158,7 +156,6 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
                 filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
             
             filter = {"$and": filter_and}
-            
             
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
     
