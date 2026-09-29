@@ -527,6 +527,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.delete()
         else:
             await query.answer("ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ!", show_alert=True)           
+    elif query.data.startswith("spcheck#"):
+        try:
+            _, correction = query.data.split("#", 1)
+        except ValueError:
+            return await query.answer("Invalid request.", show_alert=True)
+            
+        await query.answer()
+        # We must NOT use the user's original message, because if they deleted it, the bot will crash!
+        # Instead, we pass the "Did you mean" message itself to auto_filter so it can safely reply to it.
+        await auto_filter(client, correction, query.message, None, False, is_spell_check=True)
+        
+        # After the search is safely delivered, we delete the "Did you mean" buttons to keep the chat clean!
+        await query.message.delete()
+        
     elif query.data.startswith("buy_premium"):
         # Check if the user came from the text-only /myplan command
         is_myplan = query.data == "buy_premium_myplan"
@@ -1189,7 +1203,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\nᴡʜᴇɴ ɪᴛ ᴅᴏᴇꜱ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1220,7 +1234,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1251,7 +1265,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
             except Exception:
                 pass
         else:
@@ -1480,7 +1494,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
-async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
+async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_spell_check=False):
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     if not spoll:
         message = msg
@@ -1512,21 +1526,34 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
                 await add_search_query(search)
             if not files:
                 if settings.get('no_result_msg', True):
-                    # Delete the "Searching for..." text message
                     if reply_msg:
                         await reply_msg.delete()
                     
-                    # Generate the Google Search link
-                    google_search_url = f"https://www.google.com/search?q={quote_plus(name)}"
-                    btn = [[InlineKeyboardButton("ɢᴏᴏɢʟᴇ", url=google_search_url)]]
+                    from utils import get_spell_check
                     
-                    # Send the Spelling Text and Button (Image removed)
+                    btn = []
+                    text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ꜱᴘᴇʟʟɪɴɢ ɪɴ ɢᴏᴏɢʟᴇ ᴏʀ ɪᴍᴅʙ</b>"
+                    
+                    # 🪄 PM-ONLY SPELL CHECK LOGIC
+                    if message.chat.type == enums.ChatType.PRIVATE:
+                        if is_spell_check:
+                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ, ᴛʜᴇɴ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ: <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code></b>"
+                        else:
+                            suggestions = await get_spell_check(name)
+                            if suggestions:
+                                text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴅɪᴅ ʏᴏᴜ ᴍᴇᴀɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ʙᴇʟᴏᴡ ᴏɴᴇꜱ:</b>"
+                                for title in suggestions:
+                                    btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title}")])
+                    
+                    # Fallback Google Link
+                    google_search_url = f"https://www.google.com/search?q={quote_plus(name)}"
+                    btn.append([InlineKeyboardButton("ɢᴏᴏɢʟᴇ", url=google_search_url)])
+                    
                     spell_check_msg = await message.reply_text(
-                        text=f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ꜱᴘᴇʟʟɪɴɢ ɪɴ ɢᴏᴏɢʟᴇ ᴏʀ ɪᴍᴅʙ</b>",
+                        text=text,
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
                     
-                    # Auto-delete the warning after 60 seconds
                     from utils import delayed_delete
                     delayed_delete([spell_check_msg, message], 60)
                     return
@@ -1543,10 +1570,11 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
         await msg.message.delete()
     pre = 'file'
     key = f"{message.chat.id}-{message.id}"
-    req = message.from_user.id if message.from_user else 0
+    user_id = message.chat.id if message.chat.type == enums.ChatType.PRIVATE else (message.from_user.id if message.from_user else 0)
+    req = user_id
     FRESH[key] = search
-    if message.from_user:
-        temp.SHORT[message.from_user.id] = message.chat.id
+    if user_id:
+        temp.SHORT[user_id] = message.chat.id
     if settings["button"]:
         btn = [
             [
@@ -1791,4 +1819,5 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
 
