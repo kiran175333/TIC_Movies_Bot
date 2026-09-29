@@ -1612,7 +1612,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
     remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
     
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
-    user_mention = message.from_user.mention if message.from_user else message.chat.title or "User"
+    user_mention = message.from_user.mention if message.from_user else (message.chat.title or "User")
     cap = f"<b>🫡 ʜᴇʏ {user_mention},\n\n📬 ʜᴇʀᴇ ɪꜱ ᴡʜᴀᴛ ɪ ꜰᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {search.replace('<', '&lt;').replace('>', '&gt;')}.</b>"
     
     # Attach the warning immediately after the header
