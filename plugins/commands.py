@@ -623,11 +623,15 @@ async def requests(bot, message):
             InlineKeyboardButton('ꜱʜᴏᴡ ᴏᴘᴛɪᴏɴꜱ', callback_data=f'show_option#{reporter}')
         ]]
             
-        await bot.send_message(
-            chat_id=LOG_CHANNEL, 
-            text=f"<b>ʀᴇᴘᴏʀᴛᴇʀ : {mention} ({reporter})\n\nᴍᴇꜱꜱᴀɢᴇ : {content.strip().replace('<', '&lt;').replace('>', '&gt;')}</b>", 
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
+        for admin in ADMINS:
+            try:
+                await bot.send_message(
+                    chat_id=admin, 
+                    text=f"<b>ʀᴇᴘᴏʀᴛᴇʀ : {mention} ({reporter})\n\nᴍᴇꜱꜱᴀɢᴇ : {content.strip().replace('<', '&lt;').replace('>', '&gt;')}</b>", 
+                    reply_markup=InlineKeyboardMarkup(btn)
+                )
+            except Exception:
+                pass
         await message.reply_text("<b>ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
         await message.reply_text(f"ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}")
