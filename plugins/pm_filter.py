@@ -520,11 +520,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
     if query.data == "close_data":
         if query.message.chat.type == enums.ChatType.PRIVATE:
             if query.from_user and query.message.chat.id == query.from_user.id:
-                await query.message.delete()
+                try:
+                    await query.message.delete()
+                except Exception:
+                    pass
             else:
                 await query.answer("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴅᴏ ᴛʜᴀᴛ!", show_alert=True)
         elif check_callback_owner(query) or (query.from_user and is_admin(query.from_user.id)):
-            await query.message.delete()
+            try:
+                await query.message.delete()
+            except Exception:
+                pass
         else:
             await query.answer("ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ!", show_alert=True)           
     elif query.data.startswith("spcheck#"):
@@ -539,7 +545,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await auto_filter(client, correction, query.message, None, False, is_spell_check=True)
         
         # After the search is safely delivered, we delete the "Did you mean" buttons to keep the chat clean!
-        await query.message.delete()
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         
     elif query.data.startswith("buy_premium"):
         # Check if the user came from the text-only /myplan command
@@ -611,7 +620,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.reply_to_message.delete()
         except Exception:
             pass
-        await query.message.delete()
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         return
     elif query.data == "delallconfirm":
         userid = query.from_user.id
@@ -656,7 +668,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 await query.message.reply_to_message.delete()
             except Exception:
                 pass
-            await query.message.delete()
+            try:
+                await query.message.delete()
+            except Exception:
+                pass
         elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
             grp_id = query.message.chat.id
             is_owner = False
@@ -666,7 +681,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except Exception:
                 pass
             if is_owner or is_admin(userid):
-                await query.message.delete()
+                try:
+                    await query.message.delete()
+                except Exception:
+                    pass
                 try:
                     await query.message.reply_to_message.delete()
                 except Exception:
@@ -1183,10 +1201,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         btn = [[InlineKeyboardButton("ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"unalert#{from_user}")]]
-        btn2 = [[
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⌖', url=CHNL_LNK),
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖', url=GRP_LNK)
-               ]]
         if query.from_user and is_admin(query.from_user):
             user_mention = "User"
             try:
@@ -1203,7 +1217,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1214,10 +1228,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         btn = [[InlineKeyboardButton("ᴜᴘʟᴏᴀᴅᴇᴅ", callback_data=f"upalert#{from_user}")]]
-        btn2 = [[
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⌖', url=CHNL_LNK),
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖', url=GRP_LNK)
-               ]]
         if query.from_user and is_admin(query.from_user):
             user_mention = "User"
             try:
@@ -1234,7 +1244,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1245,10 +1255,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         btn = [[InlineKeyboardButton("ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"alalert#{from_user}")]]
-        btn2 = [[
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⌖', url=CHNL_LNK),
-                 InlineKeyboardButton('⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖', url=GRP_LNK)
-               ]]
         if query.from_user and is_admin(query.from_user):
             user_mention = "User"
             try:
@@ -1265,7 +1271,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>", reply_markup=InlineKeyboardMarkup(btn2))
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1537,17 +1543,15 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     # 🪄 PM-ONLY SPELL CHECK LOGIC
                     if message.chat.type == enums.ChatType.PRIVATE:
                         if is_spell_check:
-                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ, ᴛʜᴇɴ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ: <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code></b>"
+                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
                         else:
                             suggestions = await get_spell_check(name)
                             if suggestions:
                                 text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴅɪᴅ ʏᴏᴜ ᴍᴇᴀɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ʙᴇʟᴏᴡ ᴏɴᴇꜱ:</b>"
                                 for title in suggestions:
-                                    btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title}")])
-                    
-                    # Fallback Google Link
-                    google_search_url = f"https://www.google.com/search?q={quote_plus(name)}"
-                    btn.append([InlineKeyboardButton("ɢᴏᴏɢʟᴇ", url=google_search_url)])
+                                      btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title[:50]}")])
+
+                                  btn.append([InlineKeyboardButton("❌ ɴᴏɴᴇ ᴏғ ᴛʜᴇsᴇ? ʀᴇǫᴜᴇsᴛ ɪᴛ 📬", callback_data=f"spcheck#{name[:50]}")])
                     
                     spell_check_msg = await message.reply_text(
                         text=text,
