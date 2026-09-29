@@ -1,4 +1,6 @@
 import logging, asyncio, os, re, random, pytz, aiohttp, string, time, uuid
+import json
+from urllib.parse import quote_plus
 from info import *
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import enums
@@ -539,3 +541,39 @@ async def get_seconds(time_string):
         return value * 86400 * 365
     else:
         return 0
+
+
+async def get_spell_check(query):
+    """Fetches up to 5 clean movie/series title suggestions from IMDb Suggest API."""
+    query = query.strip().lower()
+    if not query:
+        return []
+    
+    first_letter = query[0]
+    safe_query = quote_plus(query)
+    url = f"https://sg.media-imdb.com/suggests/{first_letter}/{safe_query}.json"
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=5) as response:
+                text = await response.text()
+                
+                # IMDb returns JSONP format: imdb$query({"d": [...]})
+                start = text.find('(')
+                end = text.rfind(')')
+                if start != -1 and end != -1:
+                    data = json.loads(text[start+1:end])
+                    suggestions = []
+                    
+                    for item in data.get("d", []):
+                        if item.get("q") in ["feature", "TV series", "TV mini-series", "TV movie", "video", "short", "TV special"]:
+                            title = item.get("l")
+                            if title and title not in suggestions and title.lower() != query.lower():
+                                suggestions.append(title)
+                            if len(suggestions) >= 5:
+                                break
+                                
+                    return suggestions
+    except Exception as e:
+        logger.error(f"IMDb Suggest failed: {e}")
+    return []
