@@ -971,15 +971,24 @@ async def trending(bot, message):
         except Exception:
             pass
 
-@Client.on_message(filters.command("recent") & filters.user(ADMINS))
+@Client.on_message(filters.command("recent"))
 async def recent_uploads(client, message):
+    user_id = message.from_user.id if message.from_user else 0
+    if user_id not in ADMINS:
+        if message.chat.type != enums.ChatType.PRIVATE:
+            return
+        limit = 15
+    else:
+        limit = 100
+        if len(message.command) > 1:
+            try:
+                limit = int(message.command[1])
+            except ValueError:
+                pass
+                
     HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ᴍᴏᴠɪᴇꜱ</u> 🔥"
 
     try:
-        limit = 100
-        if len(message.command) > 1:
-            limit = int(message.command[1])
-            
         processing_msg = await message.reply(f"ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ")
         
         recent_files = col.find({}).sort('$natural', -1).limit(limit)
@@ -991,40 +1000,28 @@ async def recent_uploads(client, message):
             name = file.get('file_name', '')
             clean_name = re.sub(r"(_|\.)", " ", name)
             
-            # 1. SERIES & ANIME LOGIC
-            series_match = re.search(r"(?i)(.*?)\s*S(\d{1,2})(?:E\d{1,2})?\b", clean_name)
-            if series_match:
-                base_title = series_match.group(1).strip()
-                season_num = series_match.group(2).zfill(2)
-                raw_string = f"{base_title} S{season_num}"
-                slug = make_search_slug(raw_string)
-                safe_raw = raw_string.replace('<', '&lt;').replace('>', '&gt;')
-                formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_raw}</a>"
-            
-            # 2. MOVIE LOGIC
+            movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
+            if movie_match:
+                base_title = movie_match.group(1).strip()
             else:
-                movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
-                if movie_match:
-                    base_title = movie_match.group(1).strip()
+                base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub)", clean_name)[0].strip()
+                base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
+            
+            lang_bracket = re.search(r"\[(.*?)\]", name)
+            if lang_bracket:
+                languages = f"[{lang_bracket.group(1)}]"
+            else:
+                langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
+                if langs_found:
+                    langs_found = list(dict.fromkeys(l.capitalize() for l in langs_found))
+                    languages = f"[{' '.join(langs_found)}]"
                 else:
-                    base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub)", clean_name)[0].strip()
-                    base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
-                
-                lang_bracket = re.search(r"\[(.*?)\]", name)
-                if lang_bracket:
-                    languages = f"[{lang_bracket.group(1)}]"
-                else:
-                    langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
-                    if langs_found:
-                        langs_found = list(dict.fromkeys(l.capitalize() for l in langs_found))
-                        languages = f"[{' '.join(langs_found)}]"
-                    else:
-                        languages = ""
-                        
-                raw_string = f"{base_title} {languages}".strip()
-                slug = make_search_slug(base_title)
-                safe_base = base_title.replace('<', '&lt;').replace('>', '&gt;')
-                formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a> {languages}".strip()
+                    languages = ""
+                    
+            raw_string = f"{base_title} {languages}".strip()
+            slug = make_search_slug(base_title)
+            safe_base = base_title.replace('<', '&lt;').replace('>', '&gt;')
+            formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a> {languages}".strip()
 
             if raw_string and raw_string.lower() not in seen:
                 seen.add(raw_string.lower())
@@ -1033,24 +1030,27 @@ async def recent_uploads(client, message):
         if not unique_titles:
             return await processing_msg.edit("ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!")
 
-        # Format final text using the universal template
-        final_text = f"<b>{HEADER_TEXT}</b>\n\n"
-        final_text += "<blockquote><b>👇 ᴊᴜsᴛ ᴛᴀᴘ ᴏɴ ᴀɴʏ ᴛɪᴛʟᴇ ʙᴇʟᴏᴡ ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇs ɪɴsᴛᴀɴᴛʟʏ!</b></blockquote>\n\n"
+        chunk_size = 15
+        chunks = [unique_titles[i:i + chunk_size] for i in range(0, len(unique_titles), chunk_size)]
         
-        for title in unique_titles:
-            # 4096-Character Limit Safeguard
-            if len(final_text) + len(title) + 150 > 4000:
-                break
-            # Added an extra \n here to create the empty line between titles
-            final_text += f"{title}\n\n"
+        for i, chunk in enumerate(chunks):
+            final_text = f"<b>{HEADER_TEXT}</b>\n\n"
+            if i == 0:
+                final_text += "<blockquote><b>👇 ᴊᴜsᴛ ᴛᴀᴘ ᴏɴ ᴀɴʏ ᴛɪᴛʟᴇ ʙᴇʟᴏᴡ ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇs ɪɴsᴛᴀɴᴛʟʏ!</b></blockquote>\n\n"
             
-        # Removed the \n from the start of this line so the spacing stays perfectly balanced
-        final_text += "<blockquote><b>🍿🎬 ɢʀᴀʙ ʏᴏᴜʀ ᴘᴏᴘᴄᴏʀɴ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>"
+            for title in chunk:
+                final_text += f"{title}\n\n"
+                
+            if i == len(chunks) - 1:
+                final_text += "<blockquote><b>🍿🎬 ɢʀᴀʙ ʏᴏᴜʀ ᴘᴏᴘᴄᴏʀɴ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>"
+            else:
+                final_text += f"<i>(Page {i+1} of {len(chunks)}...)</i>"
 
-        await processing_msg.edit_text(
-            text=final_text, 
-            disable_web_page_preview=True
-        )
+            if i == 0:
+                await processing_msg.edit_text(text=final_text, disable_web_page_preview=True)
+            else:
+                await message.reply_text(text=final_text, disable_web_page_preview=True)
+                await asyncio.sleep(0.5)
         
     except Exception as e:
         await message.reply(f"ᴇʀʀᴏʀ ᴅᴜʀɪɴɢ ᴇxᴛʀᴀᴄᴛɪᴏɴ: {e}")
