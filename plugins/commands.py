@@ -945,6 +945,10 @@ async def list_chats(bot, message):
 
 @Client.on_message(filters.command("trending"))
 async def trending(bot, message):
+    user_id = message.from_user.id if message.from_user else 0
+    if user_id not in ADMINS:
+        if message.chat.type != enums.ChatType.PRIVATE:
+            return
     trending_data = await get_trending_searches(limit=10)
     if not trending_data:
         return await message.reply_text("<b>ɴᴏ ᴛʀᴇɴᴅɪɴɢ ᴜᴘʟᴏᴀᴅꜱ ʀᴇᴄᴏʀᴅᴇᴅ ʏᴇᴛ!</b>")
