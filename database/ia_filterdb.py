@@ -127,12 +127,10 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     """For given query return (results, next_offset)"""
     
     query = query.strip()
-    use_fuzzy = False
     
     if not query:
         filter = {'file_name': re.compile('.', flags=re.IGNORECASE)}
     else:
-        use_fuzzy = True
         query_words = query.split()
         if len(query_words) == 1:
             # Single word search (strict matching)
@@ -158,28 +156,6 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
                 filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
             
             filter = {"$and": filter_and}
-
-        must_clauses = []
-        for word in query_words:
-            must_clauses.append({
-                "text": {
-                    "query": word,
-                    "path": "file_name",
-                    "fuzzy": {
-                        "maxEdits": 2,
-                        
-                    }
-                }
-            })
-            
-        search_stage = {
-            "$search": {
-                "index": "fuzzy_search",
-                "compound": {
-                    "must": must_clauses
-                }
-            }
-        }
             
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
     
@@ -189,16 +165,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     remaining_limit = max_results
     
     for collection in active_collections:
-        if use_fuzzy:
-            try:
-                count_pipeline = [search_stage, {"$count": "total_results"}]
-                count_res = await collection.aggregate(count_pipeline).to_list(1)
-                c_count = count_res[0]["total_results"] if count_res else 0
-            except Exception:
-                use_fuzzy = False
-                
-        if not use_fuzzy:
-            c_count = await collection.count_documents(filter)
+        c_count = await collection.count_documents(filter)
             
         total_results += c_count
         
@@ -206,16 +173,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             if remaining_offset >= c_count:
                 remaining_offset -= c_count
             else:
-                if use_fuzzy:
-                    pipeline = [
-                        search_stage,
-                        {"$skip": remaining_offset},
-                        {"$limit": remaining_limit}
-                    ]
-                    cursor = collection.aggregate(pipeline)
-                else:
-                    cursor = collection.find(filter).sort('$natural', -1).skip(remaining_offset).limit(remaining_limit)
-                    
+                cursor = collection.find(filter).sort('$natural', -1).skip(remaining_offset).limit(remaining_limit)
                 async for file in cursor:
                     file['file_id'] = file.get('file_id', file.get('_id'))
                     files.append(file)
