@@ -1,5 +1,8 @@
 import os, logging, string, asyncio, time, re, ast, random, math, pytz, pyrogram
 from datetime import datetime, timedelta, date, time
+from cachetools import TTLCache
+
+SPAM_TRACKER = TTLCache(maxsize=10000, ttl=1.5)
 from Script import script
 from info import *
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatPermissions, WebAppInfo
@@ -517,6 +520,12 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
                 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    user_id = query.from_user.id if query.from_user else 0
+    if user_id and user_id not in ADMINS:
+        if user_id in SPAM_TRACKER:
+            return await query.answer("⏳ ʏᴏᴜ ᴀʀᴇ ᴄʟɪᴄᴋɪɴɢ ᴛᴏᴏ ғᴀsᴛ!\n\nᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴀ sᴇᴄᴏɴᴅ.", show_alert=True)
+        SPAM_TRACKER[user_id] = True
+
     if query.data == "close_data":
         if query.message.chat.type == enums.ChatType.PRIVATE:
             if query.from_user and query.message.chat.id == query.from_user.id:
@@ -1501,6 +1510,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_spell_check=False):
+    user_id = msg.from_user.id if msg.from_user else 0
+    if not spoll and user_id and user_id not in ADMINS:
+        if user_id in SPAM_TRACKER:
+            warning = await msg.reply_text("⏳ ʏᴏᴜ ᴀʀᴇ sᴇᴀʀᴄʜɪɴɢ ᴛᴏᴏ ғᴀsᴛ!\n\nᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙᴇғᴏʀᴇ sᴇɴᴅɪɴɢ ᴀɴᴏᴛʜᴇʀ ʀᴇǫᴜᴇsᴛ.")
+            async def auto_delete():
+                await asyncio.sleep(10)
+                try:
+                    await warning.delete()
+                except Exception:
+                    pass
+            asyncio.create_task(auto_delete())
+            return
+        SPAM_TRACKER[user_id] = True
+
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     if not spoll:
         message = msg
@@ -1549,9 +1572,9 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                             if suggestions:
                                 text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴅɪᴅ ʏᴏᴜ ᴍᴇᴀɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ʙᴇʟᴏᴡ ᴏɴᴇꜱ:</b>"
                                 for title in suggestions:
-                                      btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title[:50]}")])
+                                    btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title[:50]}")])
 
-                                  btn.append([InlineKeyboardButton("❌ ɴᴏɴᴇ ᴏғ ᴛʜᴇsᴇ? ʀᴇǫᴜᴇsᴛ ɪᴛ 📬", callback_data=f"spcheck#{name[:50]}")])
+                                btn.append([InlineKeyboardButton("❌ ɴᴏɴᴇ ᴏғ ᴛʜᴇsᴇ? ʀᴇǫᴜᴇsᴛ ɪᴛ 📬", callback_data=f"spcheck#{name[:50]}")])
                     
                     spell_check_msg = await message.reply_text(
                         text=text,
