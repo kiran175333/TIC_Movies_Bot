@@ -11,21 +11,21 @@ async def addgfilter(client, message):
     args = message.text.html.split(None, 1)
 
     if len(args) < 2:
-        await message.reply_text("ᴄᴏᴍᴍᴀɴᴅ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ :(", quote=True)
+        await message.reply_text("<b>ᴄᴏᴍᴍᴀɴᴅ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ :(</b>", quote=True)
         return
 
     extracted = split_quotes(args[1])
     text = extracted[0].lower()
 
     if not message.reply_to_message and len(extracted) < 2:
-        await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ꜱᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ ᴛᴏ ꜱᴀᴠᴇ ʏᴏᴜʀ ꜰɪʟᴛᴇʀ!", quote=True)
+        await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ꜱᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ ᴛᴏ ꜱᴀᴠᴇ ʏᴏᴜʀ ꜰɪʟᴛᴇʀ!</b>", quote=True)
         return
 
     if (len(extracted) >= 2) and not message.reply_to_message:
         reply_text, btn, alert = gfilterparser(extracted[1])
         fileid = None
         if not reply_text:
-            await message.reply_text("ʏᴏᴜ ᴄᴀɴɴᴏᴛ ʜᴀᴠᴇ ʙᴜᴛᴛᴏɴꜱ ᴀʟᴏɴᴇ; ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ꜱᴏᴍᴇ ᴛᴇxᴛ ᴛᴏ ɢᴏ ᴡɪᴛʜ ᴛʜᴇᴍ!", quote=True)
+            await message.reply_text("<b>ʏᴏᴜ ᴄᴀɴɴᴏᴛ ʜᴀᴠᴇ ʙᴜᴛᴛᴏɴꜱ ᴀʟᴏɴᴇ; ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ꜱᴏᴍᴇ ᴛᴇxᴛ ᴛᴏ ɢᴏ ᴡɪᴛʜ ᴛʜᴇᴍ!</b>", quote=True)
             return
 
     elif message.reply_to_message and message.reply_to_message.reply_markup:
@@ -68,8 +68,7 @@ async def addgfilter(client, message):
 
     await add_gfilter('gfilters', text, reply_text, btn, fileid, alert)
 
-    await message.reply_text(
-        f"ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ꜰᴏʀ <code>{text}</code> ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ.",
+    await message.reply_text(f"<b>ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ꜰᴏʀ <code>{text}</code> ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ.</b>",
         quote=True,
         parse_mode=enums.ParseMode.HTML
     )
@@ -109,8 +108,7 @@ async def deletegfilter(client, message):
     try:
         cmd, text = message.text.split(" ", 1)
     except Exception:
-        await message.reply_text(
-            "<i>ᴘʟᴇᴀꜱᴇ ᴍᴇɴᴛɪᴏɴ ᴛʜᴇ ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ɴᴀᴍᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ!</i>\n\n"
+        await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴇɴᴛɪᴏɴ ᴛʜᴇ ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ɴᴀᴍᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ!\n\n</b>"
             "<code>/delg gfiltername</code>\n\n"
             "ᴜꜱᴇ /viewgfilters ᴛᴏ ᴠɪᴇᴡ ᴀʟʟ ᴀᴠᴀɪʟᴀʙʟᴇ ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀꜱ.",
             quote=True
@@ -123,8 +121,7 @@ async def deletegfilter(client, message):
 
 @Client.on_message(filters.command('delallg') & filters.user(ADMINS))
 async def delallgfilters(client, message):
-    await message.reply_text(
-            f"ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?",
+    await message.reply_text(f"<b>ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?</b>",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text="ʏᴇꜱ",callback_data="gfiltersdeleteallconfirm")],
                 [InlineKeyboardButton(text="ᴄᴀɴᴄᴇʟ",callback_data="gfiltersdeleteallcancel")]
