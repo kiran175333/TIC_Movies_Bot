@@ -91,7 +91,7 @@ async def send_for_index(bot, message):
     except ChannelInvalid:
         return await ask_msg.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴏʀ ɢʀᴏᴜᴘ. ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ ᴛᴏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ.')
     except (UsernameInvalid, UsernameNotModified):
-        return await ask_msg.reply('ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ ꜱᴘᴇᴄɪꜰɪᴇᴅ.')
+        return await ask_msg.reply('<b>ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ ꜱᴘᴇᴄɪꜰɪᴇᴅ.</b>')
     except Exception as e:
         logger.exception(e)
         return await ask_msg.reply(f'ᴇʀʀᴏʀꜱ: {e}')
@@ -146,7 +146,7 @@ async def set_skip_number(bot, message):
         await message.reply(f"ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇᴛ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴛᴏ {skip}.")
         temp.CURRENT = int(skip)
     else:
-        await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ.")
+        await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ.</b>")
 
 
 async def index_files_to_db(lst_msg_id, chat, msg, bot):
@@ -225,7 +225,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
     except Exception as e:
         logger.exception(e)
         k = await msg.edit(f'ᴇʀʀᴏʀ: {e}')
-        await k.reply_text(f'ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code>')
+        await k.reply_text(f'<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code></b>')
         await k.reply_text("<b>ɪꜰ ʏᴏᴜ ɢᴇᴛ ᴀ 'ᴍᴇꜱꜱᴀɢᴇ ɴᴏᴛ ᴍᴏᴅɪꜰɪᴇᴅ' ᴇʀʀᴏʀ, ᴘʟᴇᴀꜱᴇ ꜱᴋɪᴘ ʏᴏᴜʀ ꜱᴀᴠᴇᴅ ꜰɪʟᴇꜱ ᴀɴᴅ ɪɴᴅᴇx ᴀɢᴀɪɴ.</b>")
     else:
         if not temp.CANCEL.get(chat):
