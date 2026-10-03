@@ -112,7 +112,7 @@ async def start(client, message):
             invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
         except Exception as e:
             print(e)
-            await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ᴛʜᴇ ʙᴏᴛ ɪꜱ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙ ᴄʜᴀɴɴᴇʟ.")
+            await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ᴛʜᴇ ʙᴏᴛ ɪꜱ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙ ᴄʜᴀɴɴᴇʟ.</b>")
             return
         try:
             btn = [[InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)]]
@@ -133,7 +133,7 @@ async def start(client, message):
             return
         except Exception as e:
             print(e)
-            return await message.reply_text("ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴇᴀᴛᴜʀᴇ.")
+            return await message.reply_text("<b>ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴇᴀᴛᴜʀᴇ.</b>")
             
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help", "start"]:
         buttons = [
@@ -381,13 +381,13 @@ async def channel_info(bot, message):
 async def delete(bot, message):
     if message.reply_to_message and message.reply_to_message.media:
         reply = message.reply_to_message
-        msg = await message.reply("ᴘʀᴏᴄᴇꜱꜱɪɴɢ...", quote=True)
+        msg = await message.reply("<b>ᴘʀᴏᴄᴇꜱꜱɪɴɢ...</b>", quote=True)
     else:
-        reply = await bot.ask(message.from_user.id, "ɴᴏᴡ, ꜱᴇɴᴅ ᴍᴇ ᴛʜᴇ ᴍᴇᴅɪᴀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ.")
+        reply = await bot.ask(message.from_user.id, "<b>ɴᴏᴡ, ꜱᴇɴᴅ ᴍᴇ ᴛʜᴇ ᴍᴇᴅɪᴀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ.</b>")
         if reply.media:
-            msg = await message.reply("ᴘʀᴏᴄᴇꜱꜱɪɴɢ...", quote=True)
+            msg = await message.reply("<b>ᴘʀᴏᴄᴇꜱꜱɪɴɢ...</b>", quote=True)
         else:
-            await message.reply('ᴘʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴍᴇ ᴀ ᴠɪᴅᴇᴏ, ꜰɪʟᴇ, ᴏʀ ᴅᴏᴄᴜᴍᴇɴᴛ.', quote=True)
+            await message.reply('<b>ᴘʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴍᴇ ᴀ ᴠɪᴅᴇᴏ, ꜰɪʟᴇ, ᴏʀ ᴅᴏᴄᴜᴍᴇɴᴛ.</b>', quote=True)
             return
 
     for file_type in ("document", "video", "audio"):
@@ -395,7 +395,7 @@ async def delete(bot, message):
         if media is not None:
             break
     else:
-        await msg.edit('ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ᴀ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ꜰᴏʀᴍᴀᴛ.')
+        await msg.edit('<b>ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ᴀ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ꜰᴏʀᴍᴀᴛ.</b>')
         return
     
     file_id = unpack_new_file_id(media.file_id)
@@ -408,7 +408,7 @@ async def delete(bot, message):
     if not result.deleted_count and thi_col is not None:
         result = await thi_col.delete_one({'file_id': file_id})
     if result.deleted_count:
-        await msg.edit('ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.')
+        await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
     else:
         from database.ia_filterdb import clean_file_name
         file_name = clean_file_name(media.file_name)
@@ -422,7 +422,7 @@ async def delete(bot, message):
         if not result.deleted_count and thi_col is not None:
             result = await thi_col.delete_many({'file_name': file_name, 'file_size': media.file_size})
         if result.deleted_count:
-            await msg.edit('ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.')
+            await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
         else:
             result = await col.delete_many({
                 'file_name': media.file_name,
@@ -433,14 +433,14 @@ async def delete(bot, message):
             if not result.deleted_count and thi_col is not None:
                 result = await thi_col.delete_many({'file_name': media.file_name, 'file_size': media.file_size})
             if result.deleted_count:
-                await msg.edit('ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.')
+                await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
             else:
-                await msg.edit('ꜰɪʟᴇ ɴᴏᴛ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.')
+                await msg.edit('<b>ꜰɪʟᴇ ɴᴏᴛ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
 
 @Client.on_message(filters.command('deleteall') & filters.user(ADMINS))
 async def delete_all_index(bot, message):
     await message.reply_text(
-        'ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?',
+        '<b>ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?</b>',
         reply_markup=InlineKeyboardMarkup(
             [[
                 InlineKeyboardButton(text="ʏᴇꜱ", callback_data="autofilter_delete")
@@ -461,13 +461,13 @@ async def delete_all_index_confirm(bot, query):
     if thi_col is not None:
         await thi_col.drop()
     await query.answer('ᴘɪʀᴀᴄʏ ɪꜱ ᴀ ᴄʀɪᴍᴇ.')
-    await query.message.edit('ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.')
+    await query.message.edit('<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.</b>')
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
     userid = message.from_user.id if message.from_user else None
     if not userid:
-        return await message.reply(f"ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ. ᴜꜱᴇ /connect {message.chat.id} ɪɴ ᴘᴍ.")
+        return await message.reply(f"<b>ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ. ᴜꜱᴇ /connect {message.chat.id} ɪɴ ᴘᴍ.</b>")
     chat_type = message.chat.type
 
     if chat_type == enums.ChatType.PRIVATE:
@@ -478,10 +478,10 @@ async def settings(client, message):
                 chat = await client.get_chat(grpid)
                 title = chat.title
             except Exception:
-                await message.reply_text("ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!", quote=True)
+                await message.reply_text("<b>ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
                 return
         else:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!", quote=True)
+            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
             return
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -634,7 +634,7 @@ async def requests(bot, message):
                 pass
         await message.reply_text("<b>ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
-        await message.reply_text(f"ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}")
+        await message.reply_text(f"<b>ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}</b>")
         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         await asyncio.sleep(60)
@@ -647,7 +647,7 @@ async def requests(bot, message):
 async def send_msg(bot, message):
     if message.reply_to_message:
         target_id = message.text.split(" ", 1)[1]
-        out = "ᴜꜱᴇʀꜱ ꜱᴀᴠᴇᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ᴀʀᴇ:\n\n"
+        out = "<b>ᴜꜱᴇʀꜱ ꜱᴀᴠᴇᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ᴀʀᴇ:\n\n</b>"
         success = False
         try:
             user = await bot.get_users(target_id)
@@ -712,7 +712,7 @@ async def give_premium_cmd_handler(client, message):
         try:
             user_id = int(message.command[1])
         except ValueError:
-            return await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ. ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.")
+            return await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ. ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.</b>")
         time_str = message.command[2]        
         seconds = await get_seconds(time_str)
         if seconds and seconds > 0:
@@ -722,7 +722,7 @@ async def give_premium_cmd_handler(client, message):
             expiry_time = base_time + datetime.timedelta(seconds=seconds)
             user_data = {"id": user_id, "expiry_time": expiry_time} 
             await db.update_user(user_data)
-            await message.reply_text(f"ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ (ɪᴅ: {user_id}).")            
+            await message.reply_text(f"<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ (ɪᴅ: {user_id}).</b>")            
             display_time = time_str.replace("day", " Days").replace("month", " Months").replace("year", " Years")
             try:
                 await client.send_message(
@@ -733,7 +733,7 @@ async def give_premium_cmd_handler(client, message):
             except Exception:
                 pass
         else:
-            await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ ꜰᴏʀᴍᴀᴛ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ '1min', '1hour', '1day', '1week', '1month', ᴏʀ '1year'.")
+            await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ ꜰᴏʀᴍᴀᴛ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ '1min', '1hour', '1day', '1week', '1month', ᴏʀ '1year'.</b>")
     else:
         await message.reply_text("<b>ᴜꜱᴀɢᴇ: /add_premium user_id time \n\nᴇxᴀᴍᴘʟᴇ: /add_premium 1252789 10day \n\n(E.g. '1min', '1hour', '1day', '1week', '1month', or '1year')</b>")
         
@@ -751,10 +751,10 @@ async def remove_premium_cmd_handler(client, message):
         try:
             target_id = int(message.command[1]) 
         except ValueError:
-            return await message.reply_text("ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ. ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.")
+            return await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ. ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.</b>")
         user_data = {"id": target_id, "expiry_time": None}
         await db.update_user(user_data) 
-        await message.reply_text(f"ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ ꜰᴏʀ ᴜꜱᴇʀ {target_id}.")
+        await message.reply_text(f"<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ ꜰᴏʀ ᴜꜱᴇʀ {target_id}.</b>")
         try:
             await client.send_message(
                 chat_id=target_id,
@@ -764,7 +764,7 @@ async def remove_premium_cmd_handler(client, message):
         except Exception:
             pass
     else:
-        await message.reply_text("ᴜꜱᴀɢᴇ: /remove_premium user_id")
+        await message.reply_text("<b>ᴜꜱᴀɢᴇ: /remove_premium user_id</b>")
         
 @Client.on_message(filters.command("plan") & filters.private)
 async def plans_cmd_handler(client, message): 
@@ -885,63 +885,63 @@ async def get_bot_stats(bot, message):
 @Client.on_message(filters.command("ban") & filters.user(ADMINS))
 async def ban_a_user(bot, message):
     if len(message.command) < 2:
-        return await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴜꜱᴇʀ ɪᴅ.")
+        return await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴜꜱᴇʀ ɪᴅ.</b>")
     user_id = int(message.command[1])
     await db.ban_user(user_id, "Banned by Admin")
     if user_id not in temp.BANNED_USERS:
         temp.BANNED_USERS.append(user_id)
-    await message.reply(f"ᴜꜱᴇʀ {user_id} ʜᴀꜱ ʙᴇᴇɴ ʙᴀɴɴᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.")
+    await message.reply(f"<b>ᴜꜱᴇʀ {user_id} ʜᴀꜱ ʙᴇᴇɴ ʙᴀɴɴᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
 
 @Client.on_message(filters.command("unban") & filters.user(ADMINS))
 async def unban_a_user(bot, message):
     if len(message.command) < 2:
-        return await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴜꜱᴇʀ ɪᴅ.")
+        return await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴜꜱᴇʀ ɪᴅ.</b>")
     user_id = int(message.command[1])
     await db.remove_ban(user_id)
     if user_id in temp.BANNED_USERS:
         temp.BANNED_USERS.remove(user_id)
-    await message.reply(f"ᴜꜱᴇʀ {user_id} ʜᴀꜱ ʙᴇᴇɴ ᴜɴʙᴀɴɴᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.")
+    await message.reply(f"<b>ᴜꜱᴇʀ {user_id} ʜᴀꜱ ʙᴇᴇɴ ᴜɴʙᴀɴɴᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
 
 @Client.on_message(filters.command("disable") & filters.user(ADMINS))
 async def disable_a_chat(bot, message):
     if len(message.command) < 2:
-        return await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.")
+        return await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.</b>")
     chat_id = int(message.command[1])
     await db.disable_chat(chat_id, "Disabled by Admin")
     if chat_id not in temp.BANNED_CHATS:
         temp.BANNED_CHATS.append(chat_id)
-    await message.reply(f"ᴄʜᴀᴛ {chat_id} ʜᴀꜱ ʙᴇᴇɴ ᴅɪꜱᴀʙʟᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.")
+    await message.reply(f"<b>ᴄʜᴀᴛ {chat_id} ʜᴀꜱ ʙᴇᴇɴ ᴅɪꜱᴀʙʟᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
 
 @Client.on_message(filters.command("enable") & filters.user(ADMINS))
 async def enable_a_chat(bot, message):
     if len(message.command) < 2:
-        return await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.")
+        return await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.</b>")
     chat_id = int(message.command[1])
     await db.re_enable_chat(chat_id)
     if chat_id in temp.BANNED_CHATS:
         temp.BANNED_CHATS.remove(chat_id)
-    await message.reply(f"ᴄʜᴀᴛ {chat_id} ʜᴀꜱ ʙᴇᴇɴ ᴇɴᴀʙʟᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.")
+    await message.reply(f"<b>ᴄʜᴀᴛ {chat_id} ʜᴀꜱ ʙᴇᴇɴ ᴇɴᴀʙʟᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
 
 @Client.on_message(filters.command("leave") & filters.user(ADMINS))
 async def leave_a_chat(bot, message):
     if len(message.command) < 2:
-        return await message.reply("ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.")
+        return await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴄʜᴀᴛ ɪᴅ.</b>")
     chat_id = int(message.command[1])
     try:
         await bot.leave_chat(chat_id)
-        await message.reply(f"ʟᴇꜰᴛ ᴄʜᴀᴛ {chat_id} ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.")
+        await message.reply(f"<b>ʟᴇꜰᴛ ᴄʜᴀᴛ {chat_id} ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
     except Exception as e:
-        await message.reply(f"ᴇʀʀᴏʀ: {e}")
+        await message.reply(f"<b>ᴇʀʀᴏʀ: {e}</b>")
 
 @Client.on_message(filters.command("users") & filters.user(ADMINS))
 async def list_users(bot, message):
     total_users = await db.total_users_count()
-    await message.reply(f"ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ: {total_users}")
+    await message.reply(f"<b>ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ: {total_users}</b>")
 
 @Client.on_message(filters.command("chats") & filters.user(ADMINS))
 async def list_chats(bot, message):
     total_chats = await db.total_chat_count()
-    await message.reply(f"ᴛᴏᴛᴀʟ ᴄʜᴀᴛꜱ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ: {total_chats}")
+    await message.reply(f"<b>ᴛᴏᴛᴀʟ ᴄʜᴀᴛꜱ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ: {total_chats}</b>")
 
 @Client.on_message(filters.command("trending"))
 async def trending(bot, message):
@@ -983,7 +983,7 @@ async def recent_uploads(client, message):
             return
         limit = 15
     else:
-        limit = 100
+        limit = 15
         if len(message.command) > 1:
             try:
                 limit = int(message.command[1])
@@ -993,9 +993,9 @@ async def recent_uploads(client, message):
     HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ᴍᴏᴠɪᴇꜱ</u> 🔥"
 
     try:
-        processing_msg = await message.reply(f"ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ")
+        processing_msg = await message.reply(f"<b>ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ</b>")
         
-        recent_files = col.find({}).sort('$natural', -1).limit(limit)
+        recent_files = col.find({}).sort('$natural', -1)
         
         unique_titles = []
         seen = set()
@@ -1030,9 +1030,12 @@ async def recent_uploads(client, message):
             if raw_string and raw_string.lower() not in seen:
                 seen.add(raw_string.lower())
                 unique_titles.append(formatted_string)
+            
+            if len(unique_titles) >= limit:
+                break
 
         if not unique_titles:
-            return await processing_msg.edit("ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!")
+            return await processing_msg.edit("<b>ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
 
         chunk_size = 15
         chunks = [unique_titles[i:i + chunk_size] for i in range(0, len(unique_titles), chunk_size)]
@@ -1057,7 +1060,7 @@ async def recent_uploads(client, message):
                 await asyncio.sleep(0.5)
         
     except Exception as e:
-        await message.reply(f"ᴇʀʀᴏʀ ᴅᴜʀɪɴɢ ᴇxᴛʀᴀᴄᴛɪᴏɴ: {e}")
+        await message.reply(f"<b>ᴇʀʀᴏʀ ᴅᴜʀɪɴɢ ᴇxᴛʀᴀᴄᴛɪᴏɴ: {e}</b>")
 
 @Client.on_message(filters.command("premium_list") & filters.user(ADMINS))
 async def premium_users_list(client, message):
@@ -1124,5 +1127,7 @@ async def group_request_warning(client, message):
     except Exception:
         pass
 # ------------------------------------
+
+
 
 
