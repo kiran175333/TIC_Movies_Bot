@@ -112,16 +112,12 @@ async def start(client, message):
             if AUTH_CHANNEL:
                 chat = await client.get_chat(int(AUTH_CHANNEL))
                 invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
-                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)])
+                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⍟", url=invite_link)])
             
             if AUTH_GROUP:
                 chat_grp = await client.get_chat(int(AUTH_GROUP))
                 invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
-                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=invite_link_grp)])
-        except Exception as e:
-            print(e)
-            return
-        try:
+                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ⍟", url=invite_link_grp)])
             if len(message.command) > 1 and message.command[1] != "subscribe":
                 try:
                     kk, file_id = message.command[1].split("_", 1)
@@ -129,7 +125,7 @@ async def start(client, message):
                 except (IndexError, ValueError):
                     btn.append([InlineKeyboardButton("↻ ᴛʀʏ ᴀɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
             
-            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴜꜱ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
+            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜꜱ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
             await client.send_message(
                 chat_id=message.from_user.id,
                 text=text,
@@ -210,7 +206,7 @@ async def start(client, message):
         if is_valid == True:
             text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ʜᴀᴠᴇ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ.\n\nʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
             if PREMIUM_MODE == True:
-                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"            
+                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ᴛɪᴛʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"            
             await message.reply_text(text=text.format(message.from_user.mention))
             await verify_user(client, userid, token)
             return # <--- This stops the bot from crashing here
@@ -225,7 +221,7 @@ async def start(client, message):
         g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
         
         if not g:
-            error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
+            error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ᴛɪᴛʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
             await client.send_message(chat_id=user, text=error_msg)
             return
 
@@ -236,7 +232,7 @@ async def start(client, message):
             btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
         text = "<b>ʜᴇʏ {},\n\nʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ.\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
         if PREMIUM_MODE == True:
-            text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+            text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ᴛɪᴛʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
         k = await client.send_message(chat_id=user, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
         from utils import delayed_delete
         delayed_delete([k], 900)
@@ -250,7 +246,7 @@ async def start(client, message):
             g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
             
             if not g:
-                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
+                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ᴛɪᴛʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
                 await client.send_message(chat_id=message.from_user.id, text=error_msg)
                 return
                 
@@ -261,7 +257,7 @@ async def start(client, message):
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
             text = "<b>ʜᴇʏ {},\n\nʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ.\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
             if PREMIUM_MODE == True:
-                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ᴛɪᴛʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
             k = await client.send_message(chat_id=message.from_user.id, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
             from utils import delayed_delete
             delayed_delete([k], 900)
@@ -286,7 +282,7 @@ async def start(client, message):
                     ]]
                     text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
                     if PREMIUM_MODE == True:
-                        text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+                        text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ᴛɪᴛʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
                     await message.reply_text(
                         text=text.format(message.from_user.mention),
                         reply_markup=InlineKeyboardMarkup(btn)
@@ -344,7 +340,7 @@ async def start(client, message):
             ]]
             text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
             if PREMIUM_MODE == True:
-                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ᴛɪᴛʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
             await message.reply_text(
                 text=text.format(message.from_user.mention),
                 reply_markup=InlineKeyboardMarkup(btn)
@@ -446,7 +442,7 @@ async def delete(bot, message):
 @Client.on_message(filters.command('deleteall') & filters.user(ADMINS))
 async def delete_all_index(bot, message):
     await message.reply_text(
-        '<b>ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?</b>',
+        '<b>ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ᴛɪᴛʟᴇꜱ.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?</b>',
         reply_markup=InlineKeyboardMarkup(
             [[
                 InlineKeyboardButton(text="ʏᴇꜱ", callback_data="autofilter_delete")
@@ -467,7 +463,7 @@ async def delete_all_index_confirm(bot, query):
     if thi_col is not None:
         await thi_col.drop()
     await query.answer('ᴘɪʀᴀᴄʏ ɪꜱ ᴀ ᴄʀɪᴍᴇ.')
-    await query.message.edit('<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.</b>')
+    await query.message.edit('<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ᴛɪᴛʟᴇꜱ.</b>')
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
@@ -681,9 +677,9 @@ async def deletemultiplefiles(bot, message):
     try:
         keyword = message.text.split(" ", 1)[1]
     except Exception:
-        return await message.reply_text(f"<b>ʜᴇʏ {message.from_user.mention}, ᴘʟᴇᴀꜱᴇ ɢɪᴠᴇ ᴍᴇ ᴀ ᴋᴇʏᴡᴏʀᴅ ᴀʟᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴅᴇʟᴇᴛᴇ ꜰɪʟᴇꜱ.</b>")
+        return await message.reply_text(f"<b>ʜᴇʏ {message.from_user.mention}, ᴘʟᴇᴀꜱᴇ ɢɪᴠᴇ ᴍᴇ ᴀ ᴋᴇʏᴡᴏʀᴅ ᴀʟᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛɪᴛʟᴇꜱ.</b>")
     safe_keyword = keyword.replace('<', '&lt;').replace('>', '&gt;')
-    k = await bot.send_message(chat_id=message.chat.id, text=f"<b>ꜰᴇᴛᴄʜɪɴɢ ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}' ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
+    k = await bot.send_message(chat_id=message.chat.id, text=f"<b>ꜰᴇᴛᴄʜɪɴɢ ᴛɪᴛʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}' ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
     files, total = await get_bad_files(keyword)
     await k.delete()
     btn = [[
@@ -692,7 +688,7 @@ async def deletemultiplefiles(bot, message):
        InlineKeyboardButton("ᴄᴀɴᴄᴇʟ", callback_data="close_data")
     ]]
     await message.reply_text(
-        text=f"<b>ꜰᴏᴜɴᴅ {total} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}'!\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ?</b>",
+        text=f"<b>ꜰᴏᴜɴᴅ {total} ᴛɪᴛʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}'!\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         parse_mode=enums.ParseMode.HTML
     )
@@ -866,19 +862,19 @@ async def get_bot_stats(bot, message):
 
     stats_text = (
         "<b><u>ᴅᴀᴛᴀʙᴀꜱᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ</u></b>\n\n"
-        f"<b>★ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ:</b> <code>{total_files}</code>\n"
+        f"<b>★ ᴛᴏᴛᴀʟ ᴛɪᴛʟᴇꜱ:</b> <code>{total_files}</code>\n"
         f"<b>★ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n"
         f"<b>★ ᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ:</b> <code>{totl_chats}</code>\n\n"
         "<b>• ꜰɪʀꜱᴛ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{filesp}</code>\n"
+        f"★ ᴛɪᴛʟᴇꜱ: <code>{filesp}</code>\n"
         f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db1, 2)} MB</code>\n"
         f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db1, 2)} MB</code>\n\n"
         "<b>• ꜱᴇᴄᴏɴᴅ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{totalsec}</code>\n"
+        f"★ ᴛɪᴛʟᴇꜱ: <code>{totalsec}</code>\n"
         f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db2, 2)} MB</code>\n"
         f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db2, 2)} MB</code>\n\n"
         "<b>• ᴛʜɪʀᴅ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{totalthi}</code>\n"
+        f"★ ᴛɪᴛʟᴇꜱ: <code>{totalthi}</code>\n"
         f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db3, 2)} MB</code>\n"
         f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db3, 2)} MB</code>"
     )
@@ -999,7 +995,7 @@ async def recent_uploads(client, message):
     HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ᴍᴏᴠɪᴇꜱ</u> 🔥"
 
     try:
-        processing_msg = await message.reply(f"<b>ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ</b>")
+        processing_msg = await message.reply(f"<b>ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ᴛɪᴛʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ</b>")
         
         recent_files = col.find({}).sort('$natural', -1)
         
@@ -1041,7 +1037,7 @@ async def recent_uploads(client, message):
                 break
 
         if not unique_titles:
-            return await processing_msg.edit("<b>ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
+            return await processing_msg.edit("<b>ɴᴏ ᴛɪᴛʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
 
         chunk_size = 15
         chunks = [unique_titles[i:i + chunk_size] for i in range(0, len(unique_titles), chunk_size)]
@@ -1117,7 +1113,7 @@ async def group_request_warning(client, message):
     
     # 2. Send the helpful warning message
     msg = await message.reply_text(
-        "❌ <b>ʀᴇǫᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!</b>\n\n"
+        "❌ <b>ʀᴇǫᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ᴛɪᴛʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!</b>\n\n"
         "📍 ɢᴏ ᴛᴏ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ ᴘᴍ ᴀɴᴅ ᴜꜱᴇ ᴛʜɪꜱ ꜰᴏʀᴍᴀᴛ:\n"
         "<code>/request Name & Year/Season</code> ᴏʀ <code>#request Name & Year/Season</code>\n\n"
         "⛔ ᴅᴏ ɴᴏᴛ ʀᴇǫᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇs ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
