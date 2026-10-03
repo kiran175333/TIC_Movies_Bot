@@ -546,7 +546,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             _, correction = query.data.split("#", 1)
         except ValueError:
-            return await query.answer("Invalid request.", show_alert=True)
+            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ.", show_alert=True)
             
         await query.answer()
         # We must NOT use the user's original message, because if they deleted it, the bot will crash!
@@ -645,11 +645,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     chat = await client.get_chat(grpid)
                     title = chat.title
                 except Exception:
-                    await query.message.edit_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ", quote=True)
+                    await query.message.edit_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ</b>", quote=True)
                     return await query.answer(MSG_ALRT)
             else:
-                await query.message.edit_text(
-                    "ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!\nᴄʜᴇᴄᴋ /connections ᴏʀ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.",
+                await query.message.edit_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!\nᴄʜᴇᴄᴋ /connections ᴏʀ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.</b>",
                     quote=True
                 )
                 return await query.answer(MSG_ALRT)
@@ -741,7 +740,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 f"ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ <b>{title}</b>"
             )
         else:
-            await query.message.edit_text('ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!', parse_mode=enums.ParseMode.MARKDOWN)
+            await query.message.edit_text('<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>', parse_mode=enums.ParseMode.MARKDOWN)
         return await query.answer(MSG_ALRT)
     
     elif "disconnect" in query.data:
@@ -759,8 +758,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 f"ᴅɪꜱᴄᴏɴɴᴇᴄᴛᴇᴅ ꜰʀᴏᴍ <b>{title}</b>"
             )
         else:
-            await query.message.edit_text(
-                f"ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!",
+            await query.message.edit_text(f"<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>",
                 parse_mode=enums.ParseMode.MARKDOWN
             )
         return await query.answer(MSG_ALRT)
@@ -774,12 +772,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         delcon = await delete_connection(str(user_id), str(group_id))
         if delcon:
-            await query.message.edit_text(
-                "ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴛʜᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴ!"
+            await query.message.edit_text("<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴛʜᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴ!</b>"
             )
         else:
-            await query.message.edit_text(
-                f"ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!",
+            await query.message.edit_text(f"<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>",
                 parse_mode=enums.ParseMode.MARKDOWN
             )
         return await query.answer(MSG_ALRT)
@@ -788,8 +784,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         userid = query.from_user.id
         groupids = await all_connections(str(userid))
         if groupids is None:
-            await query.message.edit_text(
-                "ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.",
+            await query.message.edit_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.</b>",
             )
             return await query.answer(MSG_ALRT)
         buttons = []
@@ -809,8 +804,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except Exception:
                 pass
         if buttons:
-            await query.message.edit_text(
-                "ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n",
+            await query.message.edit_text("<b>ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n</b>",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
     elif "gfilteralert" in query.data:
@@ -982,7 +976,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             ident, keyword = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.message.edit_text("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ")
+            return await query.message.edit_text("<b>ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ</b>")
             
         files, total = await get_bad_files(keyword)
         await query.message.edit_text("<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴡɪʟʟ ꜱᴛᴀʀᴛ ɪɴ 5 ꜱᴇᴄᴏɴᴅꜱ</b>")
@@ -1008,7 +1002,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ. ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
             except Exception as e:
                 logger.exception(e)
-                await query.message.edit_text(f'ᴇʀʀᴏʀ: {e}')
+                await query.message.edit_text(f'<b>ᴇʀʀᴏʀ: {e}</b>')
             else:
                 await query.message.edit_text(f"<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ!\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'.</b>")
         return
@@ -1226,7 +1220,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1253,7 +1247,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1280,7 +1274,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1325,7 +1319,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-        await query.answer(MSG_ALRT)
+        try:
+            await query.answer(MSG_ALRT)
+        except Exception:
+            pass
         
     elif query.data == "users":
         buttons = [
@@ -1508,12 +1505,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
-    await query.answer(MSG_ALRT)
+    try:
+        await query.answer(MSG_ALRT)
+    except Exception:
+        pass
 async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_spell_check=False):
     user_id = msg.from_user.id if msg.from_user else 0
     if not spoll and user_id and user_id not in ADMINS:
         if user_id in SPAM_TRACKER:
-            warning = await msg.reply_text("⏳ ʏᴏᴜ ᴀʀᴇ sᴇᴀʀᴄʜɪɴɢ ᴛᴏᴏ ғᴀsᴛ!\n\nᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙᴇғᴏʀᴇ sᴇɴᴅɪɴɢ ᴀɴᴏᴛʜᴇʀ ʀᴇǫᴜᴇsᴛ.")
+            if reply_msg:
+                try:
+                    await reply_msg.delete()
+                except Exception:
+                    pass
+            warning = await msg.reply_text("<b>⏳ ʏᴏᴜ ᴀʀᴇ sᴇᴀʀᴄʜɪɴɢ ᴛᴏᴏ ғᴀsᴛ!\n\nᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙᴇғᴏʀᴇ sᴇɴᴅɪɴɢ ᴀɴᴏᴛʜᴇʀ ʀᴇǫᴜᴇsᴛ.</b>")
             async def auto_delete():
                 await asyncio.sleep(10)
                 try:
@@ -1556,7 +1561,10 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             if not files:
                 if settings.get('no_result_msg', True):
                     if reply_msg:
-                        await reply_msg.delete()
+                        try:
+                            await reply_msg.delete()
+                        except Exception:
+                            pass
                     
                     from utils import get_spell_check
                     
@@ -1566,7 +1574,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     # 🪄 PM-ONLY SPELL CHECK LOGIC
                     if message.chat.type == enums.ChatType.PRIVATE:
                         if is_spell_check:
-                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
+                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\n\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
                         else:
                             suggestions = await get_spell_check(name)
                             if suggestions:
@@ -1586,7 +1594,10 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     return
                 else:
                     if reply_msg:
-                        await reply_msg.delete()
+                        try:
+                            await reply_msg.delete()
+                        except Exception:
+                            pass
                     return
         else:
             return
@@ -1847,5 +1858,12 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
+
+
+
+
+
+
 
 
