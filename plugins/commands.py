@@ -106,16 +106,22 @@ async def start(client, message):
         )
         return
     
-    if AUTH_CHANNEL and not await is_subscribed(client, message):
+    if (AUTH_CHANNEL or AUTH_GROUP) and not await is_subscribed(client, message):
         try:
-            chat = await client.get_chat(int(AUTH_CHANNEL))
-            invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
+            btn = []
+            if AUTH_CHANNEL:
+                chat = await client.get_chat(int(AUTH_CHANNEL))
+                invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
+                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⍟", url=invite_link)])
+            
+            if AUTH_GROUP:
+                chat_grp = await client.get_chat(int(AUTH_GROUP))
+                invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
+                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ⍟", url=invite_link_grp)])
         except Exception as e:
             print(e)
-            await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ᴛʜᴇ ʙᴏᴛ ɪꜱ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙ ᴄʜᴀɴɴᴇʟ.</b>")
             return
         try:
-            btn = [[InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)]]
             if len(message.command) > 1 and message.command[1] != "subscribe":
                 try:
                     kk, file_id = message.command[1].split("_", 1)
@@ -123,7 +129,7 @@ async def start(client, message):
                 except (IndexError, ValueError):
                     btn.append([InlineKeyboardButton("↻ ᴛʀʏ ᴀɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
             
-            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
+            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴜꜱ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
             await client.send_message(
                 chat_id=message.from_user.id,
                 text=text,
@@ -993,7 +999,7 @@ async def recent_uploads(client, message):
     HEADER_TEXT = "🔥 <u>ᴜᴘʟᴏᴀᴅᴇᴅ ᴍᴏᴠɪᴇꜱ</u> 🔥"
 
     try:
-        processing_msg = await message.reply(f"<b>ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ғɪʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ</b>")
+        processing_msg = await message.reply(f"<b>ꜱᴄʀᴜʙʙɪɴɢ ᴛʜᴇ ʟᴀꜱᴛ {limit} ᴛɪᴛʟᴇꜱ ғʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ</b>")
         
         recent_files = col.find({}).sort('$natural', -1)
         
@@ -1035,7 +1041,7 @@ async def recent_uploads(client, message):
                 break
 
         if not unique_titles:
-            return await processing_msg.edit("<b>ɴᴏ ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
+            return await processing_msg.edit("<b>ɴᴏ ᴛɪᴛʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
 
         chunk_size = 15
         chunks = [unique_titles[i:i + chunk_size] for i in range(0, len(unique_titles), chunk_size)]
@@ -1130,3 +1136,11 @@ async def group_request_warning(client, message):
 
 
 
+
+
+@Client.on_chat_join_request()
+async def join_reqs(client, message):
+    if AUTH_GROUP and message.chat.id == AUTH_GROUP and REQ_TO_JOIN:
+        if not await db.is_user_exist(message.from_user.id):
+            await db.add_user(message.from_user.id, message.from_user.first_name)
+        await db.add_req_group(message.from_user.id)
