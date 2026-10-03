@@ -65,7 +65,7 @@ async def save_file(media):
         'caption': getattr(media, 'caption', None),
     }
 
-    if await is_file_already_saved(file_id, file_name):
+    if await is_file_already_saved(file_id, file_name, media.file_size):
         return False, 0
 
     try:
@@ -111,9 +111,12 @@ def clean_file_name(file_name):
     file_name = re.sub(r"(_|\-|\.)", " ", file_name)
     return ' '.join(file_name.split())
     
-async def is_file_already_saved(file_id, file_name):
+async def is_file_already_saved(file_id, file_name, file_size=0):
     """Check if the file is already saved in any active collection."""
-    query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
+    if file_size:
+        query = {'$or': [{'file_id': file_id}, {'file_name': file_name, 'file_size': file_size}]}
+    else:
+        query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
 
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
     for collection in active_collections:
