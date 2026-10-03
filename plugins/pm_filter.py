@@ -565,40 +565,45 @@ async def cb_handler(client: Client, query: CallbackQuery):
         back_callback = "myplan_back" if is_myplan else "start"
         
         buttons = [
-            [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
-            [InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data=back_callback)]
+            [InlineKeyboardButton("??????? ???????", url=SUPPORT_LINK)],
+            [InlineKeyboardButton("? ???? ?", callback_data=back_callback)]
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
         
         if query.message.media:
             # Came from /start (has photo), animate caption and swap media
-            await query.message.edit_caption(caption="● ◌ ◌")
+            try:
+                await query.message.edit_caption(caption="▰ ▰ ▱")
                 await asyncio.sleep(0.2)
-            await query.message.edit_caption(caption="● ● ◌")
+                await query.message.edit_caption(caption="▰ ▰ ▰")
                 await asyncio.sleep(0.2)
-            await query.message.edit_caption(caption="● ● ●")
+                await query.message.edit_caption(caption="▰ ▰ ▱")
                 await asyncio.sleep(0.2)
+            except Exception:
+                pass
             await query.message.edit_media(
                 media=InputMediaPhoto(random.choice(PICS), caption=PAYMENT_TEXT),
                 reply_markup=reply_markup
             )
         else:
             # Came from /myplan (text only), animate text
-        try:
-                await query.message.edit_text(text="● ◌ ◌")
+            try:
+                await query.message.edit_text(text="▰ ▰ ▱")
                 await asyncio.sleep(0.2)
-                await query.message.edit_text(text="● ● ◌")
+                await query.message.edit_text(text="▰ ▰ ▰")
                 await asyncio.sleep(0.2)
-                await query.message.edit_text(text="● ● ●")
+                await query.message.edit_text(text="▰ ▰ ▱")
                 await asyncio.sleep(0.2)
-        except Exception:
-            pass
+            except Exception:
+                pass
+            
             await query.message.edit_text(
                 text=PAYMENT_TEXT,
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
         return 
+
     elif query.data == "myplan_back":
         btn = [
             [InlineKeyboardButton("ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ", callback_data="buy_premium_myplan")],
@@ -1879,6 +1884,7 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
 
 
 
