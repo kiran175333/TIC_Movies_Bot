@@ -123,7 +123,7 @@ async def pm_broadcast(bot, message):
     ]]
     
     await message.reply_text(
-        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ</b>\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ᴜꜱᴇʀꜱ?",
+        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ᴜꜱᴇʀꜱ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         reply_to_message_id=b_msg.id
     )
@@ -148,7 +148,7 @@ async def broadcast_group(bot, message):
     ]]
     
     await message.reply_text(
-        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ</b>\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ɢʀᴏᴜᴘꜱ?",
+        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ɢʀᴏᴜᴘꜱ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         reply_to_message_id=b_msg.id
     )
