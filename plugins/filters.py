@@ -29,10 +29,10 @@ async def addfilter(client, message):
                 chat = await client.get_chat(grpid)
                 title = chat.title
             except Exception:
-                await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!", quote=True)
+                await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
                 return
         else:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!", quote=True)
+            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
             return
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -52,21 +52,21 @@ async def addfilter(client, message):
         return
 
     if len(args) < 2:
-        await message.reply_text("ᴄᴏᴍᴍᴀɴᴅ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ. :(", quote=True)
+        await message.reply_text("<b>ᴄᴏᴍᴍᴀɴᴅ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ. :(</b>", quote=True)
         return
 
     extracted = split_quotes(args[1])
     text = extracted[0].lower()
 
     if not message.reply_to_message and len(extracted) < 2:
-        await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ꜱᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ ᴛᴏ ꜱᴀᴠᴇ ʏᴏᴜʀ ꜰɪʟᴛᴇʀ!", quote=True)
+        await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ꜱᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ ᴛᴏ ꜱᴀᴠᴇ ʏᴏᴜʀ ꜰɪʟᴛᴇʀ!</b>", quote=True)
         return
 
     if (len(extracted) >= 2) and not message.reply_to_message:
         reply_text, btn, alert = parser(extracted[1])
         fileid = None
         if not reply_text:
-            await message.reply_text("ʏᴏᴜ ᴄᴀɴɴᴏᴛ ʜᴀᴠᴇ ʙᴜᴛᴛᴏɴꜱ ᴀʟᴏɴᴇ; ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ꜱᴏᴍᴇ ᴛᴇxᴛ ᴛᴏ ɢᴏ ᴡɪᴛʜ ᴛʜᴇᴍ!", quote=True)
+            await message.reply_text("<b>ʏᴏᴜ ᴄᴀɴɴᴏᴛ ʜᴀᴠᴇ ʙᴜᴛᴛᴏɴꜱ ᴀʟᴏɴᴇ; ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ꜱᴏᴍᴇ ᴛᴇxᴛ ᴛᴏ ɢᴏ ᴡɪᴛʜ ᴛʜᴇᴍ!</b>", quote=True)
             return
 
     elif message.reply_to_message and message.reply_to_message.reply_markup:
@@ -109,8 +109,7 @@ async def addfilter(client, message):
 
     await add_filter(grp_id, text, reply_text, btn, fileid, alert)
 
-    await message.reply_text(
-        f"ꜰɪʟᴛᴇʀ ꜰᴏʀ '{text}' ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ɪɴ {title}.",
+    await message.reply_text(f"<b>ꜰɪʟᴛᴇʀ ꜰᴏʀ '{text}' ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ɪɴ {title}.</b>",
         quote=True
     )
     
@@ -138,10 +137,10 @@ async def get_all(client, message):
                 chat = await client.get_chat(grpid)
                 title = chat.title
             except Exception:
-                await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!", quote=True)
+                await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
                 return
         else:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!", quote=True)
+            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
             return
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -209,10 +208,10 @@ async def deletefilter(client, message):
                 chat = await client.get_chat(grpid)
                 title = chat.title
             except Exception:
-                await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!", quote=True)
+                await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
                 return
         else:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!", quote=True)
+            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         grp_id = message.chat.id
@@ -233,8 +232,7 @@ async def deletefilter(client, message):
     try:
         cmd, text = message.text.split(" ", 1)
     except Exception:
-        await message.reply_text(
-            "<i>ᴘʟᴇᴀꜱᴇ ᴍᴇɴᴛɪᴏɴ ᴛʜᴇ ꜰɪʟᴛᴇʀ ɴᴀᴍᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ!</i>\n\n"
+        await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴇɴᴛɪᴏɴ ᴛʜᴇ ꜰɪʟᴛᴇʀ ɴᴀᴍᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ!\n\n</b>"
             "<code>/del filtername</code>\n\n"
             "ᴜꜱᴇ /viewfilters ᴛᴏ ᴠɪᴇᴡ ᴀʟʟ ᴀᴠᴀɪʟᴀʙʟᴇ ꜰɪʟᴛᴇʀꜱ.",
             quote=True
@@ -261,10 +259,10 @@ async def delallconfirm(client, message):
                 chat = await client.get_chat(grpid)
                 title = chat.title
             except Exception:
-                await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!", quote=True)
+                await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
                 return
         else:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!", quote=True)
+            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
             return
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -281,8 +279,7 @@ async def delallconfirm(client, message):
         is_owner = False
 
     if is_owner or is_admin(userid):
-        await message.reply_text(
-            f"ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ꜰɪʟᴛᴇʀꜱ ꜰʀᴏᴍ '{title}'.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?",
+        await message.reply_text(f"<b>ᴛʜɪꜱ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ꜰɪʟᴛᴇʀꜱ ꜰʀᴏᴍ '{title}'.\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ?</b>",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text="ʏᴇꜱ",callback_data="delallconfirm")],
                 [InlineKeyboardButton(text="ᴄᴀɴᴄᴇʟ",callback_data="delallcancel")]
