@@ -1608,13 +1608,15 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
 
                                 btn.append([InlineKeyboardButton("❌ ɴᴏɴᴇ ᴏғ ᴛʜᴇsᴇ? ʀᴇǫᴜᴇsᴛ ɪᴛ 📬", callback_data=f"spcheck#{name[:50]}")])
                     
-                    spell_check_msg = await message.reply_text(
-                        text=text,
-                        reply_markup=InlineKeyboardMarkup(btn) if btn else None
-                    )
-                    
-                    from utils import delayed_delete
-                    delayed_delete([spell_check_msg, message], 60)
+                    try:
+                        spell_check_msg = await message.reply_text(
+                            text=text,
+                            reply_markup=InlineKeyboardMarkup(btn) if btn else None
+                        )
+                        from utils import delayed_delete
+                        delayed_delete([spell_check_msg, message], 60)
+                    except Exception:
+                        pass
                     return
                 else:
                     if reply_msg:
