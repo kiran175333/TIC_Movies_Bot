@@ -43,6 +43,15 @@ class Database:
         )
 
 
+    async def add_req_group(self, id):
+        user = await self.col.find_one({'id': int(id)})
+        if user:
+            await self.col.update_one({'id': int(id)}, {'$set': {'req_group': True}})
+
+    async def has_req_group(self, id):
+        user = await self.col.find_one({'id': int(id)})
+        return user.get('req_group', False) if user else False
+
     def new_group(self, id, title):
         return dict(
             id = id,
