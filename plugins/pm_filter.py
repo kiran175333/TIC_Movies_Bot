@@ -572,27 +572,30 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         if query.message.media:
             # Came from /start (has photo), animate caption and swap media
-            await query.message.edit_caption(caption="● ◌ ◌")
+            try:
+                await query.message.edit_caption(caption="● ◌ ◌")
                 await asyncio.sleep(0.2)
-            await query.message.edit_caption(caption="● ● ◌")
+                await query.message.edit_caption(caption="● ● ◌")
                 await asyncio.sleep(0.2)
-            await query.message.edit_caption(caption="● ● ●")
+                await query.message.edit_caption(caption="● ● ●")
                 await asyncio.sleep(0.2)
+            except Exception:
+                pass
             await query.message.edit_media(
                 media=InputMediaPhoto(random.choice(PICS), caption=PAYMENT_TEXT),
                 reply_markup=reply_markup
             )
         else:
             # Came from /myplan (text only), animate text
-        try:
+            try:
                 await query.message.edit_text(text="● ◌ ◌")
                 await asyncio.sleep(0.2)
                 await query.message.edit_text(text="● ● ◌")
                 await asyncio.sleep(0.2)
                 await query.message.edit_text(text="● ● ●")
                 await asyncio.sleep(0.2)
-        except Exception:
-            pass
+            except Exception:
+                pass
             await query.message.edit_text(
                 text=PAYMENT_TEXT,
                 reply_markup=reply_markup,
@@ -1879,6 +1882,7 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
 
 
 
