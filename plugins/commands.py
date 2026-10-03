@@ -112,12 +112,12 @@ async def start(client, message):
             if AUTH_CHANNEL:
                 chat = await client.get_chat(int(AUTH_CHANNEL))
                 invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
-                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ⍟", url=invite_link)])
+                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)])
             
             if AUTH_GROUP:
                 chat_grp = await client.get_chat(int(AUTH_GROUP))
                 invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
-                btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ⍟", url=invite_link_grp)])
+                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=invite_link_grp)])
         except Exception as e:
             print(e)
             return
