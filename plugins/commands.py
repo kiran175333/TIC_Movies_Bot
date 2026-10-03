@@ -46,6 +46,8 @@ async def save_group(bot, message):
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    if not message.from_user:
+        return
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [
             [
