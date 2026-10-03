@@ -1016,8 +1016,11 @@ async def recent_uploads(client, message):
             if movie_match:
                 base_title = movie_match.group(1).strip()
             else:
-                base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub)", clean_name)[0].strip()
+                base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub|mkv|mp4|avi|m4v|webm|flv)", clean_name)[0].strip()
                 base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
+            
+            # Fix broken hanging years/parentheses caused by Telegram's 64-char limit
+            base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
             
             lang_bracket = re.search(r"\[(.*?)\]", name)
             if lang_bracket:
