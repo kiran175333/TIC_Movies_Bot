@@ -118,6 +118,10 @@ async def start(client, message):
                 chat_grp = await client.get_chat(int(AUTH_GROUP))
                 invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
                 btn.append([InlineKeyboardButton("⍟ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ⍟", url=invite_link_grp)])
+        except Exception as e:
+            print(e)
+            return
+        try:
             if len(message.command) > 1 and message.command[1] != "subscribe":
                 try:
                     kk, file_id = message.command[1].split("_", 1)
@@ -125,7 +129,7 @@ async def start(client, message):
                 except (IndexError, ValueError):
                     btn.append([InlineKeyboardButton("↻ ᴛʀʏ ᴀɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
             
-            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
+            text = "<b>ʏᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴜꜱ ꜰɪʀꜱᴛ, ᴛʜᴇɴ ᴛʀʏ ᴀɢᴀɪɴ.</b>"
             await client.send_message(
                 chat_id=message.from_user.id,
                 text=text,
