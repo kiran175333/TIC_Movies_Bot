@@ -22,7 +22,7 @@ async def addconnection(client, message):
             await message.reply_text(
                 "<b>ᴘʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ꜰᴏʀᴍᴀᴛ!</b>\n\n"
                 "<code>/connect groupid</code>\n\n"
-                "<i>ɢᴇᴛ ʏᴏᴜʀ ɢʀᴏᴜᴘ ɪᴅ ʙʏ ᴀᴅᴅɪɴɢ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ꜱᴇɴᴅɪɴɢ <code>/id</code>.</i>",
+                "<b>ɢᴇᴛ ʏᴏᴜʀ ɢʀᴏᴜᴘ ɪᴅ ʙʏ ᴀᴅᴅɪɴɢ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ꜱᴇɴᴅɪɴɢ <code>/id</code>.</b>",
                 quote=True
             )
             return
@@ -34,13 +34,12 @@ async def addconnection(client, message):
         st = await client.get_chat_member(group_id, userid)
         is_chat_admin = st.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
         if not is_chat_admin and not is_admin(userid):
-            await message.reply_text("ʏᴏᴜ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ꜱᴘᴇᴄɪꜰɪᴇᴅ ɢʀᴏᴜᴘ!", quote=True)
+            await message.reply_text("<b>ʏᴏᴜ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ꜱᴘᴇᴄɪꜰɪᴇᴅ ɢʀᴏᴜᴘ!</b>", quote=True)
             return
     except Exception as e:
         if not is_admin(userid):
             logger.exception(e)
-            await message.reply_text(
-                "ɪɴᴠᴀʟɪᴅ ɢʀᴏᴜᴘ ɪᴅ!\n\nɪꜰ ᴛʜᴇ ɪᴅ ɪꜱ ᴄᴏʀʀᴇᴄᴛ, ᴘʟᴇᴀꜱᴇ ᴇɴꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ.",
+            await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ɢʀᴏᴜᴘ ɪᴅ!\n\nɪꜰ ᴛʜᴇ ɪᴅ ɪꜱ ᴄᴏʀʀᴇᴄᴛ, ᴘʟᴇᴀꜱᴇ ᴇɴꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ.</b>",
                 quote=True,
             )
             return
@@ -62,15 +61,14 @@ async def addconnection(client, message):
                         f"ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ <b>{title}</b>!"
                     )
             else:
-                await message.reply_text(
-                    "ʏᴏᴜ ᴀʀᴇ ᴀʟʀᴇᴀᴅʏ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴛʜɪꜱ ᴄʜᴀᴛ!",
+                await message.reply_text("<b>ʏᴏᴜ ᴀʀᴇ ᴀʟʀᴇᴀᴅʏ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴛʜɪꜱ ᴄʜᴀᴛ!</b>",
                     quote=True
                 )
         else:
-            await message.reply_text("ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴍᴇ ᴀꜱ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.", quote=True)
+            await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴍᴇ ᴀꜱ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.</b>", quote=True)
     except Exception as e:
         logger.exception(e)
-        await message.reply_text('ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.', quote=True)
+        await message.reply_text('<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.</b>', quote=True)
         pass
         
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -88,7 +86,7 @@ async def deleteconnection(client, message):
     chat_type = message.chat.type
 
     if chat_type == enums.ChatType.PRIVATE:
-        await message.reply_text("ꜱᴇɴᴅ /connections ᴛᴏ ᴠɪᴇᴡ ᴏʀ ᴅɪꜱᴄᴏɴɴᴇᴄᴛ ꜰʀᴏᴍ ʏᴏᴜʀ ɢʀᴏᴜᴘꜱ!", quote=True)
+        await message.reply_text("<b>ꜱᴇɴᴅ /connections ᴛᴏ ᴠɪᴇᴡ ᴏʀ ᴅɪꜱᴄᴏɴɴᴇᴄᴛ ꜰʀᴏᴍ ʏᴏᴜʀ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         group_id = message.chat.id
@@ -104,9 +102,9 @@ async def deleteconnection(client, message):
 
         delcon = await delete_connection(str(userid), str(group_id))
         if delcon:
-            await message.reply_text("ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅɪꜱᴄᴏɴɴᴇᴄᴛᴇᴅ ꜰʀᴏᴍ ᴛʜɪꜱ ᴄʜᴀᴛ.", quote=True)
+            await message.reply_text("<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅɪꜱᴄᴏɴɴᴇᴄᴛᴇᴅ ꜰʀᴏᴍ ᴛʜɪꜱ ᴄʜᴀᴛ.</b>", quote=True)
         else:
-            await message.reply_text("ᴛʜɪꜱ ᴄʜᴀᴛ ɪꜱ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴍᴇ!\nꜱᴇɴᴅ /connect ᴛᴏ ᴇꜱᴛᴀʙʟɪꜱʜ ᴀ ᴄᴏɴɴᴇᴄᴛɪᴏɴ.", quote=True)
+            await message.reply_text("<b>ᴛʜɪꜱ ᴄʜᴀᴛ ɪꜱ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴍᴇ!\nꜱᴇɴᴅ /connect ᴛᴏ ᴇꜱᴛᴀʙʟɪꜱʜ ᴀ ᴄᴏɴɴᴇᴄᴛɪᴏɴ.</b>", quote=True)
 
 @Client.on_message(filters.private & filters.command(["connections"]))
 async def connections(client, message):
@@ -114,8 +112,7 @@ async def connections(client, message):
 
     groupids = await all_connections(str(userid))
     if groupids is None:
-        await message.reply_text(
-            "ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.",
+        await message.reply_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.</b>",
             quote=True
         )
         return
@@ -136,13 +133,11 @@ async def connections(client, message):
         except Exception:
             pass
     if buttons:
-        await message.reply_text(
-            "ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n",
+        await message.reply_text("<b>ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n</b>",
             reply_markup=InlineKeyboardMarkup(buttons),
             quote=True
         )
     else:
-        await message.reply_text(
-            "ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.",
+        await message.reply_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.</b>",
             quote=True
         )
