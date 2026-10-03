@@ -98,19 +98,36 @@ async def pub_is_subscribed(bot, query, channel):
     return btn
 
 async def is_subscribed(bot, query):
-    if not AUTH_CHANNEL:
+    if not AUTH_CHANNEL and not AUTH_GROUP:
         return True
-    try:
-        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
-    except UserNotParticipant:
-        pass
-    except Exception as e:
-        logger.exception(e)
-        return True
-    else:
-        if user.status != enums.ChatMemberStatus.BANNED:
+    
+    if AUTH_CHANNEL:
+        try:
+            user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+            if user.status == enums.ChatMemberStatus.BANNED:
+                return False
+        except UserNotParticipant:
+            return False
+        except Exception as e:
+            logger.exception(e)
             return True
-    return False
+
+    if AUTH_GROUP:
+        from database.users_chats_db import db
+        if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
+            pass 
+        else:
+            try:
+                user = await bot.get_chat_member(AUTH_GROUP, query.from_user.id)
+                if user.status == enums.ChatMemberStatus.BANNED:
+                    return False
+            except UserNotParticipant:
+                return False
+            except Exception as e:
+                logger.exception(e)
+                return True
+            
+    return True
 
 async def broadcast_messages(user_id, message):
     for _ in range(3):
