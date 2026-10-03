@@ -91,6 +91,12 @@ CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHAN
 auth_channel = environ.get('AUTH_CHANNEL', '').strip() # give your force subscribe channel id here else leave it blank
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 
+auth_group = environ.get('AUTH_GROUP', '').strip()
+AUTH_GROUP = int(auth_group) if auth_group and id_pattern.search(auth_group) else None
+
+req_to_join = environ.get('REQ_TO_JOIN', 'True').lower()
+REQ_TO_JOIN = req_to_join == 'true'
+
 # This Channel Is For Index Request 
 idx_channel = environ.get('INDEX_REQ_CHANNEL', '').strip()
 INDEX_REQ_CHANNEL = int(idx_channel) if id_pattern.search(idx_channel) else LOG_CHANNEL
