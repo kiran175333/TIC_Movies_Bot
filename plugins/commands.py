@@ -5,7 +5,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files, get_trending_searches
 from database.users_chats_db import db
-from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
+from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds)
 from database.connections_mdb import active_connection
 
@@ -39,10 +39,14 @@ async def save_group(bot, message):
             ]
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await message.reply_text(
-            text=f"<b>ᴛʜᴀɴᴋʏᴏᴜ ꜰᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {message.chat.title}</b>",
-            reply_markup=reply_markup
-        )
+        try:
+            await message.reply_text(
+                text=f"<b>ᴛʜᴀɴᴋʏᴏᴜ ꜰᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {message.chat.title}</b>",
+                reply_markup=reply_markup
+            )
+        except Exception:
+            pass
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
