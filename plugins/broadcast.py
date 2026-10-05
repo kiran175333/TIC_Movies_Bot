@@ -13,7 +13,7 @@ async def run_pm_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "running"
     users = await db.get_all_users()
     total_users = await db.total_users_count()
-    done, blocked, deleted, failed, success = 0, 0, 0, 0, 0
+    done, failed, success = 0, 0, 0
     start_time = time.time()
     
     btn = [[
@@ -35,12 +35,7 @@ async def run_pm_broadcast(b_msg, sts):
             if pti:
                 success += 1
             elif pti == False:
-                if sh == "Blocked":
-                    blocked += 1
-                elif sh == "Deleted":
-                    deleted += 1
-                elif sh == "Error":
-                    failed += 1
+                failed += 1
         done += 1
         
         if not done % 20:
@@ -48,7 +43,7 @@ async def run_pm_broadcast(b_msg, sts):
                 # Update UI only if running
                 if BROADCAST_STATE["status"] == "running":
                     await sts.edit(
-                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nʙʟᴏᴄᴋᴇᴅ: {blocked} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄᴏᴜɴᴛꜱ: {deleted} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nꜰᴀɪʟᴇᴅ: {failed}",
+                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)",
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
             except Exception:
@@ -58,7 +53,7 @@ async def run_pm_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nʙʟᴏᴄᴋᴇᴅ: {blocked} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nᴅᴇʟᴇᴛᴇᴅ: {deleted} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)")
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)")
 
 
 async def run_grp_broadcast(b_msg, sts):
@@ -83,7 +78,7 @@ async def run_grp_broadcast(b_msg, sts):
         pti, sh = await broadcast_messages_group(int(group['id']), b_msg)
         if pti:
             success += 1
-        elif sh == "Error":
+        elif pti == False:
             failed += 1
         done += 1
         
@@ -91,7 +86,7 @@ async def run_grp_broadcast(b_msg, sts):
             try:
                 if BROADCAST_STATE["status"] == "running":
                     await sts.edit(
-                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed}",
+                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)",
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
             except Exception:
@@ -101,7 +96,7 @@ async def run_grp_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed}")
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)")
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
