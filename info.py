@@ -97,9 +97,6 @@ AUTH_GROUP = int(auth_group) if auth_group and id_pattern.search(auth_group) els
 req_to_join = environ.get('REQ_TO_JOIN', 'True').lower()
 REQ_TO_JOIN = req_to_join == 'true'
 
-# This Channel Is For Index Request 
-idx_channel = environ.get('INDEX_REQ_CHANNEL', '').strip()
-INDEX_REQ_CHANNEL = int(idx_channel) if id_pattern.search(idx_channel) else LOG_CHANNEL
 
 # MongoDB Configuration
 # DATABASE_URI is required. No localhost fallback — a missing URI must be caught at startup.
@@ -131,7 +128,7 @@ SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/TICSupportBot')
 PM_SEARCH = is_enabled(environ.get('PM_SEARCH', True), True)
 BUTTON_MODE = is_enabled(environ.get('BUTTON_MODE', True), True)
 MAX_BTN = is_enabled(environ.get('MAX_BTN', True), True)
-AUTO_FFILTER = is_enabled(environ.get('AUTO_FFILTER', True), True)
+AUTO_FILTER = is_enabled(environ.get('AUTO_FFILTER', True), True)
 AUTO_DELETE = is_enabled(environ.get('AUTO_DELETE', True), True)
 USE_CAPTION_FILTER = is_enabled(environ.get('USE_CAPTION_FILTER', True), True)
 
