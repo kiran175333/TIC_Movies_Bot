@@ -2,7 +2,7 @@ import re
 import logging
 from pymongo.errors import DuplicateKeyError
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FFILTER
+from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FILTER
 import time
 import datetime
 
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 default_setgs = {
     'button': BUTTON_MODE,
     'auto_delete': AUTO_DELETE,
-    'auto_ffilter': AUTO_FFILTER,
+    'auto_ffilter': AUTO_FILTER,
     'max_btn': MAX_BTN,
     'caption': CUSTOM_FILE_CAPTION,
     'fsub': None
