@@ -26,7 +26,6 @@ class Database:
         self.grp = self.db.groups
         self.users = self.col  # Single user storage model; eliminate uersz typo collection
         self.delete_col = self.db.delayed_deletes
-        self.bot_setgs = self.db.bot_settings  # New collection for global bot config
 
     def new_user(self, id, name):
         return dict(
@@ -307,18 +306,5 @@ class Database:
             await self.delete_col.delete_one({'_id': doc_id})
         except Exception as e:
             logger.error("remove_delete: database error: %s", e)
-
-    async def get_pm_search_status(self):
-        config = await self.bot_setgs.find_one({'_id': 'bot_config'})
-        if config:
-            return config.get('pm_search_enabled', True)
-        return True
-        
-    async def update_pm_search_status(self, status: bool):
-        await self.bot_setgs.update_one(
-            {'_id': 'bot_config'}, 
-            {'$set': {'pm_search_enabled': status}}, 
-            upsert=True
-        )
 
 db = Database(DATABASE_URI, DATABASE_NAME)
