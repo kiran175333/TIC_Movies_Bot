@@ -1090,6 +1090,7 @@ async def premium_users_list(client, message):
     text = f"<b>🌟 <u>ᴀᴄᴛɪᴠᴇ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ</u></b>\n\n<b>ᴛᴏᴛᴀʟ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ: {count}</b>\n\n"
     
     i = 0
+    messages = []
     async for user in premium_users:
         i += 1
         user_id = user.get('id', 'Unknown')
@@ -1099,20 +1100,16 @@ async def premium_users_list(client, message):
         # Username is now wrapped in a clickable profile link:
         text += f"<b>{i}. ᴜsᴇʀɴᴀᴍᴇ: <a href='tg://user?id={user_id}'>{name}</a></b>\n<b>ɪᴅ:</b> <code>{user_id}</code>\n<b>ᴇxᴘɪʀᴇꜱ:</b> <code>{expiry}</code>\n\n"
         
-    if True:
-        
-        # Telegram has a 4096 character limit per message, handle if list is too long
-        if len(text) > 4000:
-            with open("premium_users.txt", "w", encoding="utf-8") as f:
-                f.write(text.replace("<b>", "").replace("</b>", "").replace("<code>", "").replace("</code>", "").replace("🌟", "").replace("<u>", "").replace("</u>", ""))
-            await message.reply_document("premium_users.txt", caption="<b>🌟 sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ ʟɪꜱᴛ</b>")
-            try:
-                os.remove("premium_users.txt")
-            except Exception:
-                pass
-            await msg.delete()
-        else:
-            await msg.edit_text(text)
+        if i % 15 == 0:
+            messages.append(text)
+            text = ""
+    
+    if text:
+        messages.append(text)
+    
+    await msg.delete()
+    for chunk in messages:
+        await message.reply_text(chunk)
 
 
 # --- GROUP /REQUEST WARNING BLOCK ---
