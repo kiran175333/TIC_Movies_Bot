@@ -65,6 +65,7 @@ async def start(client, message):
             script.GRP_START_TXT.format(message.from_user.mention if message.from_user else message.chat.title), 
             reply_markup=reply_markup, 
             disable_web_page_preview=True
+            quote=False
         )
         
         if not await db.get_chat(message.chat.id):
