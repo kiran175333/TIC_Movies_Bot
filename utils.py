@@ -576,10 +576,10 @@ async def get_spell_check(query):
                 text = await response.text()
                 
                 # IMDb returns JSONP format: imdb$query({"d": [...]})
-                start = text.find('(')
-                end = text.rfind(')')
+                start = text.find('{')
+                end = text.rfind('}')
                 if start != -1 and end != -1:
-                    data = json.loads(text[start+1:end])
+                    data = json.loads(text[start:end+1])
                     suggestions = []
                     
                     for item in data.get("d", []):
