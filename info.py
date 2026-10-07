@@ -125,7 +125,6 @@ CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/TheInsomniacsClub')
 SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/TICSupportBot')
 
 # True Or False
-PM_SEARCH = is_enabled(environ.get('PM_SEARCH', True), True)
 BUTTON_MODE = is_enabled(environ.get('BUTTON_MODE', True), True)
 MAX_BTN = is_enabled(environ.get('MAX_BTN', True), True)
 AUTO_FILTER = is_enabled(environ.get('AUTO_FFILTER', True), True)
