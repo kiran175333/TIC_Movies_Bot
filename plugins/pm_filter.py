@@ -956,7 +956,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             btn = await pub_is_subscribed(client, query, settings['fsub'])
             if btn:
-                await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴛʜᴇ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ' ʙᴜᴛᴛᴏɴ.", show_alert=True)
+                await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ' ʙᴜᴛᴛᴏɴ.", show_alert=True)
             else:
                 await client.unban_chat_member(query.message.chat.id, user_id)
                 await query.answer("ᴜɴᴍᴜᴛᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ", show_alert=True)
