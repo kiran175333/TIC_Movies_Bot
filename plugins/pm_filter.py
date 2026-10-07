@@ -77,6 +77,25 @@ async def give_filter(client, message):
                 ai_search = True
                 await auto_filter(client, message.text, message, None, ai_search)
                 
+
+@Client.on_message(filters.command("pm_search") & filters.user(ADMINS))
+async def toggle_pm_search(bot, message):
+    if len(message.command) == 1:
+        current_status = await db.get_pm_search_status()
+        state = "ᴏɴ" if current_status else "ᴏғғ"
+        return await message.reply_text(f"<b>ᴄᴜʀʀᴇɴᴛ ᴘᴍ ꜱᴇᴀʀᴄʜ ꜱᴛᴀᴛᴜꜱ: {state}\n\nᴜꜱᴇ `/pm_search on` ᴏʀ `/pm_search off` ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛ.</b>")
+    
+    cmd = message.command[1].lower()
+    if cmd == "on":
+        await db.update_pm_search_status(True)
+        await message.reply_text("<b>✅ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴇɴᴀʙʟᴇᴅ ғᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ.</b>")
+    elif cmd == "off":
+        await db.update_pm_search_status(False)
+        await message.reply_text("<b>❌ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
+    else:
+        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ. ᴜꜱᴇ `on` ᴏʀ `off`.</b>")
+    
+
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_text(bot, message):
     content = message.text
@@ -117,23 +136,8 @@ async def pm_text(bot, message):
             ])
         )
     
-@Client.on_message(filters.command("pm_search") & filters.user(ADMINS))
-async def toggle_pm_search(bot, message):
-    if len(message.command) == 1:
-        current_status = await db.get_pm_search_status()
-        state = "ᴏɴ" if current_status else "ᴏғғ"
-        return await message.reply_text(f"<b>ᴄᴜʀʀᴇɴᴛ ᴘᴍ ꜱᴇᴀʀᴄʜ ꜱᴛᴀᴛᴜꜱ: {state}\n\nᴜꜱᴇ `/pm_search on` ᴏʀ `/pm_search off` ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛ.</b>")
-    
-    cmd = message.command[1].lower()
-    if cmd == "on":
-        await db.update_pm_search_status(True)
-        await message.reply_text("<b>✅ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴇɴᴀʙʟᴇᴅ ғᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ.</b>")
-    elif cmd == "off":
-        await db.update_pm_search_status(False)
-        await message.reply_text("<b>❌ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
-    else:
-        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ. ᴜꜱᴇ `on` ᴏʀ `off`.</b>")
-    
+
+
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
     try:
@@ -588,10 +592,24 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception:
             pass
         
+    elif query.data == "pmsearch_back":
+        await query.message.edit_text(
+            "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ꜰᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ᴏʀ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖", url=GRP_LNK)],
+                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
+            ])
+        )
+
     elif query.data.startswith("buy_premium"):
         # Check if the user came from the text-only /myplan command
         is_myplan = query.data == "buy_premium_myplan"
-        back_callback = "myplan_back" if is_myplan else "start"
+        if is_myplan:
+            back_callback = "myplan_back"
+        elif not query.message.media:
+            back_callback = "pmsearch_back"
+        else:
+            back_callback = "start"
         
         buttons = [
             [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
@@ -1350,11 +1368,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await asyncio.sleep(0.2)
         except Exception:
             pass
-        await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
-        )
+        try:
+            await client.edit_message_media(
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))
+            )
+        except Exception:
+            pass
         await query.message.edit_text(
             text=script.START_TXT.format(query.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
@@ -1913,15 +1934,3 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
-
-
-
-
-
-
-
-
-
-
-
-
