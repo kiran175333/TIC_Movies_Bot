@@ -53,7 +53,7 @@ async def give_filter(client, message):
                 await client.restrict_chat_member(chatid, message.from_user.id, ChatPermissions(can_send_messages=False))
                 await message.reply_photo(
                     photo=random.choice(PICS), 
-                    caption=f"ʜᴇʟʟᴏ {message.from_user.mention},\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ ᴍᴇ' ʙᴜᴛᴛᴏɴ.", 
+                    caption=f"ʜᴇʟʟᴏ {message.from_user.mention},\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ ᴍᴇ' ʙᴜᴛᴛᴏɴ.", 
                     reply_markup=InlineKeyboardMarkup(btn), 
                     parse_mode=enums.ParseMode.HTML
                 )
@@ -95,7 +95,10 @@ async def pm_text(bot, message):
     if len(content) > 80:
         return
         
-    if PM_SEARCH:
+    pm_search_enabled = await db.get_pm_search_status()
+    is_premium = await db.has_premium_access(message.from_user.id)
+
+    if pm_search_enabled or is_premium:
         ai_search = True
         # Clamp button text to 25 chars to prevent Telegram 64-byte button limits
         btn_label = content if len(content) <= 25 else f"{content[:22]}..."
@@ -104,6 +107,32 @@ async def pm_text(bot, message):
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(f'sᴇᴀʀᴄʜɪɴɢ ғᴏʀ {btn_label}', url=CHNL_LNK)]])
         )
         await auto_filter(bot, content, message, reply_msg, ai_search)
+    else:
+        # Block normal users when OFF
+        await message.reply_text(
+            "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ғᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ᴏʀ ɢᴇᴛ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
+                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
+            ])
+        )
+    
+@Client.on_message(filters.command("pm_search") & filters.user(ADMINS))
+async def toggle_pm_search(bot, message):
+    if len(message.command) == 1:
+        current_status = await db.get_pm_search_status()
+        state = "ᴏɴ" if current_status else "ᴏғғ"
+        return await message.reply_text(f"<b>ᴄᴜʀʀᴇɴᴛ ᴘᴍ ꜱᴇᴀʀᴄʜ ꜱᴛᴀᴛᴜꜱ: {state}\n\nᴜꜱᴇ `/pm_search on` ᴏʀ `/pm_search off` ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛ.</b>")
+    
+    cmd = message.command[1].lower()
+    if cmd == "on":
+        await db.update_pm_search_status(True)
+        await message.reply_text("<b>✅ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴇɴᴀʙʟᴇᴅ ғᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ.</b>")
+    elif cmd == "off":
+        await db.update_pm_search_status(False)
+        await message.reply_text("<b>❌ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
+    else:
+        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ. ᴜꜱᴇ `on` ᴏʀ `off`.</b>")
     
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
@@ -965,7 +994,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data.startswith("checksub"):
         if (AUTH_CHANNEL or AUTH_GROUP) and not await is_subscribed(client, query):
-            await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ", show_alert=True)
+            await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ", show_alert=True)
             return
         try:
             ident, kk, file_id = query.data.split("#")
@@ -1884,6 +1913,9 @@ async def process_auto_settings(client, message, joelkb, settings):
                 await joelkb.delete()
     except Exception as e:
         logger.error(f"Error in process_auto_settings: {e}")
+
+
+
 
 
 
