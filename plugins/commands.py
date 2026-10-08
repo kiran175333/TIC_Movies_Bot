@@ -5,7 +5,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files, get_trending_searches
 from database.users_chats_db import db
-from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
+from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds)
 from database.connections_mdb import active_connection
 
@@ -115,13 +115,33 @@ async def start(client, message):
     
     if (AUTH_CHANNEL or AUTH_GROUP) and not await is_subscribed(client, message):
         try:
-            btn = []
+            in_channel = True
+            in_group = True
             if AUTH_CHANNEL:
+                try:
+                    member = await client.get_chat_member(AUTH_CHANNEL, message.from_user.id)
+                    if member.status == enums.ChatMemberStatus.BANNED:
+                        in_channel = False
+                except Exception:
+                    in_channel = False
+            
+            if AUTH_GROUP:
+                if REQ_TO_JOIN and await db.has_req_group(message.from_user.id):
+                    pass
+                else:
+                    try:
+                        member = await client.get_chat_member(AUTH_GROUP, message.from_user.id)
+                        if member.status == enums.ChatMemberStatus.BANNED:
+                            in_group = False
+                    except Exception:
+                        in_group = False
+            btn = []
+            if AUTH_CHANNEL and not in_channel:
                 chat = await client.get_chat(int(AUTH_CHANNEL))
                 invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
                 btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)])
             
-            if AUTH_GROUP:
+            if AUTH_GROUP and not in_group:
                 chat_grp = await client.get_chat(int(AUTH_GROUP))
                 invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
                 btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=invite_link_grp)])
