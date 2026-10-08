@@ -1011,15 +1011,61 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start=file_{file_id}")
     
     elif query.data.startswith("checksub"):
-        if (AUTH_CHANNEL or AUTH_GROUP) and not await is_subscribed(client, query):
-            await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ", show_alert=True)
-            return
         try:
             ident, kk, file_id = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        await query.answer(url=f"https://t.me/{temp.U_NAME}?start={kk}_{file_id}")
-    
+            return await query.answer("Error", show_alert=True)
+
+        in_channel = True
+        in_group = True
+
+        if AUTH_CHANNEL:
+            try:
+                member = await client.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+                if member.status == enums.ChatMemberStatus.BANNED:
+                    in_channel = False
+            except UserNotParticipant:
+                in_channel = False
+            except Exception:
+                pass
+
+        if AUTH_GROUP:
+            if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
+                pass
+            else:
+                try:
+                    member = await client.get_chat_member(AUTH_GROUP, query.from_user.id)
+                    if member.status == enums.ChatMemberStatus.BANNED:
+                        in_group = False
+                except UserNotParticipant:
+                    in_group = False
+                except Exception:
+                    pass
+
+        if not in_channel or not in_group:
+            btn = []
+            if AUTH_CHANNEL and not in_channel:
+                chat = await client.get_chat(int(AUTH_CHANNEL))
+                invite_link = chat.invite_link or (await client.create_chat_invite_link(int(AUTH_CHANNEL))).invite_link
+                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪", url=invite_link)])
+            if AUTH_GROUP and not in_group:
+                chat_grp = await client.get_chat(int(AUTH_GROUP))
+                invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
+                btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=invite_link_grp)])
+            btn.append([InlineKeyboardButton("↻ ᴛʀʏ ᴀɢᴀɪɴ ↻", callback_data=f"checksub#{kk}#{file_id}")])
+            try:
+                await query.message.edit_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
+            except MessageNotModified:
+                pass
+            await query.answer()
+            return
+
+        await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={kk}_{file_id}")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
     elif query.data == "pages":
         await query.answer()
     
