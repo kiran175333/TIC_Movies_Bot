@@ -1119,7 +1119,7 @@ async def recent_uploads(client, message):
             slug = make_search_slug(data['title'])
             safe_base = data['title'].replace('<', '&lt;').replace('>', '&gt;')
             
-            formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
+            formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
             unique_titles.append(formatted_string)
 
         if not unique_titles:
