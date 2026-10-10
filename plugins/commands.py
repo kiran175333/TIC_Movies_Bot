@@ -357,7 +357,7 @@ async def start(client, message):
                     await message.reply_text("<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.</b>")
                     return
                 btn = [[
-                    InlineKeyboardButton("  ᴠᴇʀɪꜰʏ  ", url=verify_link)
+                    InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
                 ],[
                     InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
                 ]]
