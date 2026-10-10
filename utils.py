@@ -60,6 +60,7 @@ class temp(object):
     U_NAME = None
     B_NAME = None
     SHORT = TTLCache(maxsize=2000, ttl=3600)
+    SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
     SETTINGS = TTLCache(maxsize=500, ttl=3600)
     ALERTS = TTLCache(maxsize=2000, ttl=3600)
 
@@ -110,7 +111,7 @@ async def is_subscribed(bot, query):
             return False
         except Exception as e:
             logger.exception(e)
-            return True
+            return False
 
     if AUTH_GROUP:
         from database.users_chats_db import db
@@ -125,7 +126,7 @@ async def is_subscribed(bot, query):
                 return False
             except Exception as e:
                 logger.exception(e)
-                return True
+                return False
             
     return True
 
