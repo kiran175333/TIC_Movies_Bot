@@ -1,4 +1,4 @@
-import os, logging, random, asyncio, time, datetime, re, sys, base64
+import os, logging, random, uuid, asyncio, time, datetime, re, sys, base64
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
