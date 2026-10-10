@@ -1,4 +1,4 @@
-import os, logging, random, uuid, asyncio, time, datetime, re, sys, base64
+import os, logging, random, asyncio, time, datetime, re, sys, base64
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
@@ -188,16 +188,6 @@ async def start(client, message):
         return 
     
     data = message.command[1]
-    is_token_verified = False
-    if data.startswith("t_"):
-        token = data.split("_", 1)[1]
-        if token not in temp.SHORT_TOKEN_STORE:
-            return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ᴀʟʀᴇᴀᴅʏ ʙᴇᴇɴ ᴜꜱᴇᴅ! ᴘʟᴇᴀꜱᴇ ɢᴇɴᴇʀᴀᴛᴇ ᴀ ɴᴇᴡ ʟɪɴᴋ ꜰʀᴏᴍ ᴛʜᴇ ʙᴏᴛ.</b>")
-        payload = temp.SHORT_TOKEN_STORE.pop(token)
-        if payload["user"] != message.from_user.id:
-            return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴅᴏᴇꜱ ɴᴏᴛ ʙᴇʟᴏɴɢ ᴛᴏ ʏᴏᴜ!</b>")
-        data = payload["data"]
-        is_token_verified = True
 
     if data == "plan":
         await plans_cmd_handler(client, message)
@@ -253,45 +243,13 @@ async def start(client, message):
             return # <--- This stops the bot from crashing here
         else:
             return await message.reply_text(text="<b>ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.</b>")
-
-
-
-    elif data.startswith("getlink_"):
-        user = message.from_user.id
-        pre = 'file'
-        try:
-            _, file_id = data.split('_', 1)
-        except Exception:
-            return
-        
-        if SHORTLINK_MODE and not await db.has_premium_access(user):
-            token = str(uuid.uuid4())
-            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
-            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
-            if not g:
-                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ꜰᴇᴡ.</b>"
-                return await message.reply_text(error_msg)
-            btn = [[InlineKeyboardButton('▼ ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ ▼', url=g)]]
-            if TUTORIAL:
-                btn.append([InlineKeyboardButton('❓ ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ❓', url=TUTORIAL)])
-                
-            text = "<b>Hᴇʏ {},\n\nYᴏᴜʀ Fɪʟᴇs ᴀʀᴇ ʀᴇᴀᴅʏ.\n\nKɪɴᴅʟʏ ᴄʟɪᴄᴋ ᴏɴ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ ʟɪɴᴋ.\n\n</b>"
-            if PREMIUM_MODE == True:
-                text += "<b>Iғ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇs ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ᴀɴʏ ʟɪɴᴋs ᴏʀ ᴀᴅs, ᴛʜᴇɴ ʙᴜʏ ᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴ.\n\nSᴇɴᴅ /plan ᴛᴏ ᴋɴᴏᴡ ᴀʙᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴs.</b>"
             
-            return await message.reply_text(
-                text.format(message.from_user.mention),
-                reply_markup=InlineKeyboardMarkup(btn)
-            )
-        else:
-            is_token_verified = True
 
+        
     elif data.startswith("short"):
         user = message.from_user.id
         pre = 'file'
-        token = str(uuid.uuid4())
-        temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
-        g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
+        g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
         
         if not g:
             error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
@@ -316,9 +274,7 @@ async def start(client, message):
         user = message.from_user.id
         pre = 'file'
         if SHORTLINK_MODE and not await db.has_premium_access(user):
-            token = str(uuid.uuid4())
-            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
-            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
+            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
             
             if not g:
                 error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
