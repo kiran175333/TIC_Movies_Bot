@@ -1027,7 +1027,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except UserNotParticipant:
                 in_channel = False
             except Exception:
-                pass
+                in_channel = False
 
         if AUTH_GROUP:
             if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
@@ -1040,7 +1040,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 except UserNotParticipant:
                     in_group = False
                 except Exception:
-                    pass
+                    in_group = False
 
         if not in_channel or not in_group:
             btn = []
@@ -1781,7 +1781,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
         cap += "\n\n"
         for file in files:
             safe_name = clean_filename(file['file_name']).replace('<', '&lt;').replace('>', '&gt;')
-            cap += f"📂 <a href='https://telegram.me/{temp.U_NAME}?start=file_{file['file_id']}'>"
+            cap += f"📂 <a href='https://telegram.me/{temp.U_NAME}?start=getlink_{file['file_id']}'>"
             cap += f"[{get_size(file['file_size'])}] {safe_name}</a>\n\n"
             
     # Make sure you DELETE the old `cap += warn_text` that was underneath this block!
