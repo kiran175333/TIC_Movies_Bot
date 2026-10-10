@@ -1087,24 +1087,15 @@ async def recent_uploads(client, message):
             langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
             lang_set = set(l.capitalize() for l in langs_found)
             
-            season_num = None
-            series_match = re.search(r"(?i)(.*?)\s*S(\d{1,2})(?:E\d{1,2})?\b", clean_name)
-            if series_match:
-                base_title = series_match.group(1).strip()
-                season_num = series_match.group(2).zfill(2)
-                unique_key = f"{base_title.lower()} s{season_num}"
-                is_series = True
+            movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
+            if movie_match:
+                base_title = movie_match.group(1).strip()
             else:
-                movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
-                if movie_match:
-                    base_title = movie_match.group(1).strip()
-                else:
-                    base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub|mkv|mp4|avi|m4v|webm|flv)", clean_name)[0].strip()
-                    base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
-                
-                base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
-                unique_key = base_title.lower()
-                is_series = False
+                base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub|mkv|mp4|avi|m4v|webm|flv)", clean_name)[0].strip()
+                base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
+            
+            base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
+            unique_key = base_title.lower()
                 
             if not unique_key:
                 continue
@@ -1112,9 +1103,7 @@ async def recent_uploads(client, message):
             if unique_key not in merged_titles:
                 merged_titles[unique_key] = {
                     'title': base_title,
-                    'season': season_num,
-                    'langs': lang_set,
-                    'is_series': is_series
+                    'langs': lang_set
                 }
                 ordered_keys.append(unique_key)
             else:
@@ -1127,17 +1116,10 @@ async def recent_uploads(client, message):
         for key in ordered_keys:
             data = merged_titles[key]
             lang_str = f" [{' '.join(sorted(data['langs']))}]" if data['langs'] else ""
+            slug = make_search_slug(data['title'])
+            safe_base = data['title'].replace('<', '&lt;').replace('>', '&gt;')
             
-            if data['is_series']:
-                raw_string = f"{data['title']} S{data['season']}"
-                slug = make_search_slug(raw_string)
-                safe_raw = raw_string.replace('<', '&lt;').replace('>', '&gt;')
-                formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_raw}</a>{lang_str}"
-            else:
-                slug = make_search_slug(data['title'])
-                safe_base = data['title'].replace('<', '&lt;').replace('>', '&gt;')
-                formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
-                
+            formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
             unique_titles.append(formatted_string)
 
         if not unique_titles:
