@@ -1,4 +1,4 @@
-import os, logging, random, asyncio, time, datetime, re, sys, base64
+import os, logging, random, uuid, asyncio, time, datetime, re, sys, base64
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
@@ -188,6 +188,16 @@ async def start(client, message):
         return 
     
     data = message.command[1]
+    is_token_verified = False
+    if data.startswith("t_"):
+        token = data.split("_", 1)[1]
+        if token not in temp.SHORT_TOKEN_STORE:
+            return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ᴀʟʀᴇᴀᴅʏ ʙᴇᴇɴ ᴜꜱᴇᴅ! ᴘʟᴇᴀꜱᴇ ɢᴇɴᴇʀᴀᴛᴇ ᴀ ɴᴇᴡ ʟɪɴᴋ ꜰʀᴏᴍ ᴛʜᴇ ʙᴏᴛ.</b>")
+        payload = temp.SHORT_TOKEN_STORE.pop(token)
+        if payload["user"] != message.from_user.id:
+            return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴅᴏᴇꜱ ɴᴏᴛ ʙᴇʟᴏɴɢ ᴛᴏ ʏᴏᴜ!</b>")
+        data = payload["data"]
+        is_token_verified = True
 
     if data == "plan":
         await plans_cmd_handler(client, message)
@@ -243,13 +253,45 @@ async def start(client, message):
             return # <--- This stops the bot from crashing here
         else:
             return await message.reply_text(text="<b>ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.</b>")
-            
 
+
+
+    elif data.startswith("getlink_"):
+        user = message.from_user.id
+        pre = 'file'
+        try:
+            _, file_id = data.split('_', 1)
+        except Exception:
+            return
         
+        if SHORTLINK_MODE and not await db.has_premium_access(user):
+            token = str(uuid.uuid4())
+            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
+            if not g:
+                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ꜰᴇᴡ.</b>"
+                return await message.reply_text(error_msg)
+            btn = [[InlineKeyboardButton('▼ ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ ▼', url=g)]]
+            if TUTORIAL:
+                btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
+                
+            text = "<b>ʜᴇʏ {},\n\nʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ.\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
+            if PREMIUM_MODE == True:
+                text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+            
+            return await message.reply_text(
+                text.format(message.from_user.mention),
+                reply_markup=InlineKeyboardMarkup(btn)
+            )
+        else:
+            is_token_verified = True
+
     elif data.startswith("short"):
         user = message.from_user.id
         pre = 'file'
-        g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
+        token = str(uuid.uuid4())
+        temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+        g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
         
         if not g:
             error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
@@ -274,7 +316,9 @@ async def start(client, message):
         user = message.from_user.id
         pre = 'file'
         if SHORTLINK_MODE and not await db.has_premium_access(user):
-            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start={pre}_{file_id}")
+            token = str(uuid.uuid4())
+            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+            g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
             
             if not g:
                 error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
@@ -295,55 +339,58 @@ async def start(client, message):
             return
             
     user = message.from_user.id
+    if SHORTLINK_MODE and not await db.has_premium_access(user) and not is_token_verified:
+        return await message.reply_text("<b>⚠️ ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ᴀ ꜰʀᴇꜱʜ ʟɪɴᴋ.</b>")
+
     files_ = await get_file_details(file_id)           
     if not files_:
         try:
             pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
-            reply_markup = None
-            if not await db.has_premium_access(message.from_user.id):
-                if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
-                    verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
-                    if not verify_link:
-                        await message.reply_text("<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.</b>")
-                        return
-                    btn = [[
-                        InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
-                    ],[
-                        InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
-                    ]]
-                    text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
-                    if PREMIUM_MODE == True:
-                        text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
-                    await message.reply_text(
-                        text=text.format(message.from_user.mention),
-                        reply_markup=InlineKeyboardMarkup(btn)
-                    )
-                    return
-            msg = await client.send_cached_media(
-                chat_id=message.from_user.id,
-                file_id=file_id,
-                reply_markup=reply_markup
-            )
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            clean_name = remove_junk(file.file_name)
-            title = clean_name
-            size = get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
-                except Exception:
-                    return
-            await msg.edit_caption(caption=f_caption)
-            k = await msg.reply(text=f"<blockquote><b><u>❗️ ɪᴍᴘᴏʀᴛᴀɴᴛ ❗️</u>\n\nᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <u>15 ᴍɪɴᴜᴛᴇꜱ</u>\n(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ)\n\nᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴛᴏ ʏᴏᴜʀ ꜱᴀᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴛᴏ ᴀᴠᴏɪᴅ ʟᴏꜱɪɴɢ ɪᴛ.</b></blockquote>")
-            
-            from utils import delayed_delete
-            delayed_delete([msg, k], 900)
-            return
         except Exception:
-            pass
-        return await message.reply('<b>ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.</b>')
+            return await message.reply('<b>ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.</b>')
+
+        reply_markup = None
+        if not await db.has_premium_access(message.from_user.id):
+            if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
+                verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
+                if not verify_link:
+                    await message.reply_text("<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.</b>")
+                    return
+                btn = [[
+                    InlineKeyboardButton("  ᴠᴇʀɪꜰʏ  ", url=verify_link)
+                ],[
+                    InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
+                ]]
+                text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
+                if PREMIUM_MODE == True:
+                    text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+                await message.reply_text(
+                    text=text.format(message.from_user.mention),
+                    reply_markup=InlineKeyboardMarkup(btn)
+                )
+                return
+        msg = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            reply_markup=reply_markup
+        )
+        filetype = msg.media
+        file = getattr(msg, filetype.value)
+        clean_name = remove_junk(file.file_name)
+        title = clean_name
+        size = get_size(file.file_size)
+        f_caption = f"<code>{title}</code>"
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+            except Exception:
+                return
+        await msg.edit_caption(caption=f_caption)
+        k = await msg.reply(text=f"<blockquote><b><u>❗️ ɪᴍᴘᴏʀᴛᴀɴᴛ ❗️</u>\n\nᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <u>15 ᴍɪɴᴜᴛᴇꜱ</u>\n(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ)\n\nᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴛᴏ ʏᴏᴜʀ ꜱᴀᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ᴏʀ ᴀɴʏ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴛᴏ ᴀᴠᴏɪᴅ ʟᴏꜱɪɴɢ ɪᴛ.</b></blockquote>")
+        
+        from utils import delayed_delete
+        delayed_delete([msg, k], 900)
+        return
         
     files = files_
     clean_name = remove_junk(files["file_name"])
@@ -1030,45 +1077,68 @@ async def recent_uploads(client, message):
         
         recent_files = col.find({}).sort('$natural', -1)
         
-        unique_titles = []
-        seen = set()
+        merged_titles = {}
+        ordered_keys = []
         
         async for file in recent_files:
-            name = file.get('file_name', '')
+            name = file.get('file_name') or ""
             clean_name = re.sub(r"(_|\.)", " ", name)
             
-            movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
-            if movie_match:
-                base_title = movie_match.group(1).strip()
-            else:
-                base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub|mkv|mp4|avi|m4v|webm|flv)", clean_name)[0].strip()
-                base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
+            langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
+            lang_set = set(l.capitalize() for l in langs_found)
             
-            # Fix broken hanging years/parentheses caused by Telegram's 64-char limit
-            base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
-            
-            lang_bracket = re.search(r"\[(.*?)\]", name)
-            if lang_bracket:
-                languages = f"[{lang_bracket.group(1)}]"
+            season_num = None
+            series_match = re.search(r"(?i)(.*?)\s*S(\d{1,2})(?:E\d{1,2})?\b", clean_name)
+            if series_match:
+                base_title = series_match.group(1).strip()
+                season_num = series_match.group(2).zfill(2)
+                unique_key = f"{base_title.lower()} s{season_num}"
+                is_series = True
             else:
-                langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
-                if langs_found:
-                    langs_found = list(dict.fromkeys(l.capitalize() for l in langs_found))
-                    languages = f"[{' '.join(langs_found)}]"
+                movie_match = re.search(r"(.*?)\s*\(\d{4}\)", clean_name)
+                if movie_match:
+                    base_title = movie_match.group(1).strip()
                 else:
-                    languages = ""
-                    
-            raw_string = f"{base_title} {languages}".strip()
-            slug = make_search_slug(base_title)
-            safe_base = base_title.replace('<', '&lt;').replace('>', '&gt;')
-            formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a> {languages}".strip()
-
-            if raw_string and raw_string.lower() not in seen:
-                seen.add(raw_string.lower())
-                unique_titles.append(formatted_string)
-            
-            if len(unique_titles) >= limit:
+                    base_title = re.split(r"(?i)(1080p|720p|576p|540p|480p|360p|PreDvd|WEB-DL|WEBRip|HDTVRip|HDRip|BluRay|x264|x265|HEVC|HQ|Audio|ESub|mkv|mp4|avi|m4v|webm|flv)", clean_name)[0].strip()
+                    base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
+                
+                base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
+                unique_key = base_title.lower()
+                is_series = False
+                
+            if not unique_key:
+                continue
+                
+            if unique_key not in merged_titles:
+                merged_titles[unique_key] = {
+                    'title': base_title,
+                    'season': season_num,
+                    'langs': lang_set,
+                    'is_series': is_series
+                }
+                ordered_keys.append(unique_key)
+            else:
+                merged_titles[unique_key]['langs'].update(lang_set)
+                
+            if len(ordered_keys) >= limit:
                 break
+
+        unique_titles = []
+        for key in ordered_keys:
+            data = merged_titles[key]
+            lang_str = f" [{' '.join(sorted(data['langs']))}]" if data['langs'] else ""
+            
+            if data['is_series']:
+                raw_string = f"{data['title']} S{data['season']}"
+                slug = make_search_slug(raw_string)
+                safe_raw = raw_string.replace('<', '&lt;').replace('>', '&gt;')
+                formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_raw}</a>{lang_str}"
+            else:
+                slug = make_search_slug(data['title'])
+                safe_base = data['title'].replace('<', '&lt;').replace('>', '&gt;')
+                formatted_string = f"🍿 <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
+                
+            unique_titles.append(formatted_string)
 
         if not unique_titles:
             return await processing_msg.edit("<b>ɴᴏ ᴛɪᴛʟᴇꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʀᴀɴɢᴇ!</b>")
