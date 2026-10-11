@@ -191,12 +191,13 @@ async def start(client, message):
     is_token_verified = False
     if data.startswith("t_"):
         token = data.split("_", 1)[1]
-        if token not in temp.SHORT_TOKEN_STORE:
+        t = await db.get_verify_token(token)
+        if not t or t.get("used"):
             return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ᴀʟʀᴇᴀᴅʏ ʙᴇᴇɴ ᴜꜱᴇᴅ! ᴘʟᴇᴀꜱᴇ ɢᴇɴᴇʀᴀᴛᴇ ᴀ ɴᴇᴡ ʟɪɴᴋ ꜰʀᴏᴍ ᴛʜᴇ ʙᴏᴛ.</b>")
-        payload = temp.SHORT_TOKEN_STORE.pop(token)
-        if payload["user"] != message.from_user.id:
+        if str(t.get("user_id")) != str(message.from_user.id):
             return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴅᴏᴇꜱ ɴᴏᴛ ʙᴇʟᴏɴɢ ᴛᴏ ʏᴏᴜ!</b>")
-        data = payload["data"]
+        await db.update_verify_token(token, True)
+        data = t.get("file_data")
         is_token_verified = True
 
     if data == "plan":
@@ -245,7 +246,7 @@ async def start(client, message):
             return await message.reply_text(text="<b>ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.</b>")
         is_valid = await check_token(client, userid, token)
         if is_valid == True:
-            text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ʜᴀᴠᴇ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ.\n\nʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇs.\n\n</b>"
+            text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ʜᴀᴠᴇ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴛʜᴇ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ.\n\nʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
             if PREMIUM_MODE == True:
                 text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"            
             await message.reply_text(text=text.format(message.from_user.mention))
@@ -266,7 +267,7 @@ async def start(client, message):
         
         if SHORTLINK_MODE and not await db.has_premium_access(user):
             token = str(uuid.uuid4())
-            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+            await db.create_verify_token(user, token, file_data=f"{pre}_{file_id}")
             g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
             if not g:
                 error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ꜰᴇᴡ.</b>"
@@ -290,7 +291,7 @@ async def start(client, message):
         user = message.from_user.id
         pre = 'file'
         token = str(uuid.uuid4())
-        temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+        await db.create_verify_token(user, token, file_data=f"{pre}_{file_id}")
         g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
         
         if not g:
@@ -317,7 +318,7 @@ async def start(client, message):
         pre = 'file'
         if SHORTLINK_MODE and not await db.has_premium_access(user):
             token = str(uuid.uuid4())
-            temp.SHORT_TOKEN_STORE[token] = {"user": user, "data": f"{pre}_{file_id}"}
+            await db.create_verify_token(user, token, file_data=f"{pre}_{file_id}")
             g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
             
             if not g:
@@ -361,7 +362,7 @@ async def start(client, message):
                 ],[
                     InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
                 ]]
-                text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇs.\n\n</b>"
+                text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
                 if PREMIUM_MODE == True:
                     text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
                 await message.reply_text(
@@ -416,7 +417,7 @@ async def start(client, message):
             ],[
                 InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
             ]]
-            text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇs.\n\n</b>"
+            text = "<b>ʜᴇʏ {},\n\nʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ.\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 10 ᴍɪɴᴜᴛᴇs.\n\n</b>"
             if PREMIUM_MODE == True:
                 text += "<b>ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴏᴘᴇɴɪɴɢ ʟɪɴᴋꜱ ᴏʀ ᴡᴀᴛᴄʜɪɴɢ ᴀᴅs, ᴘʟᴇᴀꜱᴇ ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
             await message.reply_text(
