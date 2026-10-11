@@ -2,6 +2,7 @@ import re
 import logging
 from pymongo.errors import DuplicateKeyError
 import motor.motor_asyncio
+import asyncio
 from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FILTER
 import time
 import datetime
@@ -27,6 +28,9 @@ class Database:
         self.users = self.col  # Single user storage model; eliminate uersz typo collection
         self.delete_col = self.db.delayed_deletes
         self.bot_setgs = self.db.bot_settings  # New collection for global bot config
+        self.tokens = self.db.tokens
+        self.verified = self.db.verified_users
+        asyncio.create_task(self.tokens.create_index('time', expireAfterSeconds=900))
 
     def new_user(self, id, name):
         return dict(
@@ -320,5 +324,22 @@ class Database:
             {'$set': {'pm_search_enabled': status}}, 
             upsert=True
         )
+
+    async def create_verify_token(self, user_id, token, file_data=None):
+        import time
+        await self.tokens.update_one({"token": token}, {"$set": {"user_id": user_id, "used": False, "time": time.time(), "file_data": file_data}}, upsert=True)
+        
+    async def get_verify_token(self, token):
+        return await self.tokens.find_one({"token": token})
+        
+    async def update_verify_token(self, token, used=True):
+        await self.tokens.update_one({"token": token}, {"$set": {"used": used}})
+        
+    async def add_verified_user(self, user_id):
+        import time
+        await self.verified.update_one({"user_id": user_id}, {"$set": {"time": time.time()}}, upsert=True)
+        
+    async def get_verified_user(self, user_id):
+        return await self.verified.find_one({"user_id": user_id})
 
 db = Database(DATABASE_URI, DATABASE_NAME)
