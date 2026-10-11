@@ -770,8 +770,10 @@ async def deletemultiplefiles(bot, message):
     k = await bot.send_message(chat_id=message.chat.id, text=f"<b>ꜰᴇᴛᴄʜɪɴɢ ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{safe_keyword}' ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
     files, total = await get_bad_files(keyword)
     await k.delete()
+    del_key = f"k_{uuid.uuid4().hex}"
+    temp.DEL_KEYWORDS[del_key] = keyword
     btn = [[
-       InlineKeyboardButton("ʏᴇꜱ, ᴄᴏɴᴛɪɴᴜᴇ!", callback_data=f"killfilesdq#{keyword}")
+       InlineKeyboardButton("ʏᴇꜱ, ᴄᴏɴᴛɪɴᴜᴇ!", callback_data=f"killfilesdq#{del_key}")
     ],[
        InlineKeyboardButton("ᴄᴀɴᴄᴇʟ", callback_data="close_data")
     ]]
