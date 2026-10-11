@@ -541,6 +541,13 @@ async def delete_all_index_confirm(bot, query):
         await sec_col.drop()
     if thi_col is not None:
         await thi_col.drop()
+
+    from database.ia_filterdb import reset_and_setup_indices
+    indices_ok = await reset_and_setup_indices()
+    if not indices_ok:
+        await query.answer('ꜰɪʟᴇꜱ ᴅᴇʟᴇᴛᴇᴅ, ʙᴜᴛ ɪɴᴅᴇx ʀᴇᴄʀᴇᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ!', show_alert=True)
+        return await query.message.edit('<b>ꜰɪʟᴇꜱ ᴅᴇʟᴇᴛᴇᴅ, ʙᴜᴛ ꜰᴀɪʟᴇᴅ ᴛᴏ ʀᴇᴄʀᴇᴀᴛᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ɪɴᴅᴇxᴇꜱ. ᴄʜᴇᴄᴋ ꜱᴇʀᴠᴇʀ ʟᴏɢꜱ!</b>')
+
     await query.answer('ᴘɪʀᴀᴄʏ ɪꜱ ᴀ ᴄʀɪᴍᴇ.')
     await query.message.edit('<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ꜰɪʟᴇꜱ.</b>')
 
