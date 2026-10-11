@@ -199,10 +199,7 @@ async def start(client, message):
         await db.update_verify_token(token, True)
         data = t.get("file_data")
         is_token_verified = True
-
-    if data == "plan":
-        await plans_cmd_handler(client, message)
-        return
+        
     
     # --- NEW SEARCH TRIGGER BLOCK ---
     if data.startswith("getsrc-"):
@@ -1202,38 +1199,6 @@ async def premium_users_list(client, message):
     await msg.delete()
     for chunk in messages:
         await message.reply_text(chunk)
-
-
-# --- GROUP /REQUEST WARNING BLOCK ---
-@Client.on_message(filters.group & filters.regex(r"(?i)^[/#]request"))
-async def group_request_warning(client, message):
-    # 1. Instantly delete the user's accidental command
-    try:
-        await message.delete()
-    except Exception:
-        pass
-    
-    # 2. Send the helpful warning message
-    msg = await message.reply_text(
-        "❌ <b>ʀᴇǫᴜᴇꜱᴛ ᴍɪꜱꜱɪɴɢ ꜰɪʟᴇꜱ ɪɴ ᴛʜᴇ ʙᴏᴛ ᴘᴍ, ɴᴏᴛ ʜᴇʀᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ!</b>\n\n"
-        "📍 ɢᴏ ᴛᴏ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ ᴘᴍ ᴀɴᴅ ᴜꜱᴇ ᴛʜɪꜱ ꜰᴏʀᴍᴀᴛ:\n"
-        "<code>/request Name & Year/Season</code> ᴏʀ <code>#request Name & Year/Season</code>\n\n"
-        "⛔ ᴅᴏ ɴᴏᴛ ʀᴇǫᴜᴇꜱᴛ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇs ᴏʀ ᴏɴɢᴏɪɴɢ ꜱʜᴏᴡꜱ/ᴀɴɪᴍᴇ.\n\n"
-        "🍿 @TIC_Movies_Bot\n📺 @TIC_Web_Series_Anime_Bot\n🔥 @TIC_Latest_Movies_Bot",
-        disable_web_page_preview=True,
-        parse_mode=enums.ParseMode.HTML
-    )
-    
-    # 3. Wait 30 seconds, then delete the warning message
-    await asyncio.sleep(30)
-    try:
-        await msg.delete()
-    except Exception:
-        pass
-# ------------------------------------
-
-
-
 
 
 @Client.on_chat_join_request()
