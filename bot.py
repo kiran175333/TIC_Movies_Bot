@@ -10,8 +10,12 @@ from utils import temp
 from Script import script
 from aiohttp import web
 
+is_healthy = False
+
 # Lightweight health server to satisfy PaaS port binding (Koyeb/Render)
 async def health_check(request):
+    if not is_healthy:
+        return web.Response(text="ʙᴏᴛ ɪꜱ ɴᴏᴛ ʀᴇᴀᴅʏ ᴏʀ ɪɴɪᴛɪᴀʟɪᴢᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ!", status=503)
     return web.Response(text="ʙᴏᴛ ɪꜱ ʀᴜɴɴɪɴɢ ꜱᴍᴏᴏᴛʜʟʏ!", status=200)
 
 class Bot(Client):
@@ -46,10 +50,25 @@ class Bot(Client):
         await web.TCPSite(self.runner, bind_address, port).start()
         logging.info(f"ʜᴇᴀʟᴛʜ ꜱᴇʀᴠᴇʀ ꜱᴛᴀʀᴛᴇᴅ ᴏɴ ᴘᴏʀᴛ {port}")
 
+        try:
+            from database.ia_filterdb import setup_indices as setup_ia_indices
+            await db.setup_indices()
+            res = await setup_ia_indices()
+            if res is False:
+                raise RuntimeError("Failed to initialize ia_filterdb indexes at startup")
+            logging.info("Database indexes initialized successfully.")
+        except Exception as e:
+            logging.error(f"CRITICAL: Database index initialization failed: {e}")
+            if hasattr(self, 'runner') and self.runner:
+                await self.runner.cleanup()
+            raise
+
         from utils import background_deleter
         self.deleter_task = asyncio.create_task(background_deleter(self))
 
         await super().start()
+        global is_healthy
+        is_healthy = True
         self.set_parse_mode(enums.ParseMode.HTML)
         me = await self.get_me()
         temp.ME = me.id
@@ -77,6 +96,8 @@ class Bot(Client):
             logging.error(f"Failed to send restart message to LOG_CHANNEL: {e}")
 
     async def stop(self, *args):
+        global is_healthy
+        is_healthy = False
         await super().stop()
         if hasattr(self, 'deleter_task'):
             self.deleter_task.cancel()
