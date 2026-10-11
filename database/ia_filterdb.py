@@ -1,10 +1,12 @@
-import re, base64, json
+import re, base64, json, asyncio, logging
 from struct import pack
 from pyrogram.file_id import FileId
 import motor.motor_asyncio
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from info import DATABASE_URI, DATABASE_URI2, DATABASE_URI3, DATABASE_NAME, COLLECTION_NAME, MULTIPLE_DATABASE, USE_CAPTION_FILTER, MAX_B_TN
 from utils import remove_junk
+
+logger = logging.getLogger(__name__)
 
 # First Database For File Saving 
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
@@ -29,27 +31,60 @@ if MULTIPLE_DATABASE:
         thi_col = thi_db[COLLECTION_NAME]
 
 _indices_setup = False
+_index_lock = None
 
-async def setup_indices():
+def _get_index_lock():
+    global _index_lock
+    if _index_lock is None:
+        _index_lock = asyncio.Lock()
+    return _index_lock
+
+async def _setup_indices_impl():
+    """Internal implementation: creates required indexes on active collections."""
     global _indices_setup
     if _indices_setup:
-        return
-    for collection in [col, sec_col, thi_col]:
-        if collection is not None:
-            try:
-                await collection.create_index("file_id", unique=True)
-                await collection.create_index("file_name")
-            except Exception as e:
-                if "IndexKeySpecsConflict" in str(e) or "already exists with different options" in str(e):
-                    try:
-                        await collection.drop_index("file_id_1")
-                        await collection.create_index("file_id", unique=True)
-                        await collection.create_index("file_name")
-                    except Exception:
-                        pass
-                else:
-                    print(f"Error creating indices: {e}")
-    _indices_setup = True
+        return True
+
+    active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
+    if not active_collections:
+        logger.error("No active database collections configured for index creation.")
+        _indices_setup = False
+        return False
+
+    success = True
+    for collection in active_collections:
+        try:
+            await collection.create_index("file_id", unique=True)
+            await collection.create_index("file_name")
+        except Exception as e:
+            if "IndexKeySpecsConflict" in str(e) or "already exists with different options" in str(e):
+                try:
+                    await collection.drop_index("file_id_1")
+                    await collection.create_index("file_id", unique=True)
+                    await collection.create_index("file_name")
+                except Exception as err:
+                    logger.error(f"Error recreating indices after conflict: {err}")
+                    success = False
+            else:
+                logger.error(f"Error creating indices: {e}")
+                success = False
+
+    _indices_setup = success
+    return success
+
+async def setup_indices():
+    """Create required indexes on all active collections (synchronized)."""
+    async with _get_index_lock():
+        return await _setup_indices_impl()
+
+async def reset_and_setup_indices():
+    """Reset the index-setup flag and recreate all required indexes (synchronized).
+    Returns True if index recreation succeeded on all collections, False otherwise.
+    """
+    async with _get_index_lock():
+        global _indices_setup
+        _indices_setup = False
+        return await _setup_indices_impl()
 
 async def save_file(media):
     """Save file in the database."""
