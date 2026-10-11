@@ -23,8 +23,9 @@ async def ban_reply(bot, message):
 @Client.on_message(filters.group & disabled_group & filters.incoming)
 async def grp_bd(bot, message):
     vazha = await db.get_chat(message.chat.id)
+    reason = vazha.get('reason', 'Disabled by Admin') if isinstance(vazha, dict) else 'Disabled by Admin'
     k = await message.reply(
-        text=f"ᴄʜᴀᴛ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ\n\nᴍʏ ᴀᴅᴍɪɴꜱ ʜᴀᴠᴇ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴍᴇ ꜰʀᴏᴍ ᴡᴏʀᴋɪɴɢ ʜᴇʀᴇ!\nʀᴇᴀꜱᴏɴ: <code>{vazha['reason']}</code>."
+        text=f"ᴄʜᴀᴛ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ\n\nᴍʏ ᴀᴅᴍɪɴꜱ ʜᴀᴠᴇ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴍᴇ ꜰʀᴏᴍ ᴡᴏʀᴋɪɴɢ ʜᴇʀᴇ!\nʀᴇᴀꜱᴏɴ: <code>{reason}</code>."
     )
     try:
         await k.pin()
