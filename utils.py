@@ -63,6 +63,7 @@ class temp(object):
     SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
     SETTINGS = TTLCache(maxsize=500, ttl=3600)
     ALERTS = TTLCache(maxsize=2000, ttl=3600)
+    DEL_KEYWORDS = TTLCache(maxsize=1000, ttl=3600)
 
 def check_callback_owner(query) -> bool:
     """
