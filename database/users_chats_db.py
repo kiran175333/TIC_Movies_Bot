@@ -30,7 +30,12 @@ class Database:
         self.bot_setgs = self.db.bot_settings  # New collection for global bot config
         self.tokens = self.db.tokens
         self.verified = self.db.verified_users
-        asyncio.create_task(self.tokens.create_index('time', expireAfterSeconds=900))
+
+    async def setup_indices(self):
+        """Ensure required TTL indexes exist for tokens collection.
+        Does not silently suppress errors so startup can verify integrity.
+        """
+        await self.tokens.create_index('time', expireAfterSeconds=900)
 
     def new_user(self, id, name):
         return dict(
