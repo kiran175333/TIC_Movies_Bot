@@ -1072,14 +1072,29 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data.startswith("killfilesdq"):
         if not query.from_user or not is_admin(query.from_user.id):
             return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
-            
-        await query.answer("ꜱᴛᴀʀᴛɪɴɢ ᴅᴇʟᴇᴛɪᴏɴ...", show_alert=True)
-        
+
         try:
-            ident, keyword = query.data.split("#")
+            ident, payload = query.data.split("#", 1)
         except (ValueError, AttributeError):
             return await query.message.edit_text("<b>ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ</b>")
-            
+
+        if re.fullmatch(r"k_[0-9a-fA-F]{32}", payload):
+            keyword = temp.DEL_KEYWORDS.get(payload)
+            if not keyword:
+                await query.answer("⚠️ ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
+                return await query.message.edit_text("<b>⚠️ ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ɪꜱ ɪɴᴠᴀʟɪᴅ. ᴘʟᴇᴀꜱᴇ ʀᴜɴ /deletefiles ᴀɢᴀɪɴ.</b>")
+        else:
+            from datetime import datetime, timezone
+            deadline = datetime(2026, 10, 18, 23, 59, 59, tzinfo=timezone.utc)
+            if datetime.now(timezone.utc) > deadline:
+                logger.warning(f"CRITICAL: Legacy killfilesdq fallback invoked past deadline ({deadline.isoformat()}). Deletion blocked.")
+                await query.answer("⚠️ ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
+                return await query.message.edit_text("<b>⚠️ ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /deletefiles ᴀɢᴀɪɴ.</b>")
+            logger.warning(f"DEPRECATION WARNING: Legacy killfilesdq fallback used for query '{payload}'. Removal deadline: {deadline.isoformat()}.")
+            keyword = payload
+
+        await query.answer("ꜱᴛᴀʀᴛɪɴɢ ᴅᴇʟᴇᴛɪᴏɴ...", show_alert=True)
+
         files, total = await get_bad_files(keyword)
         await query.message.edit_text("<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴡɪʟʟ ꜱᴛᴀʀᴛ ɪɴ 5 ꜱᴇᴄᴏɴᴅꜱ</b>")
         await asyncio.sleep(5)
