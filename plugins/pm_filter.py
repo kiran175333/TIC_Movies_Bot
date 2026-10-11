@@ -1081,15 +1081,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if re.fullmatch(r"k_[0-9a-fA-F]{32}", payload):
             keyword = temp.DEL_KEYWORDS.get(payload)
             if not keyword:
-                await query.answer("⚠️ ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
-                return await query.message.edit_text("<b>⚠️ ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ɪꜱ ɪɴᴠᴀʟɪᴅ. ᴘʟᴇᴀꜱᴇ ʀᴜɴ /deletefiles ᴀɢᴀɪɴ.</b>")
+                await query.answer("ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
+                return await query.message.edit_text("<b>ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ɪꜱ ɪɴᴠᴀʟɪᴅ. ᴘʟᴇᴀꜱᴇ ʀᴜɴ /deletefiles ᴀɢᴀɪɴ.</b>")
         else:
             from datetime import datetime, timezone
             deadline = datetime(2026, 10, 18, 23, 59, 59, tzinfo=timezone.utc)
             if datetime.now(timezone.utc) > deadline:
                 logger.warning(f"CRITICAL: Legacy killfilesdq fallback invoked past deadline ({deadline.isoformat()}). Deletion blocked.")
-                await query.answer("⚠️ ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
-                return await query.message.edit_text("<b>⚠️ ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /deletefiles ᴀɢᴀɪɴ.</b>")
+                await query.answer("ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
+                return await query.message.edit_text("<b>ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /deletefiles ᴀɢᴀɪɴ.</b>")
             logger.warning(f"DEPRECATION WARNING: Legacy killfilesdq fallback used for query '{payload}'. Removal deadline: {deadline.isoformat()}.")
             keyword = payload
 
