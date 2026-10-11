@@ -1242,3 +1242,15 @@ async def join_reqs(client, message):
         if not await db.is_user_exist(message.from_user.id):
             await db.add_user(message.from_user.id, message.from_user.first_name)
         await db.add_req_group(message.from_user.id)
+
+@Client.on_message(filters.command('id') & filters.private)
+async def showid(client, message):
+    user_id = message.chat.id
+    first = message.from_user.first_name if message.from_user else ""
+    last = (message.from_user.last_name or "") if message.from_user else ""
+    username = (message.from_user.username or "") if message.from_user else ""
+    dc_id = (message.from_user.dc_id or "") if message.from_user else ""
+    await message.reply_text(
+        f"<b>• ꜰɪʀꜱᴛ ɴᴀᴍᴇ:</b> {first}\n<b>• ʟᴀꜱᴛ ɴᴀᴍᴇ:</b> {last}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {username}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{user_id}</code>\n<b>• ᴅᴀᴛᴀ ᴄᴇɴᴛʀᴇ:</b> <code>{dc_id}</code>",
+        quote=True
+    )
