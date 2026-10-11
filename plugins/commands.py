@@ -727,7 +727,16 @@ async def requests(bot, message):
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
 async def send_msg(bot, message):
     if message.reply_to_message:
-        target_id = message.text.split(" ", 1)[1]
+        parts = message.text.split(" ", 1)
+        if len(parts) < 2 or not parts[1].strip():
+            return await message.reply_text("<b>ᴜꜱᴀɢᴇ: ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ <code>/send user_id</code></b>")
+        raw_target = parts[1].strip()
+        if raw_target.lstrip("-").isdigit():
+            target_id = int(raw_target)
+        elif re.fullmatch(r"^@?[a-zA-Z0-9_]{5,32}$", raw_target):
+            target_id = raw_target
+        else:
+            return await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ ᴏʀ ᴜꜱᴇʀɴᴀᴍᴇ! ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍᴇʀɪᴄ ɪᴅ ᴏʀ @ᴜꜱᴇʀɴᴀᴍᴇ (5-32 ᴄʜᴀʀᴀᴄᴛᴇʀꜱ).</b>")
         out = "<b>ᴜꜱᴇʀꜱ ꜱᴀᴠᴇᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ᴀʀᴇ:\n\n</b>"
         success = False
         try:
