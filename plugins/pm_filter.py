@@ -1708,7 +1708,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     # 🪄 PM-ONLY SPELL CHECK LOGIC
                     if message.chat.type == enums.ChatType.PRIVATE:
                         if is_spell_check:
-                            text = f"<b>❌ ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\n📺 ꜱᴇᴀʀᴄʜɪɴɢ ꜰᴏʀ ᴀ ꜱᴇʀɪᴇꜱ ᴏʀ ᴀɴɪᴍᴇ?\n👉 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ: @TIC_Web_Series_Anime_Bot\n\n📬 ɪꜰ ɪᴛ'ꜱ ᴀ ᴍᴏᴠɪᴇ, ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ:\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
+                            text = f"<b>❌ ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\n📺 ꜱᴇᴀʀᴄʜɪɴɢ ꜰᴏʀ ᴡᴇʙ ꜱᴇʀɪᴇꜱ ᴏʀ ᴀɴɪᴍᴇ?\n👉 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ: @TIC_Web_Series_Anime_Bot\n\n📬 ɪꜰ ɪᴛ'ꜱ ᴀ ᴍᴏᴠɪᴇ, ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ:\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
                         else:
                             suggestions = await get_spell_check(name)
                             if suggestions:
