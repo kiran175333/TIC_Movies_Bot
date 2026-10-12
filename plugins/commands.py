@@ -720,14 +720,7 @@ async def requests(bot, message):
         await message.reply_text("<b>ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
         await message.reply_text(f"<b>ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}</b>")
-        
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        await asyncio.sleep(60)
-        try:
-            await message.delete()
-        except Exception:
-            pass
-    
+
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
 async def send_msg(bot, message):
     if message.reply_to_message:
