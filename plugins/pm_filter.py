@@ -31,8 +31,7 @@ BUTTONS2 = TTLCache(maxsize=2000, ttl=3600)
 def get_header_buttons(key):
     return [
         [
-            InlineKeyboardButton("ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ʙᴏᴛ", url="https://t.me/TIC_Web_Series_Anime_Bot"),
-            InlineKeyboardButton("ʟᴀᴛᴇsᴛ ᴍᴏᴠɪᴇꜱ ʙᴏᴛ", url="https://t.me/TIC_Latest_Movies_Bot")
+            InlineKeyboardButton("ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ʙᴏᴛ", url="https://t.me/TIC_Web_Series_Anime_Bot")
         ],
         [
             InlineKeyboardButton("ʟᴀɴɢᴜᴀɢᴇꜱ", callback_data=f"languages#{key}"),
@@ -1337,7 +1336,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1364,7 +1363,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1391,7 +1390,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1709,7 +1708,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     # 🪄 PM-ONLY SPELL CHECK LOGIC
                     if message.chat.type == enums.ChatType.PRIVATE:
                         if is_spell_check:
-                            text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ᴀʀᴇ ꜱᴇᴀʀᴄʜɪɴɢ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot\n🔥 ʟᴀᴛᴇꜱᴛ ᴍᴏᴠɪᴇꜱ [ᴄᴀᴍ ᴘʀɪɴᴛ] ➔ @TIC_Latest_Movies_Bot\n\nɪꜰ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ, ɪᴛ ᴍᴇᴀɴꜱ ɪᴛ ɪꜱ ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ!\n\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
+                            text = f"<b>❌ ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ꜰᴏʀ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\n📺 ꜱᴇᴀʀᴄʜɪɴɢ ꜰᴏʀ ᴀ ꜱᴇʀɪᴇꜱ ᴏʀ ᴀɴɪᴍᴇ?\n👉 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ: @TIC_Web_Series_Anime_Bot\n\n📬 ɪꜰ ɪᴛ'ꜱ ᴀ ᴍᴏᴠɪᴇ, ɴᴏᴛ ᴜᴘʟᴏᴀᴅᴇᴅ ʏᴇᴛ:\nᴛᴀᴘ ᴛᴏ ᴄᴏᴘʏ ᴛʜɪꜱ ➔ <code>/request {name.replace('<', '&lt;').replace('>', '&gt;')}</code> ➔ ꜱᴇɴᴅ ɪᴛ ʜᴇʀᴇ 👇</b>"
                         else:
                             suggestions = await get_spell_check(name)
                             if suggestions:
