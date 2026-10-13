@@ -68,8 +68,8 @@ REQ_TO_JOIN = req_to_join == 'true'
 
 # MongoDB Configuration
 DATABASE_URI = environ.get('DATABASE_URI', '')
-DATABASE_NAME = environ.get('DATABASE_NAME', 'Cluster0').strip() or 'Cluster0'
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files').strip() or 'Telegram_files'
+DATABASE_NAME = environ.get('DATABASE_NAME', '').strip() or 'Cluster0'
+COLLECTION_NAME = environ.get('COLLECTION_NAME', '').strip() or 'Telegram_files'
 MULTIPLE_DATABASE = is_enabled(environ.get('MULTIPLE_DATABASE', False), False)
 
 # Additional File Storage Clusters (Used if MULTIPLE_DATABASE is True)
@@ -81,9 +81,9 @@ PREMIUM_MODE = is_enabled(environ.get('PREMIUM_MODE', True), True)
 PAYMENT_TEXT = environ.get('PAYMENT_TEXT', '<b>💎 ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴘʟᴀɴꜱ\n✨ ɪɴᴄʟᴜᴅᴇꜱ ᴀᴄᴄᴇꜱꜱ ᴛᴏ ᴀʟʟ 𝟹 ʙᴏᴛꜱ ᴄᴏᴍʙɪɴᴇᴅ\n\n‣ ₹30 ➪ 1 ᴍᴏɴᴛʜ\n‣ ₹60 ➪ 2 ᴍᴏɴᴛʜꜱ\n‣ ₹90 ➪ 3 ᴍᴏɴᴛʜꜱ\n‣ ₹180 ➪ 6 ᴍᴏɴᴛʜꜱ\n\n🎁 ꜰᴇᴀᴛᴜʀᴇꜱ\n‣ ᴅɪʀᴇᴄᴛ &amp; ʜɪɢʜ-ꜱᴘᴇᴇᴅ ꜰɪʟᴇꜱ\n‣ ᴀᴅ-ꜰʀᴇᴇ ᴀᴄᴄᴇꜱꜱ\n‣ ᴜɴʟɪᴍɪᴛᴇᴅ ғɪʟᴇs ᴀᴄᴄᴇss\n\n👥 ɴᴀᴍᴇ: <code>DARSHAN C</code>\n💳 ᴜᴘɪ ɪᴅ: <code>darshancg175@okhdfcbank</code>\n\nᴘʟᴇᴀꜱᴇ ꜱᴇɴᴅ ʏᴏᴜʀ ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀɴᴅ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ ᴛᴏ ᴏᴜʀ ꜱᴜᴘᴘᴏʀᴛ.\n\nᴄʜᴇᴄᴋ ʏᴏᴜʀ ɪᴅ: /id\nᴄʜᴇᴄᴋ ᴀᴄᴛɪᴠᴇ ᴘʟᴀɴ: /myplan\n\nꜰᴇᴇʟ ꜰʀᴇᴇ ᴛᴏ ᴄᴏɴᴛᴀᴄᴛ ᴜꜱ ɪꜰ ʏᴏᴜ ʜᴀᴠᴇ ᴀɴʏ ǫᴜᴇꜱᴛɪᴏɴꜱ!</b>')
 
 # Links
-GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+F5kaO_-0cgswODE9')
-CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/TheInsomniacsClub')
-SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/TICSupportBot')
+GRP_LNK = environ.get('GRP_LNK', '')
+CHNL_LNK = environ.get('CHNL_LNK', '')
+SUPPORT_LINK = environ.get('SUPPORT_LINK', '')
 
 # True Or False
 BUTTON_MODE = is_enabled(environ.get('BUTTON_MODE', True), True)
@@ -93,7 +93,7 @@ AUTO_DELETE = is_enabled(environ.get('AUTO_DELETE', True), True)
 USE_CAPTION_FILTER = is_enabled(environ.get('USE_CAPTION_FILTER', True), True)
 
 # Tutorial Link (Used for both Verification and Shortlinks)
-TUTORIAL = environ.get('TUTORIAL', 'https://t.me/TheInsomniacsClub/459')
+TUTORIAL = environ.get('TUTORIAL', '')
 
 # Token Verification Info :
 # VERIFY is auto-disabled when VERIFY_SHORTLINK_URL or VERIFY_SHORTLINK_API are empty,
@@ -115,8 +115,8 @@ else:
 # Shortlink Info
 # SHORTLINK_MODE is auto-disabled when SHORTLINK_URL or SHORTLINK_API are empty,
 # because shortlinking with no configured backend will fail every request.
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'nowshort.com').strip()
-SHORTLINK_API = environ.get('SHORTLINK_API', '86668b40e4986c631ca9a2a56a0d85c1d35e9c63').strip()
+SHORTLINK_URL = environ.get('SHORTLINK_URL', '').strip()
+SHORTLINK_API = environ.get('SHORTLINK_API', '').strip()
 _shortlink_requested = is_enabled(environ.get('SHORTLINK_MODE', True), True)
 if _shortlink_requested and (not SHORTLINK_URL or not SHORTLINK_API):
     import logging as _logging
