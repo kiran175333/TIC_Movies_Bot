@@ -65,7 +65,7 @@ req_to_join = environ.get('REQ_TO_JOIN', 'True').lower()
 REQ_TO_JOIN = req_to_join == 'true'
 
 # MongoDB Configuration
-DATABASE_URI = environ.get('DATABASE_URI', 'mongodb+srv://MovieFiles:MovieFiles@cluster0.7uj6gaw.mongodb.net/?retryWrites=true&w=majority')
+DATABASE_URI = environ.get('DATABASE_URI', 'mongodb+srv://MovieFiles:TICMovieFiles@cluster0.7uj6gaw.mongodb.net/?retryWrites=true&w=majority')
 DATABASE_NAME = environ.get('DATABASE_NAME', 'Cluster0').strip() or 'Cluster0'
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'MovieFiles').strip() or 'Telegram_files'
 MULTIPLE_DATABASE = is_enabled(environ.get('MULTIPLE_DATABASE', False), False)
