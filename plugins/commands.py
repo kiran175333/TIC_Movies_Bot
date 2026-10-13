@@ -1147,8 +1147,6 @@ async def recent_uploads(client, message):
                 
             if i == len(chunks) - 1:
                 final_text += "<blockquote><b>🍿🎬 ɢʀᴀʙ ʏᴏᴜʀ ᴘᴏᴘᴄᴏʀɴ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>"
-            else:
-                final_text += f"<i>(Page {i+1} of {len(chunks)}...)</i>"
 
             if i == 0:
                 await processing_msg.edit_text(text=final_text, disable_web_page_preview=True)
