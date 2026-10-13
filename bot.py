@@ -55,13 +55,11 @@ class Bot(Client):
             await db.setup_indices()
             res = await setup_ia_indices()
             if res is False:
-                raise RuntimeError("Failed to initialize ia_filterdb indexes at startup")
-            logging.info("Database indexes initialized successfully.")
+                logging.warning("Non-fatal: ia_filterdb indexes returned warning, continuing startup...")
+            else:
+                logging.info("Database indexes initialized successfully.")
         except Exception as e:
-            logging.error(f"CRITICAL: Database index initialization failed: {e}")
-            if hasattr(self, 'runner') and self.runner:
-                await self.runner.cleanup()
-            raise
+            logging.warning(f"Non-fatal: Database index initialization error: {e}, continuing startup...")
 
         from utils import background_deleter
         self.deleter_task = asyncio.create_task(background_deleter(self))
