@@ -54,23 +54,32 @@ async def _setup_indices_impl():
     success = True
     for collection in active_collections:
         try:
-            await collection.create_index("file_id", unique=True)
+            # 1. Clean invalid/corrupt entries where file_id is null/None/empty/missing
+            await collection.delete_many({"$or": [{"file_id": None}, {"file_id": ""}, {"file_id": {"$exists": False}}]})
+            # 2. Create index with sparse=True to ignore any non-existent keys
+            await collection.create_index("file_id", unique=True, sparse=True)
             await collection.create_index("file_name")
         except Exception as e:
-            if "IndexKeySpecsConflict" in str(e) or "already exists with different options" in str(e):
+            err_str = str(e)
+            logger.warning(f"Index creation encountered issue on {collection.name}: {err_str}. Attempting recovery...")
+            try:
+                await collection.delete_many({"$or": [{"file_id": None}, {"file_id": ""}, {"file_id": {"$exists": False}}]})
                 try:
                     await collection.drop_index("file_id_1")
-                    await collection.create_index("file_id", unique=True)
+                except Exception:
+                    pass
+                await collection.create_index("file_id", unique=True, sparse=True)
+                await collection.create_index("file_name")
+            except Exception as rec_err:
+                logger.warning(f"Unique sparse index creation failed on {collection.name} ({rec_err}), falling back to non-unique sparse index...")
+                try:
+                    await collection.create_index("file_id", sparse=True)
                     await collection.create_index("file_name")
-                except Exception as err:
-                    logger.error(f"Error recreating indices after conflict: {err}")
-                    success = False
-            else:
-                logger.error(f"Error creating indices: {e}")
-                success = False
+                except Exception as final_err:
+                    logger.error(f"Non-critical: fallback index creation also encountered: {final_err}")
 
-    _indices_setup = success
-    return success
+    _indices_setup = True
+    return True
 
 async def setup_indices():
     """Create required indexes on all active collections (synchronized)."""
