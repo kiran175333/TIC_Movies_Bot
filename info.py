@@ -15,43 +15,18 @@ def is_enabled(value, default):
 id_pattern = re.compile(r'(?i)^-?\d+$')
 
 # Bot information
-SESSION = environ.get('SESSION', 'TheInsomniacsClub')
-api_id_raw = environ.get('API_ID', '').strip()
-if not id_pattern.search(api_id_raw):
-    raise ValueError(
-        "API_ID is required and must be a valid integer. "
-        "Set the API_ID environment variable before starting the bot."
-    )
-API_ID = int(api_id_raw)
-_api_hash = environ.get('API_HASH', '').strip()
-if not _api_hash:
-    raise ValueError(
-        "API_HASH is required. "
-        "Set the API_HASH environment variable before starting the bot."
-    )
-API_HASH = _api_hash
-
-_bot_token = environ.get('BOT_TOKEN', '').strip()
-if not _bot_token:
-    raise ValueError(
-        "BOT_TOKEN is required. "
-        "Set the BOT_TOKEN environment variable before starting the bot."
-    )
-BOT_TOKEN = _bot_token
+SESSION = environ.get('SESSION', 'TIC_Movies_Bot')
+API_ID = int(environ.get('API_ID', ''))
+API_HASH = environ.get('API_HASH', '')
+BOT_TOKEN = environ.get('BOT_TOKEN', '')
 
 # This Pictures Is For Start Message Picture, You Can Add Multiple By Giving One Space Between Each.
 PICS = (environ.get('PICS', 'https://telegra.ph/file/3dfa7005df1d8bd279b07.jpg')).split()
 
 # Admins & Users
-ADMINS = []
-for admin in environ.get('ADMINS', '').split():
-    admin = admin.strip()
-    if not admin:
-        continue
-    if id_pattern.search(admin):
-        ADMINS.append(int(admin))
-    else:
-        ADMINS.append(admin)
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '').split()]
+auth_users = [int(user) if id_pattern.search(user) else user for user in environ.get('AUTH_USERS', '').split()]
+AUTH_USERS = (auth_users + ADMINS) if auth_users else []
 
 def is_admin(user):
     if user is None:
@@ -76,44 +51,30 @@ def is_admin(user):
     return False
 
 # This Channel Is For When User Start Your Bot Then Bot Send That User Name And Id In This Log Channel, Same For Group Also.
-log_channel = environ.get('LOG_CHANNEL', '').strip()
-if not id_pattern.search(log_channel):
-    raise ValueError(
-        "LOG_CHANNEL is required and must be a valid integer channel ID. "
-        "Set the LOG_CHANNEL environment variable before starting the bot."
-    )
-LOG_CHANNEL = int(log_channel)
+LOG_CHANNEL = int(environ.get('LOG_CHANNEL', ''))
 
 # This Is File Channel Where You Upload Your File Then Bot Automatically Save It In Database 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '').split()]  # For Multiple Id Use One Space Between Each.
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '').split()]
 
 # This Is Force Subscribe Channel, also known as Auth Channel 
-auth_channel = environ.get('AUTH_CHANNEL', '').strip() # give your force subscribe channel id here else leave it blank
+auth_channel = environ.get('AUTH_CHANNEL', '') # give your force subscribe channel id here else leave it blank
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 
-auth_group = environ.get('AUTH_GROUP', '').strip()
+auth_group = environ.get('AUTH_GROUP', '')
 AUTH_GROUP = int(auth_group) if auth_group and id_pattern.search(auth_group) else None
 
 req_to_join = environ.get('REQ_TO_JOIN', 'True').lower()
 REQ_TO_JOIN = req_to_join == 'true'
 
-
 # MongoDB Configuration
-# DATABASE_URI is required. No localhost fallback — a missing URI must be caught at startup.
-_database_uri = environ.get('DATABASE_URI', '').strip()
-if not _database_uri:
-    raise ValueError(
-        "DATABASE_URI is required. "
-        "Set the DATABASE_URI environment variable to your MongoDB connection string before starting the bot."
-    )
-DATABASE_URI = _database_uri
-DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0").strip() or "Cluster0"
+DATABASE_URI = environ.get('DATABASE_URI', '')
+DATABASE_NAME = environ.get('DATABASE_NAME', 'Cluster0').strip() or 'Cluster0'
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files').strip() or 'Telegram_files'
 MULTIPLE_DATABASE = is_enabled(environ.get('MULTIPLE_DATABASE', False), False)
 
 # Additional File Storage Clusters (Used if MULTIPLE_DATABASE is True)
-DATABASE_URI2 = environ.get('DATABASE_URI2', "")
-DATABASE_URI3 = environ.get('DATABASE_URI3', "")
+DATABASE_URI2 = environ.get('DATABASE_URI2', '')
+DATABASE_URI3 = environ.get('DATABASE_URI3', '')
 
 # Premium Settings
 PREMIUM_MODE = is_enabled(environ.get('PREMIUM_MODE', True), True)
