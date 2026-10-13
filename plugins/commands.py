@@ -1104,6 +1104,8 @@ async def recent_uploads(client, message):
                 base_title = re.sub(r"\s*(19|20)\d{2}$", "", base_title).strip()
             
             base_title = re.sub(r"\s*\(\d*$", "", base_title).strip()
+            # Strip trailing/leading symbols, dashes, and brackets
+            base_title = base_title.strip(" -—–:|~•[]()")
             unique_key = base_title.lower()
                 
             if not unique_key:
