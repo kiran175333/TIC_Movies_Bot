@@ -52,7 +52,7 @@ def is_admin(user):
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001751854136'))
 
 # This Is File Channel Where You Upload Your File Then Bot Automatically Save It In Database 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1001967776757').split()]
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1001967776757 -1002436236995').split()]
 
 # This Is Force Subscribe Channel, also known as Auth Channel 
 auth_channel = environ.get('AUTH_CHANNEL', '-1002077829054') # give your force subscribe channel id here else leave it blank
