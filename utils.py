@@ -139,7 +139,7 @@ async def broadcast_messages(user_id, message):
         except FloodWait as e:
             await asyncio.sleep(e.value)
             continue
-        except UserDeactivated:
+        except (UserDeactivated, InputUserDeactivated):
             await db.delete_user(int(user_id))
             logging.info(f"{user_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ᴛʜᴇ ᴀᴄᴄᴏᴜɴᴛ ᴡᴀꜱ ᴅᴇʟᴇᴛᴇᴅ.")
             return False, "ᴅᴇʟᴇᴛᴇᴅ"
@@ -163,6 +163,10 @@ async def broadcast_messages_group(chat_id, message):
         except FloodWait as e:
             await asyncio.sleep(e.value)
             continue
+        except (ChatAdminRequired, ChatWriteForbidden, ChannelPrivate, UserNotParticipant, PeerIdInvalid, ChannelInvalid, ChatRestricted):
+            await db.delete_chat(int(chat_id))
+            logging.info(f"{chat_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ʙᴏᴛ ʟᴀᴄᴋꜱ ᴀᴄᴄᴇꜱꜱ/ᴋɪᴄᴋᴇᴅ.")
+            return False, "ᴅᴇʟᴇᴛᴇᴅ"
         except Exception as e:
             return False, "ᴇʀʀᴏʀ"
     return False, "ᴇʀʀᴏʀ"
