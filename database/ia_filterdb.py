@@ -123,6 +123,15 @@ async def is_file_already_saved(file_id, file_name, file_size=0):
             
     return False
 
+LANGUAGE_SYNONYMS = {
+    "kannada": r"(?:\b|[\.\+\-_])(?:kannada|kan)(?:\b|[\.\+\-_])",
+    "hindi": r"(?:\b|[\.\+\-_])(?:hindi|hin)(?:\b|[\.\+\-_])",
+    "tamil": r"(?:\b|[\.\+\-_])(?:tamil|tam)(?:\b|[\.\+\-_])",
+    "telugu": r"(?:\b|[\.\+\-_])(?:telugu|tel)(?:\b|[\.\+\-_])",
+    "malayalam": r"(?:\b|[\.\+\-_])(?:malayalam|mal)(?:\b|[\.\+\-_])",
+    "english": r"(?:\b|[\.\+\-_])(?:english|eng)(?:\b|[\.\+\-_])",
+}
+
 async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
     """For given query return (results, next_offset)"""
     
@@ -134,26 +143,31 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
         query_words = query.split()
         if len(query_words) == 1:
             # Single word search (strict matching)
-            escaped_word = re.escape(query)
-            escaped_word = re.sub(r"\\?['’‘]", "['’]", escaped_word)
-            if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
-                escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
-                
-            raw_pattern = r'(\b|[\.\+\-_])' + escaped_word + r'(\b|[\.\+\-_])'
+            if query.lower() in LANGUAGE_SYNONYMS:
+                raw_pattern = LANGUAGE_SYNONYMS[query.lower()]
+            else:
+                escaped_word = re.escape(query)
+                escaped_word = re.sub(r"\\?['’‘]", "['’]", escaped_word)
+                if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
+                    escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
+                raw_pattern = r'(\b|[\.\+\-_])' + escaped_word + r'(\b|[\.\+\-_])'
             try:
                 regex = re.compile(raw_pattern, flags=re.IGNORECASE)
             except Exception:
-                regex = re.compile(escaped_word, flags=re.IGNORECASE)
+                regex = re.compile(re.escape(query), flags=re.IGNORECASE)
             filter = {'file_name': regex}
         else:
             # Multi-word search (finds all words in ANY order)
             filter_and = []
             for word in query_words:
-                escaped_word = re.escape(word)
-                escaped_word = re.sub(r"\\?['’‘`]", "['’`]", escaped_word)
-                if escaped_word.endswith("['’`]s") or escaped_word.endswith("s"):
-                    escaped_word = re.sub(r"(\['’`\]s|s)$", r"(?:['’`]s|s)", escaped_word)
-                filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
+                if word.lower() in LANGUAGE_SYNONYMS:
+                    filter_and.append({"file_name": {"$regex": LANGUAGE_SYNONYMS[word.lower()], "$options": "i"}})
+                else:
+                    escaped_word = re.escape(word)
+                    escaped_word = re.sub(r"\\?['’‘`]", "['’`]", escaped_word)
+                    if escaped_word.endswith("['’`]s") or escaped_word.endswith("s"):
+                        escaped_word = re.sub(r"(\['’`\]s|s)$", r"(?:['’`]s|s)", escaped_word)
+                    filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
             
             filter = {"$and": filter_and}
             
