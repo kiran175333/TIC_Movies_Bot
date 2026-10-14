@@ -62,6 +62,14 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('req_group', False) if user else False
 
+    async def reset_all_group_requests(self):
+        try:
+            res = await self.col.update_many({'req_group': True}, {'$unset': {'req_group': ''}})
+            return res.modified_count
+        except Exception as e:
+            logger.error("reset_all_group_requests(): database error: %s", e, exc_info=True)
+            return 0
+
     def new_group(self, id, title):
         return dict(
             id = id,
