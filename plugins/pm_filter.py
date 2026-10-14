@@ -580,7 +580,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except ValueError:
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ.", show_alert=True)
             
-        await query.answer()
+        try:
+            await query.answer()
+        except Exception:
+            pass
         # We must NOT use the user's original message, because if they deleted it, the bot will crash!
         # Instead, we pass the "Did you mean" message itself to auto_filter so it can safely reply to it.
         await auto_filter(client, correction, query.message, None, False, is_spell_check=True)
