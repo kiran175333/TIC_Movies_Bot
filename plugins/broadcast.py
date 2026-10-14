@@ -53,7 +53,8 @@ async def run_pm_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)")
+    rem_users = await db.total_users_count()
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_users}")
 
 
 async def run_grp_broadcast(b_msg, sts):
@@ -96,7 +97,8 @@ async def run_grp_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)")
+    rem_groups = await db.total_chat_count()
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_groups}")
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
