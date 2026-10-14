@@ -1201,6 +1201,16 @@ async def join_reqs(client, message):
             await db.add_user(message.from_user.id, message.from_user.first_name)
         await db.add_req_group(message.from_user.id)
 
+@Client.on_message(filters.command("reset_reqs") & filters.user(ADMINS))
+async def reset_group_requests(bot, message):
+    msg = await message.reply_text("<b>ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʀᴇꜱᴇᴛ...</b>")
+    count = await db.reset_all_group_requests()
+    await msg.edit_text(
+        f"<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ʀᴇꜱᴇᴛ ᴊᴏɪɴ ʀᴇǫᴜᴇꜱᴛ ꜱᴛᴀᴛᴜꜱ!</b>\n\n"
+        f"<b>• ʀᴇꜱᴇᴛ ᴜꜱᴇʀꜱ:</b> <code>{count}</code>\n\n"
+        f"<b>ᴀʟʟ ɴᴏɴ-ᴍᴇᴍʙᴇʀꜱ ᴡʜᴏꜱᴇ ʀᴇǫᴜᴇꜱᴛꜱ ᴡᴇʀᴇ ᴅɪꜱᴍɪꜱꜱᴇᴅ ᴡɪʟʟ ɴᴏᴡ ʙᴇ ᴘʀᴏᴍᴘᴛᴇᴅ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ʙᴇꜰᴏʀᴇ ɢᴇᴛᴛɪɴɢ ꜰɪʟᴇꜱ.</b>"
+    )
+
 @Client.on_message(filters.command('id') & filters.private)
 async def showid(client, message):
     user_id = message.chat.id
