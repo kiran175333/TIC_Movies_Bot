@@ -1207,7 +1207,7 @@ async def reset_group_requests(bot, message):
     count = await db.reset_all_group_requests()
     await msg.edit_text(
         f"<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ʀᴇꜱᴇᴛ ᴊᴏɪɴ ʀᴇǫᴜᴇꜱᴛ ꜱᴛᴀᴛᴜꜱ!</b>\n\n"
-        f"<b>• ʀᴇꜱᴇᴛ ᴜꜱᴇʀꜱ:</b> <code>{count}</code>\n\n"
+        f"<b>ʀᴇꜱᴇᴛ ᴜꜱᴇʀꜱ:</b> <code>{count}</code>\n\n"
         f"<b>ᴀʟʟ ɴᴏɴ-ᴍᴇᴍʙᴇʀꜱ ᴡʜᴏꜱᴇ ʀᴇǫᴜᴇꜱᴛꜱ ᴡᴇʀᴇ ᴅɪꜱᴍɪꜱꜱᴇᴅ ᴡɪʟʟ ɴᴏᴡ ʙᴇ ᴘʀᴏᴍᴘᴛᴇᴅ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ʙᴇꜰᴏʀᴇ ɢᴇᴛᴛɪɴɢ ꜰɪʟᴇꜱ.</b>"
     )
 
