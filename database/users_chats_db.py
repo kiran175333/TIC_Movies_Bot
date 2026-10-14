@@ -143,6 +143,13 @@ class Database:
             logger.error("delete_user(%s): database error: %s", user_id, e, exc_info=True)
 
 
+    async def delete_chat(self, chat_id):
+        try:
+            await self.grp.delete_many({'id': int(chat_id)})
+        except Exception as e:
+            logger.error("delete_chat(%s): database error: %s", chat_id, e, exc_info=True)
+
+
     async def get_banned(self):
         users = self.col.find({'ban_status.is_banned': True})
         chats = self.grp.find({'chat_status.is_disabled': True})
