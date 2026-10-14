@@ -133,5 +133,5 @@ MSG_ALRT = environ.get('MSG_ALRT', 'ᴡʜᴀᴛ ᴀʀᴇ ʏᴏᴜ ʟᴏᴏᴋɪ�
 CUSTOM_FILE_CAPTION = environ.get("CUSTOM_FILE_CAPTION", f"{script.CAPTION}")
 
 # Choose Option Settings 
-LANGUAGES = ["kannada", "kan", "english", "eng", "hindi", "hin", "telugu", "tel", "malayalam", "mal", "tamil", "tam"]
+LANGUAGES = ["kannada", "hindi", "tamil", "telugu", "malayalam", "english"]
 QUALITIES = ["360p", "480p", "540p", "576p", "720p", "1080p", "1440p", "2160p"]
