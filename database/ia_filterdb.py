@@ -1,12 +1,10 @@
-import re, base64, json, asyncio, logging
+import re, base64, json
 from struct import pack
 from pyrogram.file_id import FileId
 import motor.motor_asyncio
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from info import DATABASE_URI, DATABASE_URI2, DATABASE_URI3, DATABASE_NAME, COLLECTION_NAME, MULTIPLE_DATABASE, USE_CAPTION_FILTER, MAX_B_TN
 from utils import remove_junk
-
-logger = logging.getLogger(__name__)
 
 # First Database For File Saving 
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
@@ -31,69 +29,22 @@ if MULTIPLE_DATABASE:
         thi_col = thi_db[COLLECTION_NAME]
 
 _indices_setup = False
-_index_lock = None
 
-def _get_index_lock():
-    global _index_lock
-    if _index_lock is None:
-        _index_lock = asyncio.Lock()
-    return _index_lock
-
-async def _setup_indices_impl():
-    """Internal implementation: creates required indexes on active collections."""
+async def setup_indices():
     global _indices_setup
     if _indices_setup:
         return True
-
-    active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
-    if not active_collections:
-        logger.error("No active database collections configured for index creation.")
-        _indices_setup = False
-        return False
-
     success = True
-    for collection in active_collections:
-        try:
-            # 1. Clean invalid/corrupt entries where file_id is null/None/empty/missing
-            await collection.delete_many({"$or": [{"file_id": None}, {"file_id": ""}, {"file_id": {"$exists": False}}]})
-            # 2. Create index with sparse=True to ignore any non-existent keys
-            await collection.create_index("file_id", unique=True, sparse=True)
-            await collection.create_index("file_name")
-        except Exception as e:
-            err_str = str(e)
-            logger.warning(f"Index creation encountered issue on {collection.name}: {err_str}. Attempting recovery...")
+    for collection in [col, sec_col, thi_col]:
+        if collection is not None:
             try:
-                await collection.delete_many({"$or": [{"file_id": None}, {"file_id": ""}, {"file_id": {"$exists": False}}]})
-                try:
-                    await collection.drop_index("file_id_1")
-                except Exception:
-                    pass
                 await collection.create_index("file_id", unique=True, sparse=True)
                 await collection.create_index("file_name")
-            except Exception as rec_err:
-                logger.warning(f"Unique sparse index creation failed on {collection.name} ({rec_err}), falling back to non-unique sparse index...")
-                try:
-                    await collection.create_index("file_id", sparse=True)
-                    await collection.create_index("file_name")
-                except Exception as final_err:
-                    logger.error(f"Non-critical: fallback index creation also encountered: {final_err}")
-
-    _indices_setup = True
-    return True
-
-async def setup_indices():
-    """Create required indexes on all active collections (synchronized)."""
-    async with _get_index_lock():
-        return await _setup_indices_impl()
-
-async def reset_and_setup_indices():
-    """Reset the index-setup flag and recreate all required indexes (synchronized).
-    Returns True if index recreation succeeded on all collections, False otherwise.
-    """
-    async with _get_index_lock():
-        global _indices_setup
-        _indices_setup = False
-        return await _setup_indices_impl()
+            except Exception as e:
+                print(f"Error creating indices on {collection.name}: {e}")
+                success = False
+    _indices_setup = success
+    return success
 
 async def save_file(media):
     """Save file in the database."""
@@ -109,7 +60,7 @@ async def save_file(media):
         'caption': getattr(media, 'caption', None),
     }
 
-    if await is_file_already_saved(file_id, file_name, media.file_size):
+    if await is_file_already_saved(file_id, file_name):
         return False, 0
 
     try:
@@ -152,19 +103,19 @@ async def save_file(media):
 def clean_file_name(file_name):
     """Clean and format the file name."""
     file_name = remove_junk(file_name)
-    file_name = re.sub(r"(_|\-|\.)", " ", file_name)
-    return ' '.join(file_name.split())
+    file_name = re.sub(r"(_|\-|\.|\+)", " ", file_name)
+    old_file_name = ' '.join(file_name.split())
+    return old_file_name
+
     
-async def is_file_already_saved(file_id, file_name, file_size=0):
+async def is_file_already_saved(file_id, file_name):
     """Check if the file is already saved in any active collection."""
-    if file_size:
-        query = {'$or': [{'file_id': file_id}, {'file_name': file_name, 'file_size': file_size}]}
-    else:
-        query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
+    found1 = {'file_name': file_name}
+    found = {'file_id': file_id}
 
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
     for collection in active_collections:
-        if await collection.find_one(query):
+        if await collection.find_one(found1) or await collection.find_one(found):
             print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
             return True
             
@@ -204,6 +155,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             
             filter = {"$and": filter_and}
             
+            
     active_collections = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
     
     files = []
@@ -213,7 +165,6 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     
     for collection in active_collections:
         c_count = await collection.count_documents(filter)
-            
         total_results += c_count
         
         if remaining_limit > 0:
@@ -338,3 +289,9 @@ async def add_search_query(search_query):
 
 async def get_trending_searches(limit=10):
     return await trending_col.find({}).sort('count', -1).limit(limit).to_list(length=limit)
+
+async def reset_and_setup_indices():
+    """Reset the index-setup flag and recreate all required indexes."""
+    global _indices_setup
+    _indices_setup = False
+    return await setup_indices()
