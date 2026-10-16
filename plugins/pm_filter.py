@@ -692,31 +692,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
         reply_markup = InlineKeyboardMarkup(buttons)
         
         if query.message.media:
-            # Came from /start (has photo), animate caption and swap media
-            try:
-                await query.message.edit_caption(caption="● ◌ ◌")
-                await asyncio.sleep(0.2)
-                await query.message.edit_caption(caption="● ● ◌")
-                await asyncio.sleep(0.2)
-                await query.message.edit_caption(caption="● ● ●")
-                await asyncio.sleep(0.2)
-            except Exception:
-                pass
+            # Came from /start (has photo), swap media
             await query.message.edit_media(
                 media=InputMediaPhoto(random.choice(PICS), caption=PAYMENT_TEXT),
                 reply_markup=reply_markup
             )
         else:
-            # Came from /myplan (text only), animate text
-            try:
-                await query.message.edit_text(text="● ◌ ◌")
-                await asyncio.sleep(0.2)
-                await query.message.edit_text(text="● ● ◌")
-                await asyncio.sleep(0.2)
-                await query.message.edit_text(text="● ● ●")
-                await asyncio.sleep(0.2)
-            except Exception:
-                pass
+            # Came from /myplan (text only)
             await query.message.edit_text(
                 text=PAYMENT_TEXT,
                 reply_markup=reply_markup,
@@ -728,16 +710,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             [InlineKeyboardButton("ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ", callback_data="buy_premium_myplan")],
             [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
         ]
-        
-        try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
         
         await query.message.edit_text(
             text="<b>ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ /plan</b>", 
@@ -1495,15 +1467,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         reply_markup = InlineKeyboardMarkup(buttons)
         try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
-        try:
             await client.edit_message_media(
                 query.message.chat.id, 
                 query.message.id, 
@@ -1532,17 +1495,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             [InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='start')]
         ]
         
-        # Loading Animation
-        try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
-        
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1556,17 +1508,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     elif query.data == "rules":
         buttons = [[InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='users')]]
-        
-        try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
-        
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1580,17 +1521,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     elif query.data == "commands":
         buttons = [[InlineKeyboardButton('⇋ ʙᴀᴄᴋ ⇋', callback_data='users')]]
-        
-        try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
-        
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1606,16 +1536,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [
             [InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="users")]
         ]
-        try:
-            await query.message.edit_text(text="● ◌ ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ◌")
-            await asyncio.sleep(0.2)
-            await query.message.edit_text(text="● ● ●")
-            await asyncio.sleep(0.2)
-        except Exception:
-            pass
-        
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
