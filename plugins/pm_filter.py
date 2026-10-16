@@ -12,7 +12,6 @@ from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpt
 from utils import remove_junk, get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
 from database.users_chats_db import db
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, get_search_results, get_bad_files
-from database.connections_mdb import mydb, active_connection, all_connections, delete_connection, if_active, make_active, make_inactive
 from urllib.parse import quote_plus
 from cachetools import TTLCache
 def clean_filename(name):
@@ -60,17 +59,9 @@ async def give_filter(client, message):
             
     if message.text.startswith("/") or message.text.startswith("#") or message.text.startswith("!"):
         return
-    try:
-        if settings['auto_ffilter']:
-            ai_search = True
-            await auto_filter(client, message.text, message, None, ai_search)
-    except KeyError:
-        grpid = await active_connection(str(message.from_user.id))
-        await save_group_settings(grpid, 'auto_ffilter', True)
-        settings = await get_settings(message.chat.id)
-        if settings['auto_ffilter']:
-            ai_search = True
-            await auto_filter(client, message.text, message, None, ai_search)
+    if settings.get('auto_ffilter', True):
+        ai_search = True
+        await auto_filter(client, message.text, message, None, ai_search)
                 
 
 @Client.on_message(filters.command("pm_search") & filters.user(ADMINS))
@@ -713,114 +704,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
         return 
-    elif "groupcb" in query.data:
-        await query.answer()
-        try:
-            group_id = query.data.split(":")[1]
-            act = query.data.split(":")[2]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        hr = await client.get_chat(int(group_id))
-        title = hr.title
-        user_id = query.from_user.id
-        if act == "":
-            stat = "ᴄᴏɴɴᴇᴄᴛ"
-            cb = "connectcb"
-        else:
-            stat = "ᴅɪꜱᴄᴏɴɴᴇᴄᴛ"
-            cb = "disconnect"
-        keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton(f"{stat}", callback_data=f"{cb}:{group_id}"),
-             InlineKeyboardButton("ᴅᴇʟᴇᴛᴇ", callback_data=f"deletecb:{group_id}")],
-            [InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="backcb")]
-        ])
-        await query.message.edit_text(
-            f"ɢʀᴏᴜᴘ ɴᴀᴍᴇ: <b>{title}</b>\nɢʀᴏᴜᴘ ɪᴅ: <code>{group_id}</code>",
-            reply_markup=keyboard
-        )
-        return await query.answer(MSG_ALRT)
-    elif "connectcb" in query.data:
-        await query.answer()
-        try:
-            group_id = query.data.split(":")[1]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        hr = await client.get_chat(int(group_id))
-        title = hr.title
-        user_id = query.from_user.id
-        mkact = await make_active(str(user_id), str(group_id))
-        if mkact:
-            await query.message.edit_text(
-                f"ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ <b>{title}</b>"
-            )
-        else:
-            await query.message.edit_text('<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>', parse_mode=enums.ParseMode.MARKDOWN)
-        return await query.answer(MSG_ALRT)
-    
-    elif "disconnect" in query.data:
-        await query.answer()
-        try:
-            group_id = query.data.split(":")[1]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        hr = await client.get_chat(int(group_id))
-        title = hr.title
-        user_id = query.from_user.id
-        mkinact = await make_inactive(str(user_id))
-        if mkinact:
-            await query.message.edit_text(
-                f"ᴅɪꜱᴄᴏɴɴᴇᴄᴛᴇᴅ ꜰʀᴏᴍ <b>{title}</b>"
-            )
-        else:
-            await query.message.edit_text(f"<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>",
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
-        return await query.answer(MSG_ALRT)
-    
-    elif "deletecb" in query.data:
-        await query.answer()
-        user_id = query.from_user.id
-        try:
-            group_id = query.data.split(":")[1]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        delcon = await delete_connection(str(user_id), str(group_id))
-        if delcon:
-            await query.message.edit_text("<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ᴛʜᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴ!</b>"
-            )
-        else:
-            await query.message.edit_text(f"<b>ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ!</b>",
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
-        return await query.answer(MSG_ALRT)
-    elif query.data == "backcb":
-        await query.answer()
-        userid = query.from_user.id
-        groupids = await all_connections(str(userid))
-        if groupids is None:
-            await query.message.edit_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ꜱᴏᴍᴇ ɢʀᴏᴜᴘꜱ ꜰɪʀꜱᴛ.</b>",
-            )
-            return await query.answer(MSG_ALRT)
-        buttons = []
-        for groupid in groupids:
-            try:
-                ttl = await client.get_chat(int(groupid))
-                title = ttl.title
-                active = await if_active(str(userid), str(groupid))
-                act = " - ᴀᴄᴛɪᴠᴇ" if active else ""
-                buttons.append(
-                    [
-                        InlineKeyboardButton(
-                            text=f"{title}{act}", callback_data=f"groupcb:{groupid}:{act}"
-                        )
-                    ]
-                )
-            except Exception:
-                pass
-        if buttons:
-            await query.message.edit_text("<b>ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n</b>",
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
     if query.data.startswith("file"):
         if not check_callback_owner(query):
             return await query.answer(
@@ -1429,17 +1312,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ident, set_type, status, grp_id = query.data.split("#")
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        if not query.from_user:
-            return await query.answer("ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
-        grpid = await active_connection(str(query.from_user.id))
-        if str(grp_id) != str(grpid):
-            await query.message.edit("ʏᴏᴜʀ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴄʜᴀɴɢᴇᴅ. ɢᴏ ᴛᴏ /connections ᴀɴᴅ ᴄʜᴀɴɢᴇ ʏᴏᴜʀ ᴀᴄᴛɪᴠᴇ ᴄᴏɴɴᴇᴄᴛɪᴏɴ.")
-            return await query.answer(MSG_ALRT)
-            
+        grp_id = int(grp_id)
         userid = query.from_user.id
         is_chat_admin = False
         try:
-            st = await client.get_chat_member(grpid, userid)
+            st = await client.get_chat_member(grp_id, userid)
             is_chat_admin = st.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
         except Exception:
             pass
@@ -1447,11 +1324,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
             return
         if status == "True":
-            await save_group_settings(grpid, set_type, False)
+            await save_group_settings(grp_id, set_type, False)
         else:
-            settings = await get_settings(grpid)
-            await save_group_settings(grpid, set_type, True)
-        settings = await get_settings(grpid)
+            settings = await get_settings(grp_id)
+            await save_group_settings(grp_id, set_type, True)
+        settings = await get_settings(grp_id)
         if settings is not None:
             buttons = [
             [
