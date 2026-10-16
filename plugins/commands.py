@@ -7,7 +7,6 @@ from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, th
 from database.users_chats_db import db
 from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds, get_ist_now, IST)
-from database.connections_mdb import active_connection
 
 logger = logging.getLogger(__name__)
 
@@ -562,22 +561,12 @@ async def delete_all_index_confirm(bot, query):
 async def settings(client, message):
     userid = message.from_user.id if message.from_user else None
     if not userid:
-        return await message.reply(f"<b>ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ. ᴜꜱᴇ /connect {message.chat.id} ɪɴ ᴘᴍ.</b>")
+        return await message.reply("<b>ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ.</b>")
     chat_type = message.chat.type
 
     if chat_type == enums.ChatType.PRIVATE:
-        grpid = await active_connection(str(userid))
-        if grpid is not None:
-            grp_id = grpid
-            try:
-                chat = await client.get_chat(grpid)
-                title = chat.title
-            except Exception:
-                await message.reply_text("<b>ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ!</b>", quote=True)
-                return
-        else:
-            await message.reply_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!</b>", quote=True)
-            return
+        await message.reply_text("<b>ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /settings ɪɴꜱɪᴅᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ᴄʜᴀɴɢᴇ ꜱᴇᴛᴛɪɴɢꜱ.</b>", quote=True)
+        return
 
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         grp_id = message.chat.id
