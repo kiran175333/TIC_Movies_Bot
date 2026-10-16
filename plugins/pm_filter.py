@@ -11,7 +11,7 @@ from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerId
 from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from utils import remove_junk, get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
 from database.users_chats_db import db
-from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, get_search_results, get_bad_files, add_search_query
+from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, get_search_results, get_bad_files
 from database.filters_mdb import del_all, find_filter, get_filters
 from database.connections_mdb import mydb, active_connection, all_connections, delete_connection, if_active, make_active, make_inactive
 from database.gfilters_mdb import find_gfilter, get_gfilters, del_allg
@@ -1765,8 +1765,6 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
             
             files, offset, total_results = await get_search_results(message.chat.id, search, max_results=b_limit, offset=0, filter=True)
-            if files and total_results > 0:
-                await add_search_query(search)
             if not files:
                 if settings.get('no_result_msg', True):
                     if reply_msg:
