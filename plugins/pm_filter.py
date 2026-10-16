@@ -12,9 +12,7 @@ from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpt
 from utils import remove_junk, get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
 from database.users_chats_db import db
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, get_search_results, get_bad_files
-from database.filters_mdb import del_all, find_filter, get_filters
 from database.connections_mdb import mydb, active_connection, all_connections, delete_connection, if_active, make_active, make_inactive
-from database.gfilters_mdb import find_gfilter, get_gfilters, del_allg
 from urllib.parse import quote_plus
 from cachetools import TTLCache
 def clean_filename(name):
@@ -60,21 +58,19 @@ async def give_filter(client, message):
         except Exception as e:
             print(e)
             
-    manual = await manual_filters(client, message)
-    if manual == False:
-        if message.text.startswith("/") or message.text.startswith("#") or message.text.startswith("!"):
-            return
-        try:
-            if settings['auto_ffilter']:
-                ai_search = True
-                await auto_filter(client, message.text, message, None, ai_search)
-        except KeyError:
-            grpid = await active_connection(str(message.from_user.id))
-            await save_group_settings(grpid, 'auto_ffilter', True)
-            settings = await get_settings(message.chat.id)
-            if settings['auto_ffilter']:
-                ai_search = True
-                await auto_filter(client, message.text, message, None, ai_search)
+    if message.text.startswith("/") or message.text.startswith("#") or message.text.startswith("!"):
+        return
+    try:
+        if settings['auto_ffilter']:
+            ai_search = True
+            await auto_filter(client, message.text, message, None, ai_search)
+    except KeyError:
+        grpid = await active_connection(str(message.from_user.id))
+        await save_group_settings(grpid, 'auto_ffilter', True)
+        settings = await get_settings(message.chat.id)
+        if settings['auto_ffilter']:
+            ai_search = True
+            await auto_filter(client, message.text, message, None, ai_search)
                 
 
 @Client.on_message(filters.command("pm_search") & filters.user(ADMINS))
@@ -717,90 +713,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
         return 
-    elif query.data == "gfiltersdeleteallconfirm":
-        if not query.from_user or not is_admin(query.from_user.id):
-            return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
-        await del_allg(query.message, 'gfilters')
-        await query.answer("ᴅᴏɴᴇ!")
-        return
-    elif query.data == "gfiltersdeleteallcancel": 
-        if not query.from_user or not is_admin(query.from_user.id):
-            return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
-        await query.answer("ᴘʀᴏᴄᴇꜱꜱ ᴄᴀɴᴄᴇʟʟᴇᴅ!")
-        try:
-            await query.message.reply_to_message.delete()
-        except Exception:
-            pass
-        try:
-            await query.message.delete()
-        except Exception:
-            pass
-        return
-    elif query.data == "delallconfirm":
-        userid = query.from_user.id
-        chat_type = query.message.chat.type
-        if chat_type == enums.ChatType.PRIVATE:
-            grpid = await active_connection(str(userid))
-            if grpid is not None:
-                grp_id = grpid
-                try:
-                    chat = await client.get_chat(grpid)
-                    title = chat.title
-                except Exception:
-                    await query.message.edit_text("<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴘʀᴇꜱᴇɴᴛ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ</b>", quote=True)
-                    return await query.answer(MSG_ALRT)
-            else:
-                await query.message.edit_text("<b>ɪ ᴀᴍ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴀɴʏ ɢʀᴏᴜᴘꜱ!\nᴄʜᴇᴄᴋ /connections ᴏʀ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.</b>",
-                    quote=True
-                )
-                return await query.answer(MSG_ALRT)
-        elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-            grp_id = query.message.chat.id
-            title = query.message.chat.title
-        else:
-            return await query.answer(MSG_ALRT)
-        is_owner = False
-        try:
-            st = await client.get_chat_member(grp_id, userid)
-            is_owner = (st.status == enums.ChatMemberStatus.OWNER)
-        except Exception:
-            pass
-        if is_owner or is_admin(userid):
-            await del_all(query.message, grp_id, title)
-        else:
-            await query.answer("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴏʀ ᴀɴ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴜꜱᴇʀ ᴛᴏ ᴅᴏ ᴛʜᴀᴛ", show_alert=True)
-    elif query.data == "delallcancel":
-        await query.answer("ᴘʀᴏᴄᴇꜱꜱ ᴄᴀɴᴄᴇʟʟᴇᴅ!")
-        userid = query.from_user.id
-        chat_type = query.message.chat.type
-        if chat_type == enums.ChatType.PRIVATE:
-            try:
-                await query.message.reply_to_message.delete()
-            except Exception:
-                pass
-            try:
-                await query.message.delete()
-            except Exception:
-                pass
-        elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-            grp_id = query.message.chat.id
-            is_owner = False
-            try:
-                st = await client.get_chat_member(grp_id, userid)
-                is_owner = (st.status == enums.ChatMemberStatus.OWNER)
-            except Exception:
-                pass
-            if is_owner or is_admin(userid):
-                try:
-                    await query.message.delete()
-                except Exception:
-                    pass
-                try:
-                    await query.message.reply_to_message.delete()
-                except Exception:
-                    pass
-            else:
-                await query.answer("ᴛʜᴀᴛ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ!", show_alert=True)
     elif "groupcb" in query.data:
         await query.answer()
         try:
@@ -909,42 +821,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_text("<b>ʏᴏᴜʀ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɢʀᴏᴜᴘ ᴅᴇᴛᴀɪʟꜱ:\n\n</b>",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
-    elif "gfilteralert" in query.data:
-        try:
-            i = int(query.data.split(":")[1])
-            alert_id = query.data.split(":")[2]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-            
-        alerts = temp.ALERTS.get(alert_id)
-        if alerts is not None:
-            try:
-                alert = alerts[i]
-                alert = alert.replace("\\n", "\n").replace("\\t", "\t")
-                await query.answer(alert, show_alert=True)
-            except IndexError:
-                await query.answer("ɪɴᴠᴀʟɪᴅ ᴀʟᴇʀᴛ", show_alert=True)
-        else:
-            await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ", show_alert=True)
-    
-    elif "alertmessage" in query.data:
-        try:
-            i = int(query.data.split(":")[1])
-            alert_id = query.data.split(":")[2]
-        except (ValueError, IndexError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-            
-        alerts = temp.ALERTS.get(alert_id)
-        if alerts is not None:
-            try:
-                alert = alerts[i]
-                alert = alert.replace("\\n", "\n").replace("\\t", "\t")
-                await query.answer(alert, show_alert=True)
-            except IndexError:
-                await query.answer("ɪɴᴠᴀʟɪᴅ ᴀʟᴇʀᴛ", show_alert=True)
-        else:
-            await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ", show_alert=True)
-        
     if query.data.startswith("file"):
         if not check_callback_owner(query):
             return await query.answer(
@@ -1806,184 +1682,4 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             delayed_delete([fuk, message], 900)
     except Exception as e:
         logger.error(f"Auto-delete error: {e}")
-async def manual_filters(client, message, text=False):
-    settings = await get_settings(message.chat.id)
-    group_id = message.chat.id
-    name = text or message.text
-    reply_id = message.reply_to_message.id if message.reply_to_message else message.id
-    keywords = await get_filters(group_id)
-    for keyword in reversed(sorted(keywords, key=len)):
-        pattern = r"( |^|[^\w])" + re.escape(keyword) + r"( |$|[^\w])"
-        if re.search(pattern, name, flags=re.IGNORECASE):
-            reply_text, btn, alert, fileid = await find_filter(group_id, keyword)
-            if reply_text:
-                reply_text = reply_text.replace("\\n", "\n").replace("\\t", "\t")
-            if btn is not None:
-                try:
-                    if fileid == "None":
-                        if btn == "[]":
-                            joelkb = await client.send_message(
-                                group_id, 
-                                reply_text, 
-                                disable_web_page_preview=True,
-                                reply_to_message_id=reply_id
-                            )
-                            await process_auto_settings(client, message, joelkb, settings)
-                        else:
-                            button = eval(btn)
-                            joelkb = await client.send_message(
-                                group_id,
-                                reply_text,
-                                disable_web_page_preview=True,
-                                reply_markup=InlineKeyboardMarkup(button),
-                                reply_to_message_id=reply_id
-                            )
-                            await process_auto_settings(client, message, joelkb, settings)
-                    elif btn == "[]":
-                        joelkb = await client.send_cached_media(
-                            group_id,
-                            fileid,
-                            caption=reply_text or "",
-                            reply_to_message_id=reply_id
-                        )
-                        await process_auto_settings(client, message, joelkb, settings)
-                    else:
-                        button = eval(btn)
-                        joelkb = await message.reply_cached_media(
-                            fileid,
-                            caption=reply_text or "",
-                            reply_markup=InlineKeyboardMarkup(button),
-                            reply_to_message_id=reply_id
-                        )
-                        await process_auto_settings(client, message, joelkb, settings)
-                except Exception as e:
-                    logger.exception(e)
-                break
-    else:
-        return False
-async def global_filters(client, message, text=False):
-    settings = await get_settings(message.chat.id)
-    group_id = message.chat.id
-    name = text or message.text
-    reply_id = message.reply_to_message.id if message.reply_to_message else message.id
-    keywords = await get_gfilters('gfilters')
-    for keyword in reversed(sorted(keywords, key=len)):
-        pattern = r"( |^|[^\w])" + re.escape(keyword) + r"( |$|[^\w])"
-        if re.search(pattern, name, flags=re.IGNORECASE):
-            reply_text, btn, alert, fileid = await find_gfilter('gfilters', keyword)
-            if reply_text:
-                reply_text = reply_text.replace("\\n", "\n").replace("\\t", "\t")
-            if btn is not None:
-                try:
-                    if fileid == "None":
-                        if btn == "[]":
-                            joelkb = await client.send_message(
-                                group_id, 
-                                reply_text, 
-                                disable_web_page_preview=True,
-                                reply_to_message_id=reply_id
-                            )
-                            manual = await manual_filters(client, message)
-                            if manual == False:
-                                settings = await get_settings(message.chat.id)
-                                await process_auto_settings(client, message, joelkb, settings)
-                            else:
-                                try:
-                                    if settings['auto_delete']:
-                                        await joelkb.delete()
-                                except KeyError:
-                                    grpid = await active_connection(str(message.from_user.id))
-                                    await save_group_settings(grpid, 'auto_delete', True)
-                                    settings = await get_settings(message.chat.id)
-                                    if settings['auto_delete']:
-                                        await joelkb.delete()
-                            
-                        else:
-                            button = eval(btn)
-                            joelkb = await client.send_message(
-                                group_id,
-                                reply_text,
-                                disable_web_page_preview=True,
-                                reply_markup=InlineKeyboardMarkup(button),
-                                reply_to_message_id=reply_id
-                            )
-                            manual = await manual_filters(client, message)
-                            if manual == False:
-                                settings = await get_settings(message.chat.id)
-                                await process_auto_settings(client, message, joelkb, settings)
-                            else:
-                                try:
-                                    if settings['auto_delete']:
-                                        await joelkb.delete()
-                                except KeyError:
-                                    grpid = await active_connection(str(message.from_user.id))
-                                    await save_group_settings(grpid, 'auto_delete', True)
-                                    settings = await get_settings(message.chat.id)
-                                    if settings['auto_delete']:
-                                        await joelkb.delete()
-                    elif btn == "[]":
-                        joelkb = await client.send_cached_media(
-                            group_id,
-                            fileid,
-                            caption=reply_text or "",
-                            reply_to_message_id=reply_id
-                        )
-                        manual = await manual_filters(client, message)
-                        if manual == False:
-                            settings = await get_settings(message.chat.id)
-                            await process_auto_settings(client, message, joelkb, settings) 
-                        else:
-                            try:
-                                if settings['auto_delete']:
-                                    await joelkb.delete()
-                            except KeyError:
-                                grpid = await active_connection(str(message.from_user.id))
-                                await save_group_settings(grpid, 'auto_delete', True)
-                                settings = await get_settings(message.chat.id)
-                                if settings['auto_delete']:
-                                    await joelkb.delete()
-                    else:
-                        button = eval(btn)
-                        joelkb = await message.reply_cached_media(
-                            fileid,
-                            caption=reply_text or "",
-                            reply_markup=InlineKeyboardMarkup(button),
-                            reply_to_message_id=reply_id
-                        )
-                        manual = await manual_filters(client, message)
-                        if manual == False:
-                            settings = await get_settings(message.chat.id)
-                            await process_auto_settings(client, message, joelkb, settings)
-                        else:
-                            try:
-                                if settings['auto_delete']:
-                                    await joelkb.delete()
-                            except KeyError:
-                                grpid = await active_connection(str(message.from_user.id))
-                                await save_group_settings(grpid, 'auto_delete', True)
-                                settings = await get_settings(message.chat.id)
-                                if settings['auto_delete']:
-                                    await joelkb.delete()
-                                
-                except Exception as e:
-                    logger.exception(e)
-                break
-    else:
-        return False
-async def process_auto_settings(client, message, joelkb, settings):
-    try:
-        if settings.get('auto_ffilter', False):
-            if message.text.startswith("/") or message.text.startswith("#") or message.text.startswith("!"):
-                return
-            ai_search = True
-            reply_msg = await message.reply_sticker("CAACAgQAAxkBAAEKeqNlIpmeUoOEsEWOWEiPxPi3hH5q-QACbg8AAuHqsVDaMQeY6CcRojAE", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(f'sᴇᴀᴄʜɪɴɢ ғᴏʀ {message.text}', url=CHNL_LNK)]]))
-            await auto_filter(client, message.text, message, reply_msg, ai_search)
-        
-        if settings.get('auto_delete', False):
-            if not settings.get('auto_ffilter', False):
-                from utils import delayed_delete
-                delayed_delete([joelkb], 900)
-            else:
-                await joelkb.delete()
-    except Exception as e:
-        logger.error(f"Error in process_auto_settings: {e}")
+
