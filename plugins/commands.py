@@ -1066,7 +1066,7 @@ async def recent_uploads(client, message):
         if message.chat.type != enums.ChatType.PRIVATE:
             return
         btn = [
-            [InlineKeyboardButton("⭐ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ⭐", callback_data="buy_premium")]
+            [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
         ]
         return await message.reply_text(
             "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ.\n\nꜱᴇɴᴅ /plan ᴏʀ ᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘɢʀᴀᴅᴇ!</b>",
