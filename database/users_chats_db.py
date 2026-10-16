@@ -6,6 +6,12 @@ import asyncio
 from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FILTER
 import time
 import datetime
+import pytz
+
+IST = pytz.timezone('Asia/Kolkata')
+
+def get_ist_now():
+    return datetime.datetime.now(IST).replace(tzinfo=None)
 
 logger = logging.getLogger(__name__)
 
@@ -265,10 +271,14 @@ class Database:
                 expiry_time = user_data.get("expiry_time")
                 if expiry_time is None:
                     return False
-                elif isinstance(expiry_time, datetime.datetime) and datetime.datetime.now() <= expiry_time:
-                    return True
-                else:
-                    await self.col.update_one({"id": int(user_id)}, {"$set": {"expiry_time": None}})
+                now = get_ist_now()
+                if isinstance(expiry_time, datetime.datetime):
+                    if expiry_time.tzinfo is not None:
+                        expiry_time = expiry_time.astimezone(IST).replace(tzinfo=None)
+                    if now <= expiry_time:
+                        return True
+                    else:
+                        await self.col.update_one({"id": int(user_id)}, {"$set": {"expiry_time": None}})
             return False
         except Exception as e:
             logger.error("has_premium_access(%s): database error: %s", user_id, e, exc_info=True)
@@ -284,7 +294,9 @@ class Database:
             expiry_time = user_data.get("expiry_time")
             if not expiry_time or not isinstance(expiry_time, datetime.datetime):
                 return None
-            now = datetime.datetime.now()
+            if expiry_time.tzinfo is not None:
+                expiry_time = expiry_time.astimezone(IST).replace(tzinfo=None)
+            now = get_ist_now()
             if now >= expiry_time:
                 await self.col.update_one({"id": int(userid)}, {"$set": {"expiry_time": None}})
                 return None
@@ -297,8 +309,9 @@ class Database:
     
     async def all_premium_users(self):
         try:
+            now = get_ist_now()
             count = await self.col.count_documents({
-                "expiry_time": {"$gt": datetime.datetime.now()}
+                "expiry_time": {"$gt": now}
             })
             return count
         except Exception as e:
