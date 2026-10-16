@@ -3,7 +3,7 @@ from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files, get_trending_searches
+from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db
 from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds, get_ist_now, IST)
@@ -1066,38 +1066,6 @@ async def list_users(bot, message):
 async def list_chats(bot, message):
     total_chats = await db.total_chat_count()
     await message.reply(f"<b>ᴛᴏᴛᴀʟ ᴄʜᴀᴛꜱ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ: {total_chats}</b>")
-
-@Client.on_message(filters.command("trending"))
-async def trending(bot, message):
-    user_id = message.from_user.id if message.from_user else 0
-    if user_id not in ADMINS:
-        if message.chat.type != enums.ChatType.PRIVATE:
-            return
-    trending_data = await get_trending_searches(limit=10)
-    if not trending_data:
-        return await message.reply_text("<b>ɴᴏ ᴛʀᴇɴᴅɪɴɢ ᴜᴘʟᴏᴀᴅꜱ ʀᴇᴄᴏʀᴅᴇᴅ ʏᴇᴛ!</b>")
-
-    text = "<b>🔥 <u>ᴛʀᴇɴᴅɪɴɢ</u> 🔥</b>\n\n"
-    for i, item in enumerate(trending_data, 1):
-        query_title = item['query'].title()
-        count = item['count']
-        text += f"<b>{i}.</b> <code>{query_title}</code> — <i>{count} searches</i>\n"
-
-    keyboard = [[InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]]
-
-    sent_message = await message.reply_text(
-        text=text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-        disable_web_page_preview=True
-    )
-    
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        await asyncio.sleep(60)
-        try:
-            await sent_message.delete()
-            await message.delete()
-        except Exception:
-            pass
 
 @Client.on_message(filters.command("recent"))
 async def recent_uploads(client, message):
