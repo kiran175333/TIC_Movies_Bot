@@ -38,15 +38,18 @@ START_CHAR = ('\'', '"', SMART_OPEN)
 
 async def background_deleter(bot):
     while True:
-        await asyncio.sleep(10) # check every 10 secs
+        await asyncio.sleep(45) # check every 45 secs
         now = time.time()
-        pending = await db.get_pending_deletes(now)
-        for item in pending:
-            try:
-                await bot.delete_messages(item['chat_id'], item['message_id'])
-            except Exception:
-                pass
-            await db.remove_delete(item['_id'])
+        try:
+            pending = await db.get_pending_deletes(now)
+            for item in pending:
+                try:
+                    await bot.delete_messages(item['chat_id'], item['message_id'])
+                except Exception:
+                    pass
+                await db.remove_delete(item['_id'])
+        except Exception as e:
+            logger.error(f"Error in background_deleter: {e}")
 
 def delayed_delete(messages, delay=900):
     now = time.time()
