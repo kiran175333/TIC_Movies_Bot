@@ -1,4 +1,4 @@
-import os, logging, random, uuid, asyncio, time, datetime, re, sys, base64
+import os, logging, random, uuid, asyncio, time, datetime, re, sys, base64, html
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
@@ -202,27 +202,37 @@ async def start(client, message):
         
     
     # --- NEW SEARCH TRIGGER BLOCK ---
-    if data.startswith("getsrc-"):
-        search_query = data.replace("getsrc-", "", 1).replace("-", " ").strip()
+    if data.startswith("getsrc-") or data.startswith("b64-"):
+        pm_search_enabled = await db.get_pm_search_status()
+        is_premium = await db.has_premium_access(message.from_user.id)
+        if not pm_search_enabled and not is_premium:
+            btn = [
+                [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
+                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
+            ]
+            return await message.reply_text(
+                "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ғᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ᴏʀ ɢᴇᴛ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=enums.ParseMode.HTML
+            )
+
+        if data.startswith("getsrc-"):
+            search_query = data.replace("getsrc-", "", 1).replace("-", " ").strip()
+        else:
+            try:
+                import base64
+                encoded = data.replace("b64-", "", 1)
+                encoded += "=" * ((4 - len(encoded) % 4) % 4)
+                search_query = base64.urlsafe_b64decode(encoded).decode()
+            except Exception:
+                return await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.</b>")
+
         message.text = search_query  # Overwrite text to bypass the "/" command block in auto_filter
         try:
             from plugins.pm_filter import auto_filter
         except ImportError:
             from pm_filter import auto_filter
         
-        await auto_filter(client, search_query, message, None, True)
-        return
-    elif data.startswith("b64-"):
-        import base64
-        encoded = data.replace("b64-", "", 1)
-        encoded += "=" * ((4 - len(encoded) % 4) % 4)
-        search_query = base64.urlsafe_b64decode(encoded).decode()
-        message.text = search_query
-        try:
-            from plugins.pm_filter import auto_filter
-        except ImportError:
-            from pm_filter import auto_filter
-            
         await auto_filter(client, search_query, message, None, True)
         return
     # --------------------------------
@@ -723,34 +733,54 @@ async def requests(bot, message):
 
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
 async def send_msg(bot, message):
-    if message.reply_to_message:
-        parts = message.text.split(" ", 1)
-        if len(parts) < 2 or not parts[1].strip():
-            return await message.reply_text("<b>ᴜꜱᴀɢᴇ: ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ <code>/send user_id</code></b>")
-        raw_target = parts[1].strip()
-        if raw_target.lstrip("-").isdigit():
-            target_id = int(raw_target)
-        elif re.fullmatch(r"^@?[a-zA-Z0-9_]{5,32}$", raw_target):
-            target_id = raw_target
-        else:
-            return await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ ᴏʀ ᴜꜱᴇʀɴᴀᴍᴇ! ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍᴇʀɪᴄ ɪᴅ ᴏʀ @ᴜꜱᴇʀɴᴀᴍᴇ (5-32 ᴄʜᴀʀᴀᴄᴛᴇʀꜱ).</b>")
-        out = "<b>ᴜꜱᴇʀꜱ ꜱᴀᴠᴇᴅ ɪɴ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ᴀʀᴇ:\n\n</b>"
-        success = False
+    if not message.reply_to_message:
+        return await message.reply_text("<b>ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴀꜱ ᴀ ʀᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇꜱꜱᴀɢᴇ ᴜꜱɪɴɢ ᴛʜᴇ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛ ɪᴅ. ꜰᴏʀ ᴇxᴀᴍᴘʟᴇ: /send userid</b>")
+
+    parts = message.text.split(None, 1)
+    if len(parts) < 2 or not parts[1].strip():
+        return await message.reply_text("<b>ᴜꜱᴀɢᴇ: ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ <code>/send user_id1 user_id2 ...</code></b>")
+
+    targets = [t.strip() for t in re.split(r"[\s,]+", parts[1].strip()) if t.strip()]
+    success, failed = 0, 0
+    failed_reasons = []
+
+    for target in targets:
         try:
+            target_id = int(target) if target.lstrip("-").isdigit() else target
             user = await bot.get_users(target_id)
-            if await db.is_user_exist(user.id):
-                await message.reply_to_message.copy(int(user.id))
-                success = True
+            if not await db.is_user_exist(user.id):
+                failed += 1
+                failed_reasons.append(f"<code>{target}</code>: ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ")
             else:
-                success = False
-            if success:
-                await message.reply_text(f"<b>ʏᴏᴜʀ ᴍᴇꜱꜱᴀɢᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇɴᴛ ᴛᴏ {user.mention}.</b>")
-            else:
-                await message.reply_text("<b>ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ!</b>")
+                await message.reply_to_message.copy(chat_id=user.id)
+                success += 1
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            try:
+                await message.reply_to_message.copy(chat_id=user.id)
+                success += 1
+            except Exception:
+                failed += 1
+                failed_reasons.append(f"<code>{target}</code>: ꜰʟᴏᴏᴅ ᴡᴀɪᴛ")
         except Exception as e:
-            await message.reply_text(f"<b>ᴇʀʀᴏʀ: {e}</b>")
+            failed += 1
+            failed_reasons.append(f"<code>{target}</code>: {str(e)[:30]}")
+
+    if len(targets) == 1:
+        if success:
+            await message.reply_text(f"<b>ʏᴏᴜʀ ᴍᴇꜱꜱᴀɢᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇɴᴛ ᴛᴏ {user.mention}.</b>")
+        else:
+            await message.reply_text(f"<b>ꜰᴀɪʟᴇᴅ ᴛᴏ ꜱᴇɴᴅ: {failed_reasons[0]}</b>")
     else:
-        await message.reply_text("<b>ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴀꜱ ᴀ ʀᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇꜱꜱᴀɢᴇ ᴜꜱɪɴɢ ᴛʜᴇ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛ ɪᴅ. ꜰᴏʀ ᴇxᴀᴍᴘʟᴇ: /send userid</b>")
+        report = (
+            f"<b><u>ᴅᴇʟɪᴠᴇʀʏ ʀᴇᴘᴏʀᴛ</u></b>\n\n"
+            f"<b>• ᴛᴏᴛᴀʟ:</b> <code>{len(targets)}</code>\n"
+            f"<b>• ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟ:</b> <code>{success}</code>\n"
+            f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code>"
+        )
+        if failed_reasons:
+            report += "\n\n<b>ꜰᴀɪʟᴜʀᴇꜱ:</b>\n" + "\n".join(f"• {r}" for r in failed_reasons[:10])
+        await message.reply_text(report, quote=True, parse_mode=enums.ParseMode.HTML)
 
 @Client.on_message(filters.command("deletefiles") & filters.user(ADMINS))
 async def deletemultiplefiles(bot, message):
@@ -1211,14 +1241,32 @@ async def reset_group_requests(bot, message):
         f"<b>ᴀʟʟ ɴᴏɴ-ᴍᴇᴍʙᴇʀꜱ ᴡʜᴏꜱᴇ ʀᴇǫᴜᴇꜱᴛꜱ ᴡᴇʀᴇ ᴅɪꜱᴍɪꜱꜱᴇᴅ ᴡɪʟʟ ɴᴏᴡ ʙᴇ ᴘʀᴏᴍᴘᴛᴇᴅ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ʙᴇꜰᴏʀᴇ ɢᴇᴛᴛɪɴɢ ꜰɪʟᴇꜱ.</b>"
     )
 
-@Client.on_message(filters.command('id') & filters.private)
-async def showid(client, message):
-    user_id = message.chat.id
-    first = message.from_user.first_name if message.from_user else ""
-    last = (message.from_user.last_name or "") if message.from_user else ""
-    username = (message.from_user.username or "") if message.from_user else ""
-    dc_id = (message.from_user.dc_id or "") if message.from_user else ""
-    await message.reply_text(
-        f"<b>• ꜰɪʀꜱᴛ ɴᴀᴍᴇ:</b> {first}\n<b>• ʟᴀꜱᴛ ɴᴀᴍᴇ:</b> {last}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {username}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{user_id}</code>\n<b>• ᴅᴀᴛᴀ ᴄᴇɴᴛʀᴇ:</b> <code>{dc_id}</code>",
-        quote=True
-    )
+@Client.on_message(filters.command("id") & filters.private)
+async def showid(client: Client, message):
+    rep = message.reply_to_message
+
+    # 1. Privacy-hidden user forward
+    if rep and rep.forward_sender_name:
+        name = f"<code>{html.escape(rep.forward_sender_name)}</code>"
+        text = f"<b>• ɴᴀᴍᴇ:</b> {name}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>ʜɪᴅᴅᴇɴ ʙʏ ᴜꜱᴇʀ ᴘʀɪᴠᴀᴄʏ</code>"
+
+    # 2. Channel / Group (forwarded or anonymous post)
+    elif rep and (rep.forward_from_chat or rep.sender_chat):
+        c = rep.forward_from_chat or rep.sender_chat
+        title = f"<code>{html.escape(c.title or '')}</code>" if getattr(c, "title", None) else ""
+        ctype = f"<code>{str(c.type).split('.')[-1].upper()}</code>" if getattr(c, "type", None) else ""
+        uname = f"@{c.username}" if getattr(c, "username", None) else ""
+        msg_id = f"\n<b>• ᴍᴇꜱꜱᴀɢᴇ ɪᴅ:</b> <code>{rep.forward_from_message_id}</code>" if getattr(rep, "forward_from_message_id", None) else ""
+        text = f"<b>• ᴛɪᴛʟᴇ:</b> {title}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {uname}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{c.id}</code>\n<b>• ᴄʜᴀᴛ ᴛʏᴘᴇ:</b> {ctype}{msg_id}"
+
+    # 3. User (forwarded user, replied user, or sender themselves)
+    else:
+        u = (rep.forward_from or rep.from_user) if rep else message.from_user
+        uid = u.id if u else message.chat.id
+        first = f"<code>{html.escape(u.first_name or '')}</code>" if u and u.first_name else ""
+        last = f"<code>{html.escape(u.last_name or '')}</code>" if u and u.last_name else ""
+        uname = f"@{u.username}" if u and u.username else ""
+        dc = f"<code>{u.dc_id}</code>" if u and getattr(u, "dc_id", None) else ""
+        text = f"<b>• ꜰɪʀꜱᴛ ɴᴀᴍᴇ:</b> {first}\n<b>• ʟᴀꜱᴛ ɴᴀᴍᴇ:</b> {last}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {uname}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{uid}</code>\n<b>• ᴅᴀᴛᴀ ᴄᴇɴᴛʀᴇ:</b> {dc}"
+
+    await message.reply_text(text, quote=True, parse_mode=enums.ParseMode.HTML)
