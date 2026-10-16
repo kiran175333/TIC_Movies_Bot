@@ -19,12 +19,8 @@ def clean_filename(name):
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 lock = asyncio.Lock()
-BUTTON = TTLCache(maxsize=2000, ttl=3600)
 BUTTONS = TTLCache(maxsize=2000, ttl=3600)
 FRESH = TTLCache(maxsize=2000, ttl=3600)
-BUTTONS0 = TTLCache(maxsize=2000, ttl=3600)
-BUTTONS1 = TTLCache(maxsize=2000, ttl=3600)
-BUTTONS2 = TTLCache(maxsize=2000, ttl=3600)
 def get_header_buttons(key):
     return [
         [
