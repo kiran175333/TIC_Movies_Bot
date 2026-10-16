@@ -12,6 +12,16 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
+DOWNTIME_TEXT = (
+    "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\n"
+    "ᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n"
+    "ᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\n"
+    "ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴀʟʟ ʟɪɴᴋꜱ? ɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴠɪᴀ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.</b>"
+)
+DOWNTIME_BUTTONS = InlineKeyboardMarkup([
+    [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
+])
+
 def make_search_slug(title: str) -> str:
     import base64
     truncated = title[:45]
@@ -276,8 +286,7 @@ async def start(client, message):
             await db.create_verify_token(user, token, file_data=f"{pre}_{file_id}")
             g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
             if not g:
-                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ꜰᴇᴡ.</b>"
-                return await message.reply_text(error_msg)
+                return await message.reply_text(DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
             btn = [[InlineKeyboardButton('▼ ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ ▼', url=g)]]
             if TUTORIAL:
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
@@ -301,8 +310,7 @@ async def start(client, message):
         g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
         
         if not g:
-            error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
-            await client.send_message(chat_id=user, text=error_msg)
+            await client.send_message(chat_id=user, text=DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
             return
 
         btn = [[
@@ -328,8 +336,7 @@ async def start(client, message):
             g = await get_shortlink(f"https://telegram.me/{temp.U_NAME}?start=t_{token}")
             
             if not g:
-                error_msg = "<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ʟɪɴᴋ-ɢᴇɴᴇʀᴀᴛɪɴɢ ᴡᴇʙsɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ, ᴡʜɪᴄʜ ᴍᴇᴀɴꜱ ᴡᴇ ᴄᴀɴɴᴏᴛ ɢᴇɴᴇʀᴀᴛᴇ ʏᴏᴜʀ ꜰʀᴇᴇ ʟɪɴᴋ ʀɪɢʜᴛ ɴᴏᴡ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ʀᴇǫᴜᴇꜱᴛɪɴɢ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.\n\nᴛɪʀᴇᴅ ᴏꜰ ʟɪɴᴋꜱ ᴀɴᴅ ᴡᴀɪᴛɪɴɢ? ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴛʜᴇꜱᴇ ʟɪɴᴋꜱ ᴄᴏᴍᴘʟᴇᴛᴇʟʏ?\n\nɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴠɪᴀ /plan.</b>"
-                await client.send_message(chat_id=message.from_user.id, text=error_msg)
+                await client.send_message(chat_id=message.from_user.id, text=DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
                 return
                 
             btn = [[
@@ -361,7 +368,7 @@ async def start(client, message):
             if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
                 verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
                 if not verify_link:
-                    await message.reply_text("<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.</b>")
+                    await message.reply_text(DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
                     return
                 btn = [[
                     InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
@@ -416,7 +423,7 @@ async def start(client, message):
         if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
             verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
             if not verify_link:
-                await message.reply_text("<b>⚠️ ᴛᴇᴍᴘᴏʀᴀʀʏ ꜱᴇʀᴠᴇʀ ɪꜱꜱᴜᴇ\n\nᴏᴜʀ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ᴡᴇʙꜱɪᴛᴇ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴇxᴘᴇʀɪᴇɴᴄɪɴɢ ᴅᴏᴡɴᴛɪᴍᴇ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ʙɪᴛ.</b>")
+                await message.reply_text(DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
                 return
             btn = [[
                 InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
