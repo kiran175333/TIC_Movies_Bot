@@ -6,7 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files, get_trending_searches
 from database.users_chats_db import db
 from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
-from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds)
+from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds, get_ist_now, IST)
 from database.connections_mdb import active_connection
 
 logger = logging.getLogger(__name__)
@@ -836,7 +836,10 @@ async def give_premium_cmd_handler(client, message):
         seconds = await get_seconds(time_str)
         if seconds and seconds > 0:
             current_expiry = await db.get_expiry_time(user_id)
-            now = datetime.datetime.now()
+            now = get_ist_now()
+            if current_expiry and isinstance(current_expiry, datetime.datetime):
+                if current_expiry.tzinfo is not None:
+                    current_expiry = current_expiry.astimezone(IST).replace(tzinfo=None)
             base_time = current_expiry if (current_expiry and isinstance(current_expiry, datetime.datetime) and current_expiry > now) else now
             expiry_time = base_time + datetime.timedelta(seconds=seconds)
             user_data = {"id": user_id, "expiry_time": expiry_time} 
@@ -913,6 +916,8 @@ async def check_plans_cmd(client, message):
         expiry_time = await db.get_expiry_time(user_id)
         
         if remaining_time and expiry_time:
+            if isinstance(expiry_time, datetime.datetime) and expiry_time.tzinfo is not None:
+                expiry_time = expiry_time.astimezone(IST).replace(tzinfo=None)
             clean_remaining = str(remaining_time).split('.')[0]
             clean_expiry = str(expiry_time).split('.')[0]
             
@@ -1193,12 +1198,13 @@ async def recent_uploads(client, message):
 async def premium_users_list(client, message):
     msg = await message.reply_text("<b>ꜰᴇᴛᴄʜɪɴɢ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ...</b>")
     
-    count = await db.users.count_documents({"expiry_time": {"$gt": datetime.datetime.now()}})
+    now = get_ist_now()
+    count = await db.users.count_documents({"expiry_time": {"$gt": now}})
     
     if count == 0:
         return await msg.edit_text("<b>ᴛʜᴇʀᴇ ᴀʀᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ ᴀᴛ ᴛʜᴇ ᴍᴏᴍᴇɴᴛ.</b>")
     
-    premium_users = db.users.find({"expiry_time": {"$gt": datetime.datetime.now()}}).sort("expiry_time", 1)
+    premium_users = db.users.find({"expiry_time": {"$gt": now}}).sort("expiry_time", 1)
     text = f"<b>🌟 <u>ᴀᴄᴛɪᴠᴇ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ</u></b>\n\n<b>ᴛᴏᴛᴀʟ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ: {count}</b>\n\n"
     
     i = 0
@@ -1208,6 +1214,8 @@ async def premium_users_list(client, message):
         user_id = user.get('id', 'Unknown')
         name = user.get('name', 'Unknown')
         exp_val = user.get('expiry_time')
+        if isinstance(exp_val, datetime.datetime) and exp_val.tzinfo is not None:
+            exp_val = exp_val.astimezone(IST).replace(tzinfo=None)
         expiry = str(exp_val).split('.')[0] if exp_val else "Unknown"
         # Username is now wrapped in a clickable profile link:
         text += f"<b>{i}. ᴜsᴇʀɴᴀᴍᴇ: <a href='tg://user?id={user_id}'>{name}</a></b>\n<b>ɪᴅ:</b> <code>{user_id}</code>\n<b>ᴇxᴘɪʀᴇꜱ:</b> <code>{expiry}</code>\n\n"
