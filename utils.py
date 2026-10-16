@@ -13,6 +13,11 @@ from database.users_chats_db import db
 from shortzy import Shortzy
 from cachetools import TTLCache
 
+IST = pytz.timezone('Asia/Kolkata')
+
+def get_ist_now():
+    return datetime.now(IST).replace(tzinfo=None)
+
 def remove_junk(file_name):
     file_name = str(file_name)
     file_name = re.sub(r"(?i)\b(1tamilmv|movierulz|tamilblasters|tamilmv|hdhub4u|vegamovies|bollyflix|katmoviehd|themoviesboss|moviesflix|moviesmod|dotmovies|uhdmovies|ibomma|filmyzilla|9xmovies|jalshamoviez|mkvcinemas|pahe)(?:\.[a-z]{2,4})?\b", "", file_name)
