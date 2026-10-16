@@ -1102,7 +1102,22 @@ async def trending(bot, message):
 @Client.on_message(filters.command("recent"))
 async def recent_uploads(client, message):
     user_id = message.from_user.id if message.from_user else 0
-    if user_id not in ADMINS:
+    is_admin_user = is_admin(user_id)
+    is_premium = await db.has_premium_access(user_id) if not is_admin_user else True
+
+    if not is_admin_user and not is_premium:
+        if message.chat.type != enums.ChatType.PRIVATE:
+            return
+        btn = [
+            [InlineKeyboardButton("⭐ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ⭐", callback_data="buy_premium")]
+        ]
+        return await message.reply_text(
+            "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ.\n\nꜱᴇɴᴅ /plan ᴏʀ ᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘɢʀᴀᴅᴇ!</b>",
+            reply_markup=InlineKeyboardMarkup(btn),
+            quote=True
+        )
+
+    if not is_admin_user:
         if message.chat.type != enums.ChatType.PRIVATE:
             return
         limit = 15
