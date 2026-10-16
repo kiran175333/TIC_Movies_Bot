@@ -38,10 +38,11 @@ class Database:
         self.verified = self.db.verified_users
 
     async def setup_indices(self):
-        """Ensure required TTL indexes exist for tokens collection.
+        """Ensure required TTL indexes exist for tokens collection and time index for delayed deletes.
         Does not silently suppress errors so startup can verify integrity.
         """
         await self.tokens.create_index('time', expireAfterSeconds=900)
+        await self.delete_col.create_index('time')
 
     def new_user(self, id, name):
         return dict(
