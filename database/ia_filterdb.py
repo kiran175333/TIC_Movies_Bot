@@ -10,7 +10,6 @@ from utils import remove_junk
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
 db = client[DATABASE_NAME]
 col = db[COLLECTION_NAME]
-trending_col = db['TRENDING_UPLOADS']
 
 # Second & Third Databases For File Saving
 sec_col = None
@@ -290,22 +289,6 @@ def unpack_new_file_id(new_file_id):
     )
     return file_id
     
-async def add_search_query(search_query):
-    search_query = search_query.strip().lower()
-    if len(search_query) < 3:
-        return
-    try:
-        await trending_col.update_one(
-            {'query': search_query},
-            {'$inc': {'count': 1}},
-            upsert=True
-        )
-    except Exception as e:
-        print(f"Error logging trending query: {e}")
-
-async def get_trending_searches(limit=10):
-    return await trending_col.find({}).sort('count', -1).limit(limit).to_list(length=limit)
-
 async def reset_and_setup_indices():
     """Reset the index-setup flag and recreate all required indexes."""
     global _indices_setup
