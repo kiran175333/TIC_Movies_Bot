@@ -65,7 +65,7 @@ async def toggle_pm_search(bot, message):
     if len(message.command) == 1:
         current_status = await db.get_pm_search_status()
         state = "ᴏɴ" if current_status else "ᴏғғ"
-        return await message.reply_text(f"<b>ᴄᴜʀʀᴇɴᴛ ᴘᴍ ꜱᴇᴀʀᴄʜ ꜱᴛᴀᴛᴜꜱ: {state}\n\nᴜꜱᴇ `/pm_search on` ᴏʀ `/pm_search off` ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛ.</b>")
+        return await message.reply_text(f"<b>ᴄᴜʀʀᴇɴᴛ ᴘᴍ ꜱᴇᴀʀᴄʜ ꜱᴛᴀᴛᴜꜱ: {state}\n\nᴜꜱᴇ</b> <code>/pm_search on</code> <b>ᴏʀ</b> <code>/pm_search off</code> <b>ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛ.</b>")
     
     cmd = message.command[1].lower()
     if cmd == "on":
@@ -75,7 +75,7 @@ async def toggle_pm_search(bot, message):
         await db.update_pm_search_status(False)
         await message.reply_text("<b>ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
     else:
-        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ.\n\nᴜꜱᴇ `on` ᴏʀ `off`.</b>")
+        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ.\n\nᴜꜱᴇ</b> <code>on</code> <b>ᴏʀ</b> <code>off</code>.</b>")
     
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
