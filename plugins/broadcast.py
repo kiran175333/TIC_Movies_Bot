@@ -43,7 +43,11 @@ async def run_pm_broadcast(b_msg, sts):
                 # Update UI only if running
                 if BROADCAST_STATE["status"] == "running":
                     await sts.edit(
-                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)",
+                        f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ</u>\n\n"
+                        f"• ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n"
+                        f"<b>• ᴄᴏᴍᴘʟᴇᴛᴇᴅ:</b> <code>{done}</code> / <code>{total_users}</code>\n"
+                        f"<b>• ꜱᴜᴄᴄᴇꜱꜱ:</b> <code>{success}</code>\n"
+                        f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code> (<b>ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ</b>)",
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
             except Exception:
@@ -54,7 +58,15 @@ async def run_pm_broadcast(b_msg, sts):
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
     rem_users = await db.total_users_count()
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\n\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_users}")
+    await sts.edit(
+        f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}</u>\n\n"
+        f"• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ:</b> <code>{time_taken}</code>\n\n"
+        f"<b>• ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n"
+        f"<b>• ᴄᴏᴍᴘʟᴇᴛᴇᴅ:</b> <code>{done}</code> / <code>{total_users}</code>\n"
+        f"<b>• ꜱᴜᴄᴄᴇꜱꜱ:</b> <code>{success}</code>\n"
+        f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code> (<b>ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ</b>)\n"
+        f"<b>• ʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ:</b> <code>{rem_users}</code>"
+    )
 
 
 async def run_grp_broadcast(b_msg, sts):
@@ -87,7 +99,11 @@ async def run_grp_broadcast(b_msg, sts):
             try:
                 if BROADCAST_STATE["status"] == "running":
                     await sts.edit(
-                        f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ:</b>\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)",
+                        f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ</u>\n\n"
+                        f"• ᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ:</b> <code>{total_groups}</code>\n"
+                        f"<b>• ᴄᴏᴍᴘʟᴇᴛᴇᴅ:</b> <code>{done}</code> / <code>{total_groups}</code>\n"
+                        f"<b>• ꜱᴜᴄᴄᴇꜱꜱ:</b> <code>{success}</code>\n"
+                        f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code> (<b>ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ</b>)",
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
             except Exception:
@@ -98,7 +114,15 @@ async def run_grp_broadcast(b_msg, sts):
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
     rem_groups = await db.total_chat_count()
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\n\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_groups}")
+    await sts.edit(
+        f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}</u>\n\n"
+        f"• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ:</b> <code>{time_taken}</code>\n\n"
+        f"<b>• ᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ:</b> <code>{total_groups}</code>\n"
+        f"<b>• ᴄᴏᴍᴘʟᴇᴛᴇᴅ:</b> <code>{done}</code> / <code>{total_groups}</code>\n"
+        f"<b>• ꜱᴜᴄᴄᴇꜱꜱ:</b> <code>{success}</code>\n"
+        f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code> (<b>ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ</b>)\n"
+        f"<b>• ʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ:</b> <code>{rem_groups}</code>"
+    )
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
