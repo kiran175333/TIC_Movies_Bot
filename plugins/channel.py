@@ -19,9 +19,9 @@ async def media(bot, message):
                 file_name = html.escape(raw_name)
                 file_size = get_size(getattr(media, "file_size", 0))
                 dup_text = (
-                    f"<b>#ᴅᴜᴘʟɪᴄᴀᴛᴇ 1️⃣\n"
-                    f"• ғɪʟᴇ: <code>{file_name}</code> [{file_size}]\n"
-                    f"• ʟɪɴᴋ: <a href=\"{msg_link}\">ᴠɪᴇᴡ ᴍᴇssᴀɢᴇ</a></b>"
+                    f"<b>#ᴅᴜᴘʟɪᴄᴀᴛᴇ 1️⃣</b>\n"
+                    f"<b>• ꜰɪʟᴇ:</b> <code>{file_name}</code> [{file_size}]\n"
+                    f"<b>• ʟɪɴᴋ:</b> <a href=\"{html.escape(msg_link)}\"><b>ᴠɪᴇᴡ ᴍᴇꜱꜱᴀɢᴇ</b></a>"
                 )
                 await bot.send_message(LOG_CHANNEL, dup_text, disable_web_page_preview=True)
             except Exception:
