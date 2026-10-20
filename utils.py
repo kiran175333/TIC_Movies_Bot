@@ -299,7 +299,7 @@ async def get_cap(settings, remaining_seconds, files, query, total_results, sear
     if not settings.get("button", True):
         for file in files:
             safe_name = file['file_name'].replace('<', '&lt;').replace('>', '&gt;')
-            cap += f"📂 <a href='https://telegram.me/{temp.U_NAME}?start=file_{file['file_id']}'>[{get_size(file['file_size'])}] {safe_name}</a>\n\n"
+            cap += f"📂 <a href='https://telegram.me/{temp.U_NAME}?start=getlink_{file['file_id']}'>[{get_size(file['file_size'])}] {safe_name}</a>\n\n"
 
     return cap
 
