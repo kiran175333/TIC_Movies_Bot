@@ -24,7 +24,7 @@ async def index_files(bot, query):
         temp.CANCEL[chat_id] = True
         await query.answer("ᴄᴀɴᴄᴇʟʟɪɴɢ ɪɴᴅᴇxɪɴɢ...")
         try:
-            await query.message.edit("<b>✅ ɪɴᴅᴇxɪɴɢ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>\n\nᴛʜᴇ ʙᴀᴄᴋɢʀᴏᴜɴᴅ ᴘʀᴏᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ꜱᴀꜰᴇʟʏ ᴀʙᴏʀᴛᴇᴅ.")
+            await query.message.edit("<b>ɪɴᴅᴇxɪɴɢ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>\n\nᴛʜᴇ ʙᴀᴄᴋɢʀᴏᴜɴᴅ ᴘʀᴏᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ꜱᴀꜰᴇʟʏ ᴀʙᴏʀᴛᴇᴅ.")
         except Exception:
             pass
         return
@@ -32,36 +32,15 @@ async def index_files(bot, query):
         _, raju, chat, lst_msg_id, from_user = query.data.split("#")
     except ValueError:
         return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-    if raju == 'reject':
-        await query.message.delete()
-        try:
-            await bot.send_message(
-                int(from_user),
-                f'ʏᴏᴜʀ ꜱᴜʙᴍɪꜱꜱɪᴏɴ ꜰᴏʀ ɪɴᴅᴇxɪɴɢ {chat} ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ.',
-                reply_to_message_id=int(lst_msg_id)
-            )
-        except Exception:
-            pass
-        return
 
     msg = query.message
-
     await query.answer('ᴘʀᴏᴄᴇꜱꜱɪɴɢ...', show_alert=True)
-    if not is_admin(from_user):
-        try:
-            await bot.send_message(
-                int(from_user),
-                f'ʏᴏᴜʀ ꜱᴜʙᴍɪꜱꜱɪᴏɴ ꜰᴏʀ ɪɴᴅᴇxɪɴɢ {chat} ʜᴀꜱ ʙᴇᴇɴ ᴀᴄᴄᴇᴘᴛᴇᴅ ʙʏ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴀɴᴅ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ꜱᴏᴏɴ.',
-                reply_to_message_id=int(lst_msg_id)
-            )
-        except Exception:
-            pass
     try:
         chat = int(chat)
     except Exception:
         chat = chat
     await msg.edit(
-        "ꜱᴛᴀʀᴛɪɴɢ ɪɴᴅᴇxɪɴɢ...",
+        "<b>ꜱᴛᴀʀᴛɪɴɢ ɪɴᴅᴇxɪɴɢ...</b>",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data=f'index_cancel#{chat}')]]
         )
@@ -89,7 +68,7 @@ async def send_for_index(bot, message):
     try:
         await bot.get_chat(chat_id)
     except ChannelInvalid:
-        return await ask_msg.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴏʀ ɢʀᴏᴜᴘ. ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ ᴛᴏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ.')
+        return await ask_msg.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴏʀ ɢʀᴏᴜᴘ.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ ᴛᴏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ.')
     except (UsernameInvalid, UsernameNotModified):
         return await ask_msg.reply('<b>ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ ꜱᴘᴇᴄɪꜰɪᴇᴅ.</b>')
     except Exception as e:
@@ -102,37 +81,16 @@ async def send_for_index(bot, message):
     if k.empty:
         return await message.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ɢʀᴏᴜᴘ, ᴀɴᴅ ɪ ᴀᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ.')
 
-    if is_admin(message.from_user):
-        buttons = [[
-            InlineKeyboardButton('ʏᴇꜱ', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
-        ],[
-            InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data='close_data')
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        return await message.reply(
-            f'ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ɪɴᴅᴇx ᴛʜɪꜱ ᴄʜᴀɴɴᴇʟ/ɢʀᴏᴜᴘ?\n\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code>{chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>',
-            reply_markup=reply_markup
-        )
-
-    if type(chat_id) is int:
-        try:
-            link = (await bot.create_chat_invite_link(chat_id)).invite_link
-        except ChatAdminRequired:
-            return await message.reply('ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ᴄʜᴀᴛ ᴀɴᴅ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ɪɴᴠɪᴛᴇ ᴜꜱᴇʀꜱ.')
-    else:
-        link = f"@{chat_id}"
     buttons = [[
-        InlineKeyboardButton('ᴀᴄᴄᴇᴘᴛ ɪɴᴅᴇx', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+        InlineKeyboardButton('ʏᴇꜱ', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
     ],[
-        InlineKeyboardButton('ʀᴇᴊᴇᴄᴛ ɪɴᴅᴇx', callback_data=f'index#reject#{chat_id}#{message.id}#{message.from_user.id}'),
+        InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data='close_data')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
-    await bot.send_message(
-        LOG_CHANNEL,
-        f'#ɪɴᴅᴇxʀᴇǫᴜᴇꜱᴛ\n\nʙʏ: {message.from_user.mention} (<code>{message.from_user.id}</code>)\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code> {chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>\nɪɴᴠɪᴛᴇ ʟɪɴᴋ: {link}',
+    return await message.reply(
+        f'<b>ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ɪɴᴅᴇx ᴛʜɪꜱ ᴄʜᴀɴɴᴇʟ/ɢʀᴏᴜᴘ?\n\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ:</b> <code>{chat_id}</code>\n<b>ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ:</b> <code>{last_msg_id}</code>',
         reply_markup=reply_markup
     )
-    await message.reply('ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʏᴏᴜʀ ᴄᴏɴᴛʀɪʙᴜᴛɪᴏɴ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴛᴏ ᴠᴇʀɪꜰʏ ᴛʜᴇ ꜰɪʟᴇꜱ.')
 
 
 @Client.on_message(filters.command('setskip') & filters.user(ADMINS))
@@ -143,7 +101,7 @@ async def set_skip_number(bot, message):
             skip = int(skip)
         except Exception:
             return await message.reply("ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.")
-        await message.reply(f"ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇᴛ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴛᴏ {skip}.")
+        await message.reply(f"ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇᴛ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴛᴏ <code>{skip}</code>.")
         temp.CURRENT = int(skip)
     else:
         await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ.</b>")
@@ -197,9 +155,9 @@ def is_series_or_anime(file_name: str, caption: str = "") -> bool:
 
 async def send_index_logs(bot, msg, saved_path, skipped_path, dup_path, saved_count, skipped_count, dup_count):
     files_to_send = [
-        (saved_path, f"<b>✅ ꜱᴀᴠᴇᴅ ᴍᴏᴠɪᴇꜱ:</b> <code>{saved_count}</code>"),
-        (skipped_path, f"<b>⏭️ ꜱᴋɪᴘᴘᴇᴅ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ:</b> <code>{skipped_count}</code>"),
-        (dup_path, f"<b>⚠️ ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ:</b> <code>{dup_count}</code>"),
+        (saved_path, f"<b>ꜱᴀᴠᴇᴅ ᴍᴏᴠɪᴇꜱ:</b> <code>{saved_count}</code>"),
+        (skipped_path, f"<b>ꜱᴋɪᴘᴘᴇᴅ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ:</b> <code>{skipped_count}</code>"),
+        (dup_path, f"<b>ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ:</b> <code>{dup_count}</code>"),
     ]
     for file_path, cap in files_to_send:
         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
