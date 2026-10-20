@@ -5,8 +5,8 @@ from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db
-from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
-from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_seconds, get_ist_now, IST)
+from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
+from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_shortlink, get_seconds, get_ist_now, IST)
 
 logger = logging.getLogger(__name__)
 
@@ -252,28 +252,7 @@ async def start(client, message):
         file_id = data
         pre = ""
 
-    if data.split("-", 1)[0] == "verify":
-        try:
-            _, userid, token = data.split("-", 2)
-        except ValueError:
-            return await message.reply_text(text="<b>⚠️ ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ᴀ ꜰʀᴇꜱʜ ʟɪɴᴋ.</b>")
-            
-        if str(message.from_user.id) != str(userid):
-            return await message.reply_text(text="<b>⚠️ ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ᴀ ꜰʀᴇꜱʜ ʟɪɴᴋ.</b>")
-        is_valid = await check_token(client, userid, token)
-        if is_valid == True:
-            text = "<b>ʜᴇʏ {},\n\n✅ ᴠᴇʀɪꜰɪᴄᴀᴛɪᴏɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟ!\n\nʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇꜱ.\n\n</b>"
-            if PREMIUM_MODE == True:
-                text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"            
-            await message.reply_text(text=text.format(message.from_user.mention))
-            await verify_user(client, userid, token)
-            return # <--- This stops the bot from crashing here
-        else:
-            return await message.reply_text(text="<b>⚠️ ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ᴀ ꜰʀᴇꜱʜ ʟɪɴᴋ.</b>")
-
-
-
-    elif data.startswith("getlink_"):
+    if data.startswith("getlink_"):
         user = message.from_user.id
         pre = 'file'
         try:
@@ -364,25 +343,6 @@ async def start(client, message):
             return await message.reply('<b>❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.</b>')
 
         reply_markup = None
-        if not await db.has_premium_access(message.from_user.id):
-            if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
-                verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
-                if not verify_link:
-                    await message.reply_text(DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
-                    return
-                btn = [[
-                    InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
-                ],[
-                    InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
-                ]]
-                text = "<b>ʜᴇʏ {},\n\n🔐 ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ!\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇꜱ.\n\n</b>"
-                if PREMIUM_MODE == True:
-                    text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
-                await message.reply_text(
-                    text=text.format(message.from_user.mention),
-                    reply_markup=InlineKeyboardMarkup(btn)
-                )
-                return
         msg = await client.send_cached_media(
             chat_id=message.from_user.id,
             file_id=file_id,
@@ -419,25 +379,6 @@ async def start(client, message):
     if f_caption is None:
         f_caption = f"{clean_name}"
     reply_markup = None
-    if not await db.has_premium_access(message.from_user.id):
-        if not await check_verification(client, message.from_user.id) and VERIFY in [True, "True", "true"]:
-            verify_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")
-            if not verify_link:
-                await message.reply_text(DOWNTIME_TEXT, reply_markup=DOWNTIME_BUTTONS)
-                return
-            btn = [[
-                InlineKeyboardButton("▲ ᴠᴇʀɪꜰʏ ▲", url=verify_link)
-            ],[
-                InlineKeyboardButton("? ʜᴏᴡ ᴛᴏ ᴠᴇʀɪꜰʏ ?", url=TUTORIAL)
-            ]]
-            text = "<b>ʜᴇʏ {},\n\n🔐 ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ʏᴇᴛ!\n\nᴘʟᴇᴀꜱᴇ ᴄʟɪᴄᴋ ᴏɴ 'ᴠᴇʀɪꜰʏ' ᴛᴏ ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇꜱꜱ ꜰᴏʀ 15 ᴍɪɴᴜᴛᴇꜱ.\n\n</b>"
-            if PREMIUM_MODE == True:
-                text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
-            await message.reply_text(
-                text=text.format(message.from_user.mention),
-                reply_markup=InlineKeyboardMarkup(btn)
-            )
-            return
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
