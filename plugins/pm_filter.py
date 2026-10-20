@@ -70,12 +70,12 @@ async def toggle_pm_search(bot, message):
     cmd = message.command[1].lower()
     if cmd == "on":
         await db.update_pm_search_status(True)
-        await message.reply_text("<b>✅ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴇɴᴀʙʟᴇᴅ ғᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ.</b>")
+        await message.reply_text("<b>ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴇɴᴀʙʟᴇᴅ ғᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ.</b>")
     elif cmd == "off":
         await db.update_pm_search_status(False)
-        await message.reply_text("<b>❌ ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
+        await message.reply_text("<b>ᴘᴍ ꜱᴇᴀʀᴄʜ ʜᴀꜱ ʙᴇᴇɴ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\n(ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ᴡɪʟʟ ꜱᴛɪʟʟ ʜᴀᴠᴇ ᴀᴄᴄᴇꜱꜱ)</b>")
     else:
-        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ. ᴜꜱᴇ `on` ᴏʀ `off`.</b>")
+        await message.reply_text("<b>ɪɴᴠᴀʟɪᴅ ᴀʀɢᴜᴍᴇɴᴛ.\n\nᴜꜱᴇ `on` ᴏʀ `off`.</b>")
     
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
@@ -125,10 +125,10 @@ async def next_page(bot, query):
     try:
         ident, req, key, offset = query.data.split("_")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     
     if not query.from_user:
-        return await query.answer("ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
+        return await query.answer("🚫 ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     
     try:
@@ -138,7 +138,7 @@ async def next_page(bot, query):
     
     if req_id not in [query.from_user.id, 0]:
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True
         )
         
@@ -153,7 +153,7 @@ async def next_page(bot, query):
     
     # Fix 2: Restored the safety check so it doesn't send 'None' to the database
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     settings = await get_settings(query.message.chat.id)
     b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
     
@@ -270,16 +270,16 @@ async def next_page(bot, query):
 async def languages_cb_handler(client: Client, query: CallbackQuery):
     if not check_callback_owner(query):
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            f"✋ ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\n⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     try:
         _, key = query.data.split("#")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     search = FRESH.get(key)
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\n🔍 ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     try:
         search = search.replace(' ', '_')
     except Exception:
@@ -317,16 +317,16 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
     try:
         _, lang, key = query.data.split("#")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     if not check_callback_owner(query):
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            f"✋ ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\n⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     search = FRESH.get(key)
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\n🔍 ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     baal = lang in search
     if baal:
         search = search.replace(lang, "")
@@ -342,7 +342,7 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
     b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
     files, offset, total_results = await get_search_results(chat_id, search, max_results=b_limit, offset=0, filter=True)
     if not files:
-        await query.answer("ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
+        await query.answer("❌ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
         return
     settings = await get_settings(message.chat.id)
     pre = 'file'
@@ -404,16 +404,16 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
 async def qualities_cb_handler(client: Client, query: CallbackQuery):
     if not check_callback_owner(query):
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     try:
         _, key = query.data.split("#")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     search = FRESH.get(key)
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     try:
         search = search.replace(' ', '_')
     except Exception:
@@ -446,15 +446,15 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     try:
         _, qual, key = query.data.split("#")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     if not check_callback_owner(query):
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     search = FRESH.get(key)
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     baal = qual in search
     if baal:
         search = search.replace(qual, "")
@@ -472,7 +472,7 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     files, offset, total_results = await get_search_results(chat_id, search, max_results=b_limit, offset=0, filter=True)
     # files = [file for file in files if re.search(lang, file["file_name"], re.IGNORECASE)]
     if not files:
-        await query.answer("ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
+        await query.answer("⚠️ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
         return
     settings = await get_settings(message.chat.id)
     pre = 'file'
@@ -532,17 +532,17 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
 async def back_to_home_cb_handler(client: Client, query: CallbackQuery):
     if not check_callback_owner(query):
         return await query.answer(
-            f"ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     try:
         _, key = query.data.split("#")
     except (ValueError, AttributeError):
-        return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     
     search = FRESH.get(key)
     if not search:
-        return await query.answer("ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ", show_alert=True)
+        return await query.answer("⏳ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ɪꜱ ᴛᴏᴏ ᴏʟᴅ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.", show_alert=True)
     
     clean_search = search
     BUTTONS[key] = clean_search
@@ -553,7 +553,7 @@ async def back_to_home_cb_handler(client: Client, query: CallbackQuery):
 
     files, offset, total_results = await get_search_results(chat_id, clean_search, max_results=b_limit, offset=0, filter=True)
     if not files:
-        return await query.answer("ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
+        return await query.answer("❌ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
 
     temp.GETALL[key] = files
     pre = 'file'
@@ -621,19 +621,19 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 except Exception:
                     pass
             else:
-                await query.answer("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴅᴏ ᴛʜᴀᴛ!", show_alert=True)
+                await query.answer("⚠️ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴅᴏ ᴛʜᴀᴛ!", show_alert=True)
         elif check_callback_owner(query) or (query.from_user and is_admin(query.from_user.id)):
             try:
                 await query.message.delete()
             except Exception:
                 pass
         else:
-            await query.answer("ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ!", show_alert=True)           
+            await query.answer("⚠️ ᴛʜɪꜱ ʙᴜᴛᴛᴏɴ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ!", show_alert=True)           
     elif query.data.startswith("spcheck#"):
         try:
             _, correction = query.data.split("#", 1)
         except ValueError:
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ.", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ.", show_alert=True)
             
         try:
             await query.answer()
@@ -690,12 +690,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         return 
     elif query.data == "myplan_back":
         btn = [
-            [InlineKeyboardButton("ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ", callback_data="buy_premium_myplan")],
+            [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_myplan")],
             [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
         ]
         
         await query.message.edit_text(
-            text="<b>ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ /plan</b>", 
+            text="<b>ℹ️ ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ: /plan</b>", 
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.HTML
         )
@@ -703,16 +703,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
     if query.data.startswith("file"):
         if not check_callback_owner(query):
             return await query.answer(
-                f"ʜᴇʏ {query.from_user.first_name if query.from_user else ''},\n\nᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ",
+                "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
                 show_alert=True
             )
         try:
             ident, file_id = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         files_ = await get_file_details(file_id)
         if not files_:
-            return await query.answer('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.')
+            return await query.answer('❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.')
         files = files_
         clean_name = remove_junk(files["file_name"])
         title = clean_name
@@ -741,7 +741,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
                 return
         except UserIsBlocked:
-            await query.answer('ᴘʟᴇᴀꜱᴇ ᴜɴʙʟᴏᴄᴋ ᴛʜᴇ ʙᴏᴛ', show_alert=True)
+            await query.answer('⚠️ ᴘʟᴇᴀꜱᴇ ᴜɴʙʟᴏᴄᴋ ᴛʜᴇ ʙᴏᴛ', show_alert=True)
         except PeerIdInvalid:
             try:
                 await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={ident}_{file_id}")
@@ -757,43 +757,43 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             ident, userid = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         if not query.from_user:
-            return await query.answer("ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
+            return await query.answer("⚠️ ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
         try:
             target_user_id = int(userid)
         except ValueError:
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ᴜꜱᴇʀ", show_alert=True)
         if target_user_id == 0:
-            await query.answer("ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ", show_alert=True)
+            await query.answer("⚠️ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀɴᴏɴʏᴍᴏᴜꜱ ᴀᴅᴍɪɴ", show_alert=True)
             return
         if query.from_user.id != target_user_id:
-            await query.answer("ᴛʜɪꜱ ʙᴜᴛᴛᴏɴ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ!", show_alert=True)
+            await query.answer("⚠️ ᴛʜɪꜱ ʙᴜᴛᴛᴏɴ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ!", show_alert=True)
             return
         user_id = query.from_user.id
         settings = await get_settings(int(query.message.chat.id))
         try:
             btn = await pub_is_subscribed(client, query, settings['fsub'])
             if btn:
-                await query.answer("ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ' ʙᴜᴛᴛᴏɴ.", show_alert=True)
+                await query.answer("📢 ᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴜɴᴍᴜᴛᴇ' ʙᴜᴛᴛᴏɴ.", show_alert=True)
             else:
                 await client.unban_chat_member(query.message.chat.id, user_id)
-                await query.answer("ᴜɴᴍᴜᴛᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ", show_alert=True)
+                await query.answer("✅ ᴜɴᴍᴜᴛᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ!", show_alert=True)
                 try:
                     await query.message.delete()
                 except Exception:
                     return
         except Exception:
-            await query.answer("ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ", show_alert=True)
+            await query.answer("⚠️ ᴛʜɪꜱ ʙᴜᴛᴛᴏɴ ɪꜱ ɴᴏᴛ ꜰᴏʀ ʏᴏᴜ!", show_alert=True)
    
     elif query.data.startswith("del#"):
         try:
             ident, file_id = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         files_ = await get_file_details(file_id)
         if not files_:
-            return await query.answer('ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ')
+            return await query.answer('❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ.', show_alert=True)
         files = files_
         clean_name = remove_junk(files["file_name"])
         title = clean_name
@@ -815,7 +815,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             ident, kk, file_id = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("Error", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
 
         in_channel = True
         in_group = True
@@ -883,14 +883,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             keyword = temp.DEL_KEYWORDS.get(payload)
             if not keyword:
                 await query.answer("ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
-                return await query.message.edit_text("<b>ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ɪꜱ ɪɴᴠᴀʟɪᴅ. ᴘʟᴇᴀꜱᴇ ʀᴜɴ /deletefiles ᴀɢᴀɪɴ.</b>")
+                return await query.message.edit_text("<b>ᴛʜɪꜱ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ɪꜱ ɪɴᴠᴀʟɪᴅ.\n\nᴘʟᴇᴀꜱᴇ ʀᴜɴ /deletefiles ᴀɢᴀɪɴ.</b>")
         else:
             from datetime import datetime, timezone
             deadline = datetime(2026, 10, 18, 23, 59, 59, tzinfo=timezone.utc)
             if datetime.now(timezone.utc) > deadline:
                 logger.warning(f"CRITICAL: Legacy killfilesdq fallback invoked past deadline ({deadline.isoformat()}). Deletion blocked.")
                 await query.answer("ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ!", show_alert=True)
-                return await query.message.edit_text("<b>ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ. ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /deletefiles ᴀɢᴀɪɴ.</b>")
+                return await query.message.edit_text("<b>ᴛʜɪꜱ ʟᴇɢᴀᴄʏ ᴅᴇʟᴇᴛɪᴏɴ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ.\n\nᴘʟᴇᴀꜱᴇ ᴜꜱᴇ /deletefiles ᴀɢᴀɪɴ.</b>")
             logger.warning(f"DEPRECATION WARNING: Legacy killfilesdq fallback used for query '{payload}'. Removal deadline: {deadline.isoformat()}.")
             keyword = payload
 
@@ -917,187 +917,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         deleted += 1
                         
                     if deleted > 0 and deleted % 50 == 0:
-                        await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ. ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
+                        await query.message.edit_text(f"<b>ᴘʀᴏᴄᴇꜱꜱ ꜱᴛᴀʀᴛᴇᴅ ꜰᴏʀ ᴅᴇʟᴇᴛɪɴɢ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
             except Exception as e:
                 logger.exception(e)
                 await query.message.edit_text(f'<b>ᴇʀʀᴏʀ: {e}</b>')
             else:
                 await query.message.edit_text(f"<b>ꜰɪʟᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴘʀᴏᴄᴇꜱꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ!\n\nꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ {str(deleted)} ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ '{keyword}'.</b>")
         return
-    
-    elif query.data.startswith("opnsetgrp"):
-        try:
-            ident, grp_id = query.data.split("#")
-        except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        userid = query.from_user.id if query.from_user else None
-        if not userid:
-            return await query.answer("ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
-        is_chat_admin = False
-        try:
-            st = await client.get_chat_member(grp_id, userid)
-            is_chat_admin = st.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
-        except Exception:
-            pass
-        if not is_chat_admin and not is_admin(userid):
-            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
-            return
-        title = query.message.chat.title
-        settings = await get_settings(grp_id)
-        if settings is not None:
-            buttons = [
-            [
-                InlineKeyboardButton(
-                    'ʀᴇꜱᴜʟᴛ ᴘᴀɢᴇ',
-                    callback_data=f'setgs#button#{settings["button"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ʙᴜᴛᴛᴏɴ' if settings["button"] else 'ᴛᴇxᴛ',
-                    callback_data=f'setgs#button#{settings["button"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇ',
-                    callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    '1𝟻 ᴍɪɴꜱ' if settings["auto_delete"] else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴀᴜᴛᴏ-ꜰɪʟᴛᴇʀ',
-                    callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ᴏɴ' if settings["auto_ffilter"] else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
-                    callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    '10' if settings["max_btn"] else f'{MAX_B_TN}',
-                    callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ɴᴏ-ʀᴇꜱᴜʟᴛ ᴍꜱɢ',
-                    callback_data=f'setgs#no_result_msg#{settings.get("no_result_msg", True)}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ᴏɴ' if settings.get("no_result_msg", True) else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#no_result_msg#{settings.get("no_result_msg", True)}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton('⤬ ᴄʟᴏꜱᴇ ⤬', callback_data='close_data')
-            ]
-        ]
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await query.message.edit_text(
-                text=f"<b>ᴄʜᴀɴɢᴇ ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ꜰᴏʀ {title} ᴀꜱ ʏᴏᴜ ᴡɪꜱʜ</b>",
-                disable_web_page_preview=True,
-                parse_mode=enums.ParseMode.HTML
-            )
-            await query.message.edit_reply_markup(reply_markup)
-        
-    elif query.data.startswith("opnsetpm"):
-        try:
-            ident, grp_id = query.data.split("#")
-        except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        userid = query.from_user.id if query.from_user else None
-        if not userid:
-            return await query.answer("ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ", show_alert=True)
-        is_chat_admin = False
-        try:
-            st = await client.get_chat_member(grp_id, userid)
-            is_chat_admin = st.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
-        except Exception:
-            pass
-        if not is_chat_admin and not is_admin(userid):
-            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
-            return
-        title = query.message.chat.title
-        settings = await get_settings(grp_id)
-        btn2 = [[
-                 InlineKeyboardButton("ᴄʜᴇᴄᴋ ᴘᴍ", url=f"telegram.me/{temp.U_NAME}")
-               ]]
-        reply_markup = InlineKeyboardMarkup(btn2)
-        await query.message.edit_text(f"<b>ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴇɴᴜ ꜰᴏʀ {title} ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴛ ᴛᴏ ʏᴏᴜʀ ᴘᴍ.</b>")
-        await query.message.edit_reply_markup(reply_markup)
-        if settings is not None:
-            buttons = [
-            [
-                InlineKeyboardButton(
-                    'ʀᴇꜱᴜʟᴛ ᴘᴀɢᴇ',
-                    callback_data=f'setgs#button#{settings["button"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ʙᴜᴛᴛᴏɴ' if settings["button"] else 'ᴛᴇxᴛ',
-                    callback_data=f'setgs#button#{settings["button"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇ',
-                    callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    '1𝟻 ᴍɪɴꜱ' if settings["auto_delete"] else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴀᴜᴛᴏ-ꜰɪʟᴛᴇʀ',
-                    callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ᴏɴ' if settings["auto_ffilter"] else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
-                    callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    '10' if settings["max_btn"] else f'{MAX_B_TN}',
-                    callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'ɴᴏ-ʀᴇꜱᴜʟᴛ ᴍꜱɢ',
-                    callback_data=f'setgs#no_result_msg#{settings.get("no_result_msg", True)}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    'ᴏɴ' if settings.get("no_result_msg", True) else 'ᴏꜰꜰ',
-                    callback_data=f'setgs#no_result_msg#{settings.get("no_result_msg", True)}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton('⤬ ᴄʟᴏꜱᴇ ⤬', callback_data='close_data')
-            ]
-        ]
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await client.send_message(
-                chat_id=userid,
-                text=f"<b>ᴄʜᴀɴɢᴇ ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ꜰᴏʀ {title} ᴀꜱ ʏᴏᴜ ᴡɪꜱʜ</b>",
-                reply_markup=reply_markup,
-                disable_web_page_preview=True,
-                parse_mode=enums.ParseMode.HTML,
-                reply_to_message_id=query.message.id
-            )
     elif query.data.startswith("show_option"):
         try:
             ident, from_user = query.data.split("#")
@@ -1138,7 +964,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ (ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ɴᴏ ꜰɪʟᴇꜱ).\n\n⚠️ ɪꜰ ɪᴛ ɪꜱ ᴀɴ ᴜᴘᴄᴏᴍɪɴɢ ʀᴇʟᴇᴀꜱᴇ, ɪᴛ ᴡɪʟʟ ʙᴇ ᴜᴘʟᴏᴀᴅᴇᴅ ʜᴇʀᴇ ᴀꜱ ꜱᴏᴏɴ ᴀꜱ ɪᴛ ᴅʀᴏᴘꜱ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\n⚠️ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ ᴏʀ ᴏɴɢᴏɪɴɢ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ᴏɴᴄᴇ ʀᴇʟᴇᴀꜱᴇᴅ/ᴄᴏᴍᴘʟᴇᴛᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1169,7 +995,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             except Exception:
                 pass
         else:
-            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
+            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
     elif query.data.startswith("already_available"):
         try:
             ident, from_user = query.data.split("#")
@@ -1201,7 +1027,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if query.from_user and is_admin(query.from_user):
             await query.answer("ꜱᴛᴀᴛᴜꜱ ᴜᴘᴅᴀᴛᴇᴅ", show_alert=True)
         else:
-            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
+            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
     
     elif query.data == "reqinfo":
         await query.answer(text=script.REQINFO, show_alert=True)
@@ -1307,7 +1133,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             ident, set_type, status, grp_id = query.data.split("#")
         except (ValueError, AttributeError):
-            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         grp_id = int(grp_id)
         userid = query.from_user.id
         is_chat_admin = False
@@ -1317,7 +1143,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception:
             pass
         if not is_chat_admin and not is_admin(userid):
-            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ", show_alert=True)
+            await query.answer("⚠️ ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
             return
         if status == "True":
             await save_group_settings(grp_id, set_type, False)
@@ -1445,7 +1271,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     from utils import get_spell_check
                     
                     btn = []
-                    text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ꜱᴘᴇʟʟɪɴɢ ɪɴ ɢᴏᴏɢʟᴇ ᴏʀ ɪᴍᴅʙ</b>"
+                    text = f"<b>🔍 ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\n💡 ᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ꜱᴘᴇʟʟɪɴɢ ɪɴ ɢᴏᴏɢʟᴇ ᴏʀ ɪᴍᴅʙ.</b>"
                     
                     # 🪄 PM-ONLY SPELL CHECK LOGIC
                     if message.chat.type == enums.ChatType.PRIVATE:
@@ -1454,7 +1280,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                         else:
                             suggestions = await get_spell_check(name)
                             if suggestions:
-                                text = f"<b>ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\nᴅɪᴅ ʏᴏᴜ ᴍᴇᴀɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ʙᴇʟᴏᴡ ᴏɴᴇꜱ:</b>"
+                                text = f"<b>🔍 ɪ ᴄᴏᴜʟᴅɴ'ᴛ ꜰɪɴᴅ ᴀɴʏ ꜰɪʟᴇ ʀᴇʟᴀᴛᴇᴅ ᴛᴏ {name.replace('<', '&lt;').replace('>', '&gt;')}.\n\n✨ ᴅɪᴅ ʏᴏᴜ ᴍᴇᴀɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ʙᴇʟᴏᴡ ᴏɴᴇꜱ:</b>"
                                 for title in suggestions:
                                     btn.append([InlineKeyboardButton(f"{title}", callback_data=f"spcheck#{title[:50]}")])
 
