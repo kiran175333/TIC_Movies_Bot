@@ -50,7 +50,7 @@ async def save_group(bot, message):
         reply_markup = InlineKeyboardMarkup(buttons)
         try:
             await message.reply_text(
-                text=f"<b>🎉 ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {message.chat.title}!</b>",
+                text=f"<b>🎉 ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {html.escape(message.chat.title or '')}!</b>",
                 reply_markup=reply_markup
             )
         except Exception:
@@ -82,7 +82,7 @@ async def start(client, message):
                 total = await client.get_chat_members_count(message.chat.id)
             except Exception:
                 total = 0
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "ᴜɴᴋɴᴏᴡɴ"))       
+            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(html.escape(message.chat.title or ""), message.chat.id, total, "ᴜɴᴋɴᴏᴡɴ"))       
             await db.add_chat(message.chat.id, message.chat.title)
             
         await asyncio.sleep(60)
@@ -353,7 +353,7 @@ async def start(client, message):
         clean_name = remove_junk(file.file_name)
         title = clean_name
         size = get_size(file.file_size)
-        f_caption = f"<b><code>{title}</code></b>"
+        f_caption = f"<b><code>{html.escape(title)}</code></b>"
         if CUSTOM_FILE_CAPTION:
             try:
                 f_caption = CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
@@ -377,7 +377,7 @@ async def start(client, message):
         except Exception:
             f_caption = f_caption
     if f_caption is None:
-        f_caption = f"<b>{clean_name}</b>"
+        f_caption = f"<b>{html.escape(clean_name)}</b>"
     reply_markup = None
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
@@ -640,7 +640,7 @@ async def requests(bot, message):
                 pass
         await message.reply_text("<b>✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
-        await message.reply_text(f"<b>❌ ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ: {e}</b>")
+        await message.reply_text(f"<b>❌ ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ:</b> <code>{html.escape(str(e))}</code>")
 
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
 async def send_msg(bot, message):
@@ -697,7 +697,7 @@ async def send_msg(bot, message):
             user = await bot.get_users(target_id)
             if not await db.is_user_exist(user.id):
                 failed += 1
-                failed_reasons.append(f"<code>{target}</code>: <b>ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ</b>")
+                failed_reasons.append(f"<code>{target}</code>: ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ")
             else:
                 if is_direct_text:
                     await bot.send_message(chat_id=user.id, text=text_to_send)
@@ -714,10 +714,10 @@ async def send_msg(bot, message):
                 success += 1
             except Exception:
                 failed += 1
-                failed_reasons.append(f"<code>{target}</code>: <b>ꜰʟᴏᴏᴅ ᴡᴀɪᴛ</b>")
+                failed_reasons.append(f"<code>{target}</code>: ꜰʟᴏᴏᴅ ᴡᴀɪᴛ")
         except Exception as e:
             failed += 1
-            failed_reasons.append(f"<code>{target}</code>: <b>{str(e)[:30]}</b>")
+            failed_reasons.append(f"<code>{target}</code>: {html.escape(str(e)[:30])}")
 
     if len(targets) == 1:
         if success:
@@ -732,7 +732,7 @@ async def send_msg(bot, message):
             f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code>"
         )
         if failed_reasons:
-            report += "\n\n<b><u>ꜰᴀɪʟᴜʀᴇꜱ:</u></b>\n\n" + "\n".join(f"<b>•</b> {r}" for r in failed_reasons[:10])
+            report += "\n\n<b><u>ꜰᴀɪʟᴜʀᴇꜱ:</u></b>\n\n" + "\n".join(f"• {r}" for r in failed_reasons[:10])
         await message.reply_text(report, quote=True, parse_mode=enums.ParseMode.HTML)
 
 @Client.on_message(filters.command("deletefiles") & filters.user(ADMINS))
@@ -980,7 +980,7 @@ async def leave_a_chat(bot, message):
         await bot.leave_chat(chat_id)
         await message.reply(f"<b>ʟᴇꜰᴛ ᴄʜᴀᴛ {chat_id} ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ.</b>")
     except Exception as e:
-        await message.reply(f"<b>ᴇʀʀᴏʀ: {e}</b>")
+        await message.reply(f"<b>ᴇʀʀᴏʀ:</b> <code>{html.escape(str(e))}</code>")
 
 @Client.on_message(filters.command("users") & filters.user(ADMINS))
 async def list_users(bot, message):
