@@ -1,4 +1,4 @@
-import logging, re, asyncio, os
+import logging, re, asyncio, os, html
 from utils import temp
 from info import ADMINS, is_admin
 from pyrogram import Client, filters, enums
@@ -24,7 +24,7 @@ async def index_files(bot, query):
         temp.CANCEL[chat_id] = True
         await query.answer("ᴄᴀɴᴄᴇʟʟɪɴɢ ɪɴᴅᴇxɪɴɢ...")
         try:
-            await query.message.edit("<b>✅ ɪɴᴅᴇxɪɴɢ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>\n\nᴛʜᴇ ʙᴀᴄᴋɢʀᴏᴜɴᴅ ᴘʀᴏᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ꜱᴀꜰᴇʟʏ ᴀʙᴏʀᴛᴇᴅ.")
+            await query.message.edit("<b>ɪɴᴅᴇxɪɴɢ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!\n\nᴛʜᴇ ʙᴀᴄᴋɢʀᴏᴜɴᴅ ᴘʀᴏᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ꜱᴀꜰᴇʟʏ ᴀʙᴏʀᴛᴇᴅ.</b>")
         except Exception:
             pass
         return
@@ -32,36 +32,15 @@ async def index_files(bot, query):
         _, raju, chat, lst_msg_id, from_user = query.data.split("#")
     except ValueError:
         return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-    if raju == 'reject':
-        await query.message.delete()
-        try:
-            await bot.send_message(
-                int(from_user),
-                f'ʏᴏᴜʀ ꜱᴜʙᴍɪꜱꜱɪᴏɴ ꜰᴏʀ ɪɴᴅᴇxɪɴɢ {chat} ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ.',
-                reply_to_message_id=int(lst_msg_id)
-            )
-        except Exception:
-            pass
-        return
 
     msg = query.message
-
     await query.answer('ᴘʀᴏᴄᴇꜱꜱɪɴɢ...', show_alert=True)
-    if not is_admin(from_user):
-        try:
-            await bot.send_message(
-                int(from_user),
-                f'ʏᴏᴜʀ ꜱᴜʙᴍɪꜱꜱɪᴏɴ ꜰᴏʀ ɪɴᴅᴇxɪɴɢ {chat} ʜᴀꜱ ʙᴇᴇɴ ᴀᴄᴄᴇᴘᴛᴇᴅ ʙʏ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴀɴᴅ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ꜱᴏᴏɴ.',
-                reply_to_message_id=int(lst_msg_id)
-            )
-        except Exception:
-            pass
     try:
         chat = int(chat)
     except Exception:
         chat = chat
     await msg.edit(
-        "ꜱᴛᴀʀᴛɪɴɢ ɪɴᴅᴇxɪɴɢ...",
+        "<b>ꜱᴛᴀʀᴛɪɴɢ ɪɴᴅᴇxɪɴɢ...</b>",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data=f'index_cancel#{chat}')]]
         )
@@ -79,7 +58,7 @@ async def send_for_index(bot, message):
         regex = re.compile(r"(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
         match = regex.match(ask_msg.text)
         if not match:
-            return await ask_msg.reply('ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ᴜꜱɪɴɢ /index')
+            return await ask_msg.reply('<b>ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ᴜꜱɪɴɢ /index</b>')
         chat_id = match.group(4)
         last_msg_id = int(match.group(5))
         if chat_id.isnumeric():
@@ -89,50 +68,29 @@ async def send_for_index(bot, message):
     try:
         await bot.get_chat(chat_id)
     except ChannelInvalid:
-        return await ask_msg.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴏʀ ɢʀᴏᴜᴘ. ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ ᴛᴏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ.')
+        return await ask_msg.reply('<b>ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴏʀ ɢʀᴏᴜᴘ.\n\nᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ ᴛᴏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ.</b>')
     except (UsernameInvalid, UsernameNotModified):
         return await ask_msg.reply('<b>ɪɴᴠᴀʟɪᴅ ʟɪɴᴋ ꜱᴘᴇᴄɪꜰɪᴇᴅ.</b>')
     except Exception as e:
         logger.exception(e)
-        return await ask_msg.reply(f'ᴇʀʀᴏʀꜱ: {e}')
+        return await ask_msg.reply(f'<b>ᴇʀʀᴏʀ:</b> <code>{html.escape(str(e))}</code>')
     try:
         k = await bot.get_messages(chat_id, last_msg_id)
     except Exception:
-        return await message.reply('ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ, ᴇꜱᴘᴇᴄɪᴀʟʟʏ ɪꜰ ɪᴛ ɪꜱ ᴘʀɪᴠᴀᴛᴇ.')
+        return await message.reply('<b>ᴘʟᴇᴀꜱᴇ ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ, ᴇꜱᴘᴇᴄɪᴀʟʟʏ ɪꜰ ɪᴛ ɪꜱ ᴘʀɪᴠᴀᴛᴇ.</b>')
     if k.empty:
-        return await message.reply('ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ɢʀᴏᴜᴘ, ᴀɴᴅ ɪ ᴀᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ.')
+        return await message.reply('<b>ᴛʜɪꜱ ᴍᴀʏ ʙᴇ ᴀ ɢʀᴏᴜᴘ, ᴀɴᴅ ɪ ᴀᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ.</b>')
 
-    if is_admin(message.from_user):
-        buttons = [[
-            InlineKeyboardButton('ʏᴇꜱ', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
-        ],[
-            InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data='close_data')
-        ]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        return await message.reply(
-            f'ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ɪɴᴅᴇx ᴛʜɪꜱ ᴄʜᴀɴɴᴇʟ/ɢʀᴏᴜᴘ?\n\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code>{chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>',
-            reply_markup=reply_markup
-        )
-
-    if type(chat_id) is int:
-        try:
-            link = (await bot.create_chat_invite_link(chat_id)).invite_link
-        except ChatAdminRequired:
-            return await message.reply('ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴇ ᴄʜᴀᴛ ᴀɴᴅ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ɪɴᴠɪᴛᴇ ᴜꜱᴇʀꜱ.')
-    else:
-        link = f"@{chat_id}"
     buttons = [[
-        InlineKeyboardButton('ᴀᴄᴄᴇᴘᴛ ɪɴᴅᴇx', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
+        InlineKeyboardButton('ʏᴇꜱ', callback_data=f'index#accept#{chat_id}#{last_msg_id}#{message.from_user.id}')
     ],[
-        InlineKeyboardButton('ʀᴇᴊᴇᴄᴛ ɪɴᴅᴇx', callback_data=f'index#reject#{chat_id}#{message.id}#{message.from_user.id}'),
+        InlineKeyboardButton('ᴄᴀɴᴄᴇʟ', callback_data='close_data')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
-    await bot.send_message(
-        LOG_CHANNEL,
-        f'#ɪɴᴅᴇxʀᴇǫᴜᴇꜱᴛ\n\nʙʏ: {message.from_user.mention} (<code>{message.from_user.id}</code>)\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ: <code> {chat_id}</code>\nʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: <code>{last_msg_id}</code>\nɪɴᴠɪᴛᴇ ʟɪɴᴋ: {link}',
+    return await message.reply(
+        f'<b>ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ɪɴᴅᴇx ᴛʜɪꜱ ᴄʜᴀɴɴᴇʟ/ɢʀᴏᴜᴘ?\n\nᴄʜᴀᴛ ɪᴅ/ᴜꜱᴇʀɴᴀᴍᴇ:</b> <code>{chat_id}</code>\n<b>ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ:</b> <code>{last_msg_id}</code>',
         reply_markup=reply_markup
     )
-    await message.reply('ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʏᴏᴜʀ ᴄᴏɴᴛʀɪʙᴜᴛɪᴏɴ! ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ᴏᴜʀ ᴍᴏᴅᴇʀᴀᴛᴏʀꜱ ᴛᴏ ᴠᴇʀɪꜰʏ ᴛʜᴇ ꜰɪʟᴇꜱ.')
 
 
 @Client.on_message(filters.command('setskip') & filters.user(ADMINS))
@@ -142,8 +100,8 @@ async def set_skip_number(bot, message):
         try:
             skip = int(skip)
         except Exception:
-            return await message.reply("ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.")
-        await message.reply(f"ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇᴛ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴛᴏ {skip}.")
+            return await message.reply("<b>ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ɪɴᴛᴇɢᴇʀ.</b>")
+        await message.reply(f"<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇᴛ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ ᴛᴏ</b> <code>{skip}</code>.")
         temp.CURRENT = int(skip)
     else:
         await message.reply("<b>ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ꜱᴋɪᴘ ɴᴜᴍʙᴇʀ.</b>")
@@ -164,7 +122,14 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
         
         while current <= lst_msg_id:
             if temp.CANCEL.get(chat):
-                await msg.edit(f"ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄᴀɴᴄᴇʟʟᴇᴅ!\n\nꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code>")
+                await msg.edit(
+                    f"<b><u>ɪɴᴅᴇxɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</u>\n\n"
+                    f"• ꜱᴀᴠᴇᴅ:</b> <code>{total_files}</code> <b>ꜰɪʟᴇꜱ</b>\n"
+                    f"<b>• ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{duplicate}</code>\n"
+                    f"<b>• ᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{deleted}</code>\n"
+                    f"<b>• ɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{no_media + unsupported}</code> (<b>ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ:</b> <code>{unsupported}</code>)\n"
+                    f"<b>• ᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ:</b> <code>{errors}</code>"
+                )
                 break
                 
             # Fetch messages in chunks of 200 (Telegram API limit for Bots)
@@ -184,7 +149,15 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     reply = InlineKeyboardMarkup(can)
                     try:
                         await msg.edit_text(
-                            text=f"ᴛᴏᴛᴀʟ ᴍᴇꜱꜱᴀɢᴇꜱ ꜰᴇᴛᴄʜᴇᴅ: <code>{current}</code>\nᴛᴏᴛᴀʟ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴀᴠᴇᴅ: <code>{total_files}</code>\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code>",
+                            text=(
+                                f"<b><u>ɪɴᴅᴇxɪɴɢ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ</u>\n\n"
+                                f"• ᴛᴏᴛᴀʟ ᴍᴇꜱꜱᴀɢᴇꜱ ꜰᴇᴛᴄʜᴇᴅ:</b> <code>{current}</code>\n"
+                                f"<b>• ᴛᴏᴛᴀʟ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴀᴠᴇᴅ:</b> <code>{total_files}</code>\n"
+                                f"<b>• ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{duplicate}</code>\n"
+                                f"<b>• ᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{deleted}</code>\n"
+                                f"<b>• ɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{no_media + unsupported}</code> (<b>ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ:</b> <code>{unsupported}</code>)\n"
+                                f"<b>• ᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ:</b> <code>{errors}</code>"
+                            ),
                             reply_markup=reply
                         )
                     except MessageNotModified:
@@ -215,7 +188,7 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 elif vnay == 0:
                     duplicate += 1
                     if hasattr(media, "file_name") and media.file_name:
-                        duplicate_names.append(media.file_name)
+                        duplicate_names.append(media.file_name)                    
                 elif vnay == 2:
                     errors += 1
                     
@@ -224,18 +197,32 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                 
     except Exception as e:
         logger.exception(e)
-        k = await msg.edit(f'ᴇʀʀᴏʀ: {e}')
-        await k.reply_text(f'<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code></b>')
+        k = await msg.edit(f'<b>ᴇʀʀᴏʀ:</b> <code>{html.escape(str(e))}</code>')
+        await k.reply_text(
+            f"<b><u>ɪɴᴅᴇxɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</u>\n\n"
+            f"• ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ:</b> <code>{total_files}</code> <b>ꜰɪʟᴇꜱ</b>\n"
+            f"<b>• ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{duplicate}</code>\n"
+            f"<b>• ᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{deleted}</code>\n"
+            f"<b>• ɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{no_media + unsupported}</code> (<b>ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ:</b> <code>{unsupported}</code>)\n"
+            f"<b>• ᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ:</b> <code>{errors}</code>"
+        )
         await k.reply_text("<b>ɪꜰ ʏᴏᴜ ɢᴇᴛ ᴀ 'ᴍᴇꜱꜱᴀɢᴇ ɴᴏᴛ ᴍᴏᴅɪꜰɪᴇᴅ' ᴇʀʀᴏʀ, ᴘʟᴇᴀꜱᴇ ꜱᴋɪᴘ ʏᴏᴜʀ ꜱᴀᴠᴇᴅ ꜰɪʟᴇꜱ ᴀɴᴅ ɪɴᴅᴇx ᴀɢᴀɪɴ.</b>")
     else:
         if not temp.CANCEL.get(chat):
-            await msg.edit(f'ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ <code>{total_files}</code> ꜰɪʟᴇꜱ ᴛᴏ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.\nᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{duplicate}</code>\nᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{deleted}</code>\nɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ: <code>{no_media + unsupported}</code> (ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ: <code>{unsupported}</code>)\nᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ: <code>{errors}</code>')
-            
+            await msg.edit(
+                f"<b><u>ɪɴᴅᴇxɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</u>\n\n"
+                f"• ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ:</b> <code>{total_files}</code> <b>ꜰɪʟᴇꜱ</b>\n"
+                f"<b>• ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{duplicate}</code>\n"
+                f"<b>• ᴅᴇʟᴇᴛᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{deleted}</code>\n"
+                f"<b>• ɴᴏɴ-ᴍᴇᴅɪᴀ ᴍᴇꜱꜱᴀɢᴇꜱ ꜱᴋɪᴘᴘᴇᴅ:</b> <code>{no_media + unsupported}</code> (<b>ᴜɴꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴍᴇᴅɪᴀ:</b> <code>{unsupported}</code>)\n"
+                f"<b>• ᴇʀʀᴏʀꜱ ᴏᴄᴄᴜʀʀᴇᴅ:</b> <code>{errors}</code>"
+            )
+
             if duplicate_names:
                 try:
                     with open("duplicates.txt", "w", encoding="utf-8") as f:
                         f.write("\n".join(duplicate_names))
-                    await msg.reply_document(document="duplicates.txt", caption="<b>✅ ɪɴᴅᴇxɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇ! ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ʟɪꜱᴛ ᴏꜰ ᴀʟʟ ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ.</b>")
+                    await msg.reply_document(document="duplicates.txt", caption="<b>ɪɴᴅᴇxɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇ!\n\nʜᴇʀᴇ ɪꜱ ᴛʜᴇ ʟɪꜱᴛ ᴏꜰ ᴀʟʟ ᴅᴜᴘʟɪᴄᴀᴛᴇ ꜰɪʟᴇꜱ ꜱᴋɪᴘᴘᴇᴅ.</b>")
                     os.remove("duplicates.txt")
                 except Exception:
                     pass
