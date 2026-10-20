@@ -27,9 +27,6 @@ def remove_junk(file_name):
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-# Limits the dictionaries to a safe size and auto-deletes expired tokens
-TOKENS = TTLCache(maxsize=10000, ttl=600)
-VERIFIED = TTLCache(maxsize=50000, ttl=VERIFY_EXPIRE)
 
 async def background_deleter(bot):
     while True:
@@ -166,7 +163,7 @@ async def broadcast_messages_group(chat_id, message):
         except FloodWait as e:
             await asyncio.sleep(e.value)
             continue
-        except (ChatAdminRequired, ChatWriteForbidden, ChannelPrivate, UserNotParticipant, PeerIdInvalid, ChannelInvalid, ChatRestricted):
+        except (ChatAdminRequired, ChatWriteForbidden, ChannelPrivate, UserNotParticipant, PeerIdInvalid, ChannelInvalid, ChatRestricted, UserBannedInChannel):
             await db.delete_chat(int(chat_id))
             logging.info(f"{chat_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ʙᴏᴛ ʟᴀᴄᴋꜱ ᴀᴄᴄᴇꜱꜱ/ᴋɪᴄᴋᴇᴅ.")
             return False, "ᴅᴇʟᴇᴛᴇᴅ"
@@ -290,84 +287,6 @@ async def get_shortlink(link):
             logger.error(f"Shortener Down: {e}")
             return None
         
-async def get_verify_shorted_link(link, url, api):
-    API = api
-    URL = url
-    if URL == "api.shareus.io":
-        url = f'https://{URL}/easy_api'
-        params = {
-            "key": API,
-            "link": link,
-        }
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
-                    data = await response.text()
-                    return data
-        except Exception as e:
-            logger.error(e)
-            return None
-    else:
-        try:
-            shortzy = Shortzy(api_key=API, base_site=URL)
-            link = await shortzy.convert(link)
-            return link
-        except Exception as e:
-            logger.error(f"Shortener Down: {e}")
-            return None
-        
-async def check_token(bot, userid, token):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    if user.id in TOKENS.keys():
-        TKN = TOKENS[user.id]
-        if token in TKN.keys():
-            is_used = TKN[token]
-            if is_used == True:
-                return False
-            else:
-                return True
-        else:
-            return False
-    else:
-        return False
-
-async def get_token(bot, userid, link):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
-    TOKENS[user.id] = {token: False}
-    link = f"{link}verify-{user.id}-{token}"
-    shortened_verify_url = await get_verify_shorted_link(link, VERIFY_SHORTLINK_URL, VERIFY_SHORTLINK_API)
-    return shortened_verify_url
-
-async def verify_user(bot, userid, token):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    TOKENS[user.id] = {token: True}
-    VERIFIED[user.id] = time.time()
-
-async def check_verification(bot, userid):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    if user.id in VERIFIED.keys():
-        verified_time = VERIFIED[user.id]
-        if (time.time() - verified_time) > VERIFY_EXPIRE:
-            return False
-        else:
-            return True
-    else:
-        return False  
-    
-
 async def get_cap(settings, remaining_seconds, files, query, total_results, search):
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
     user_mention = query.from_user.mention if getattr(query, "from_user", None) else "User"
