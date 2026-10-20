@@ -3,7 +3,7 @@ from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from database.ia_filterdb import col, sec_col, thi_col, db as fir_db, sec_db, thi_db, get_file_details, unpack_new_file_id, get_bad_files
+from database.ia_filterdb import col, db as fir_db, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db
 from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_shortlink, get_seconds, get_ist_now, IST)
@@ -353,7 +353,7 @@ async def start(client, message):
         clean_name = remove_junk(file.file_name)
         title = clean_name
         size = get_size(file.file_size)
-        f_caption = f"<code>{title}</code>"
+        f_caption = f"<b><code>{title}</code></b>"
         if CUSTOM_FILE_CAPTION:
             try:
                 f_caption = CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
@@ -377,7 +377,7 @@ async def start(client, message):
         except Exception:
             f_caption = f_caption
     if f_caption is None:
-        f_caption = f"{clean_name}"
+        f_caption = f"<b>{clean_name}</b>"
     reply_markup = None
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
@@ -438,10 +438,6 @@ async def delete(bot, message):
     result = await col.delete_one({
         'file_id': file_id,
     })
-    if not result.deleted_count and sec_col is not None:
-        result = await sec_col.delete_one({'file_id': file_id})
-    if not result.deleted_count and thi_col is not None:
-        result = await thi_col.delete_one({'file_id': file_id})
     if result.deleted_count:
         await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
     else:
@@ -452,10 +448,6 @@ async def delete(bot, message):
             'file_name': file_name,
             'file_size': media.file_size
         })
-        if not result.deleted_count and sec_col is not None:
-            result = await sec_col.delete_many({'file_name': file_name, 'file_size': media.file_size})
-        if not result.deleted_count and thi_col is not None:
-            result = await thi_col.delete_many({'file_name': file_name, 'file_size': media.file_size})
         if result.deleted_count:
             await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
         else:
@@ -463,10 +455,6 @@ async def delete(bot, message):
                 'file_name': media.file_name,
                 'file_size': media.file_size
             })
-            if not result.deleted_count and sec_col is not None:
-                result = await sec_col.delete_many({'file_name': media.file_name, 'file_size': media.file_size})
-            if not result.deleted_count and thi_col is not None:
-                result = await thi_col.delete_many({'file_name': media.file_name, 'file_size': media.file_size})
             if result.deleted_count:
                 await msg.edit('<b>ꜰɪʟᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ᴅᴀᴛᴀʙᴀꜱᴇ.</b>')
             else:
@@ -491,10 +479,6 @@ async def delete_all_index_confirm(bot, query):
     if not query.from_user or not is_admin(query.from_user.id):
         return await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
     await col.drop()
-    if sec_col is not None:
-        await sec_col.drop()
-    if thi_col is not None:
-        await thi_col.drop()
 
     from database.ia_filterdb import reset_and_setup_indices
     indices_ok = await reset_and_setup_indices()
@@ -660,14 +644,50 @@ async def requests(bot, message):
 
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
 async def send_msg(bot, message):
-    if not message.reply_to_message:
-        return await message.reply_text("<b>ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴀꜱ ᴀ ʀᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇꜱꜱᴀɢᴇ ᴜꜱɪɴɢ ᴛʜᴇ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛ ɪᴅ.\n\nꜰᴏʀ ᴇxᴀᴍᴘʟᴇ: /send userid</b>")
-
     parts = message.text.split(None, 1)
     if len(parts) < 2 or not parts[1].strip():
-        return await message.reply_text("<b>ᴜꜱᴀɢᴇ: ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ <code>/send user_id1 user_id2 ...</code></b>")
+        return await message.reply_text(
+            "<b>ᴜꜱᴀɢᴇ:</b>\n\n"
+            "<b>1. ᴅɪʀᴇᴄᴛ ᴛᴇxᴛ:</b>\n"
+            "<code>/send user_id your message text</code>\n"
+            "<code>/send id1 id2 id3 your message text</code>\n\n"
+            "<b>2. ʀᴇᴘʟʏ (ꜰᴏʀ ᴍᴇᴅɪᴀ / ꜰɪʟᴇꜱ / ᴛᴇxᴛ):</b>\n"
+            "<b>ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ</b> <code>/send id1 id2 ...</code>"
+        )
 
-    targets = [t.strip() for t in re.split(r"[\s,]+", parts[1].strip()) if t.strip()]
+    # Mode 1: Reply Mode (copies replied media, files, or styled text)
+    if message.reply_to_message:
+        targets = [t.strip() for t in re.split(r"[\s,]+", parts[1].strip()) if t.strip()]
+        is_direct_text = False
+        text_to_send = None
+    else:
+        # Mode 2: Direct Text Mode (leading integer tokens are IDs, remainder is text)
+        raw_args = parts[1].strip()
+        tokens = raw_args.split()
+        targets = []
+        text_start_index = -1
+        
+        for i, token in enumerate(tokens):
+            clean_token = token.rstrip(",")
+            if clean_token.lstrip("-").isdigit():
+                targets.append(clean_token)
+            else:
+                text_start_index = i
+                break
+                
+        if not targets:
+            return await message.reply_text("<b>ɴᴏ ᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ ꜰᴏᴜɴᴅ.</b>")
+            
+        if text_start_index == -1:
+            return await message.reply_text(
+                "<b>ɴᴏ ᴍᴇꜱꜱᴀɢᴇ ᴛᴇxᴛ ᴘʀᴏᴠɪᴅᴇᴅ!</b>\n\n"
+                "<b>• ᴇɪᴛʜᴇʀ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ:</b> <code>/send user_id</code>\n\n"
+                "<b>• ᴏʀ ᴛʏᴘᴇ ʏᴏᴜʀ ᴛᴇxᴛ:</b> <code>/send user_id your message text</code>"
+            )
+            
+        is_direct_text = True
+        text_to_send = " ".join(tokens[text_start_index:])
+
     success, failed = 0, 0
     failed_reasons = []
 
@@ -677,36 +697,42 @@ async def send_msg(bot, message):
             user = await bot.get_users(target_id)
             if not await db.is_user_exist(user.id):
                 failed += 1
-                failed_reasons.append(f"<code>{target}</code>: ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ")
+                failed_reasons.append(f"<code>{target}</code>: <b>ᴛʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ɴᴏᴛ ꜱᴛᴀʀᴛᴇᴅ ᴛʜɪꜱ ʙᴏᴛ ʏᴇᴛ</b>")
             else:
-                await message.reply_to_message.copy(chat_id=user.id)
+                if is_direct_text:
+                    await bot.send_message(chat_id=user.id, text=text_to_send)
+                else:
+                    await message.reply_to_message.copy(chat_id=user.id)
                 success += 1
         except FloodWait as e:
             await asyncio.sleep(e.value)
             try:
-                await message.reply_to_message.copy(chat_id=user.id)
+                if is_direct_text:
+                    await bot.send_message(chat_id=user.id, text=text_to_send)
+                else:
+                    await message.reply_to_message.copy(chat_id=user.id)
                 success += 1
             except Exception:
                 failed += 1
-                failed_reasons.append(f"<code>{target}</code>: ꜰʟᴏᴏᴅ ᴡᴀɪᴛ")
+                failed_reasons.append(f"<code>{target}</code>: <b>ꜰʟᴏᴏᴅ ᴡᴀɪᴛ</b>")
         except Exception as e:
             failed += 1
-            failed_reasons.append(f"<code>{target}</code>: {str(e)[:30]}")
+            failed_reasons.append(f"<code>{target}</code>: <b>{str(e)[:30]}</b>")
 
     if len(targets) == 1:
         if success:
             await message.reply_text(f"<b>ʏᴏᴜʀ ᴍᴇꜱꜱᴀɢᴇ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴇɴᴛ ᴛᴏ {user.mention}.</b>")
         else:
-            await message.reply_text(f"<b>ꜰᴀɪʟᴇᴅ ᴛᴏ ꜱᴇɴᴅ: {failed_reasons[0]}</b>")
+            await message.reply_text(f"<b>ꜰᴀɪʟᴇᴅ ᴛᴏ ꜱᴇɴᴅ:</b> {failed_reasons[0]}")
     else:
         report = (
-            f"<b><u>ᴅᴇʟɪᴠᴇʀʏ ʀᴇᴘᴏʀᴛ</u></b>\n\n"
+            "<b><u>ᴅᴇʟɪᴠᴇʀʏ ʀᴇᴘᴏʀᴛ</u></b>\n\n"
             f"<b>• ᴛᴏᴛᴀʟ:</b> <code>{len(targets)}</code>\n"
             f"<b>• ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟ:</b> <code>{success}</code>\n"
             f"<b>• ꜰᴀɪʟᴇᴅ:</b> <code>{failed}</code>"
         )
         if failed_reasons:
-            report += "\n\n<b>ꜰᴀɪʟᴜʀᴇꜱ:</b>\n" + "\n".join(f"• {r}" for r in failed_reasons[:10])
+            report += "\n\n<b><u>ꜰᴀɪʟᴜʀᴇꜱ:</u></b>\n\n" + "\n".join(f"<b>•</b> {r}" for r in failed_reasons[:10])
         await message.reply_text(report, quote=True, parse_mode=enums.ParseMode.HTML)
 
 @Client.on_message(filters.command("deletefiles") & filters.user(ADMINS))
@@ -885,47 +911,19 @@ async def get_bot_stats(bot, message):
     
     total_users = await db.total_users_count()
     totl_chats = await db.total_chat_count()
+    total_files = await col.count_documents({}) if col is not None else 0
     
-    filesp = await col.count_documents({}) if col is not None else 0
-    totalsec = await sec_col.count_documents({}) if sec_col is not None else 0
-    totalthi = await thi_col.count_documents({}) if thi_col is not None else 0
-    total_files = filesp + totalsec + totalthi
-    
-    stats1 = await fir_db.command('dbStats')
-    used_db1 = (stats1['dataSize']/(1024*1024))+(stats1['indexSize']/(1024*1024))
-    free_db1 = 512-used_db1
-    
-    if sec_db is not None:
-        stats2 = await sec_db.command('dbStats')
-        used_db2 = (stats2['dataSize']/(1024*1024))+(stats2['indexSize']/(1024*1024))
-        free_db2 = 512-used_db2
-    else:
-        used_db2, free_db2 = 0, 0
-        
-    if thi_db is not None:
-        stats3 = await thi_db.command('dbStats')
-        used_db3 = (stats3['dataSize']/(1024*1024))+(stats3['indexSize']/(1024*1024))
-        free_db3 = 512-used_db3
-    else:
-        used_db3, free_db3 = 0, 0
+    stats = await fir_db.command('dbStats')
+    used_db = (stats['dataSize']/(1024*1024))+(stats['indexSize']/(1024*1024))
+    free_db = 512 - used_db
 
     stats_text = (
         "<b><u>ᴅᴀᴛᴀʙᴀꜱᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ</u></b>\n\n"
         f"<b>★ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ:</b> <code>{total_files}</code>\n"
         f"<b>★ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n"
         f"<b>★ ᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ:</b> <code>{totl_chats}</code>\n\n"
-        "<b>• ꜰɪʀꜱᴛ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{filesp}</code>\n"
-        f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db1, 2)} MB</code>\n"
-        f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db1, 2)} MB</code>\n\n"
-        "<b>• ꜱᴇᴄᴏɴᴅ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{totalsec}</code>\n"
-        f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db2, 2)} MB</code>\n"
-        f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db2, 2)} MB</code>\n\n"
-        "<b>• ᴛʜɪʀᴅ ᴅᴀᴛᴀʙᴀꜱᴇ:</b>\n"
-        f"★ ꜰɪʟᴇꜱ: <code>{totalthi}</code>\n"
-        f"★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ: <code>{round(used_db3, 2)} MB</code>\n"
-        f"★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ: <code>{round(free_db3, 2)} MB</code>"
+        f"<b>★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ:</b> <code>{round(used_db, 2)} MB</code>\n"
+        f"<b>★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ:</b> <code>{round(free_db, 2)} MB</code>"
     )
     
     try:
