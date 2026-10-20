@@ -68,11 +68,6 @@ REQ_TO_JOIN = req_to_join == 'true'
 DATABASE_URI = environ.get('DATABASE_URI', 'mongodb+srv://MovieFiles:TICMovieFiles@cluster0.7uj6gaw.mongodb.net/?retryWrites=true&w=majority')
 DATABASE_NAME = environ.get('DATABASE_NAME', 'Cluster0').strip() or 'Cluster0'
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'MovieFiles').strip() or 'Telegram_files'
-MULTIPLE_DATABASE = is_enabled(environ.get('MULTIPLE_DATABASE', False), False)
-
-# Additional File Storage Clusters (Used if MULTIPLE_DATABASE is True)
-DATABASE_URI2 = environ.get('DATABASE_URI2', '')
-DATABASE_URI3 = environ.get('DATABASE_URI3', '')
 
 # Premium Settings
 PREMIUM_MODE = is_enabled(environ.get('PREMIUM_MODE', True), True)
