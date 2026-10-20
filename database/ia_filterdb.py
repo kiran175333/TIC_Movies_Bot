@@ -2,30 +2,14 @@ import re, base64, json
 from struct import pack
 from pyrogram.file_id import FileId
 import motor.motor_asyncio
-from pymongo.errors import DuplicateKeyError, OperationFailure
-from info import DATABASE_URI, DATABASE_URI2, DATABASE_URI3, DATABASE_NAME, COLLECTION_NAME, MULTIPLE_DATABASE, USE_CAPTION_FILTER, MAX_B_TN
+from pymongo.errors import DuplicateKeyError
+from info import DATABASE_URI, DATABASE_NAME, COLLECTION_NAME, USE_CAPTION_FILTER, MAX_B_TN
 from utils import remove_junk
 
-# First Database For File Saving 
+# Database For File Saving 
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
 db = client[DATABASE_NAME]
 col = db[COLLECTION_NAME]
-
-# Second & Third Databases For File Saving
-sec_col = None
-thi_col = None
-sec_db = None
-thi_db = None
-
-if MULTIPLE_DATABASE:
-    if DATABASE_URI2:
-        sec_client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI2)
-        sec_db = sec_client[DATABASE_NAME]
-        sec_col = sec_db[COLLECTION_NAME]
-    if DATABASE_URI3:
-        thi_client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI3)
-        thi_db = thi_client[DATABASE_NAME]
-        thi_col = thi_db[COLLECTION_NAME]
 
 _indices_setup = False
 
@@ -33,17 +17,15 @@ async def setup_indices():
     global _indices_setup
     if _indices_setup:
         return True
-    success = True
-    for collection in [col, sec_col, thi_col]:
-        if collection is not None:
-            try:
-                await collection.create_index("file_id", unique=True, sparse=True)
-                await collection.create_index("file_name")
-            except Exception as e:
-                print(f"Error creating indices on {collection.name}: {e}")
-                success = False
-    _indices_setup = success
-    return success
+    try:
+        await col.create_index("file_id", unique=True, sparse=True)
+        await col.create_index("file_name")
+        _indices_setup = True
+        return True
+    except Exception as e:
+        print(f"Error creating indices on {col.name}: {e}")
+        _indices_setup = False
+        return False
 
 async def save_file(media):
     """Save file in the database."""
@@ -69,34 +51,8 @@ async def save_file(media):
     except DuplicateKeyError:
         print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
         return False, 0
-    except OperationFailure:
-        if MULTIPLE_DATABASE and sec_col is not None:
-            try:
-                await sec_col.insert_one(file)
-                print(f"{file_name} ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ.")
-                return True, 1
-            except DuplicateKeyError:
-                print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
-                return False, 0
-            except OperationFailure:
-                if thi_col is not None:
-                    try:
-                        await thi_col.insert_one(file)
-                        print(f"{file_name} ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ.")
-                        return True, 1
-                    except DuplicateKeyError:
-                        print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
-                        return False, 0
-                    except Exception as e:
-                        print(f"Error saving to third DB: {e}")
-                        return False, 2
-            except Exception as e:
-                print(f"Error saving to second DB: {e}")
-                return False, 2
-        print("ʏᴏᴜʀ ᴘʀɪᴍᴀʀʏ ᴅᴀᴛᴀʙᴀꜱᴇ ɪꜱ ꜰᴜʟʟ ᴏʀ ꜰᴀɪʟᴇᴅ, ᴀɴᴅ ɴᴏ ʙᴀᴄᴋᴜᴘ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏᴜʟᴅ ꜱᴛᴏʀᴇ ᴛʜᴇ ꜰɪʟᴇ.")
-        return False, 0
     except Exception as e:
-        print(f"Error saving to primary DB: {e}")
+        print(f"Error saving to DB: {e}")
         return False, 2
 
 def clean_file_name(file_name):
@@ -106,19 +62,16 @@ def clean_file_name(file_name):
     old_file_name = ' '.join(file_name.split())
     return old_file_name
 
-    
 async def is_file_already_saved(file_id, file_name, file_size=0):
-    """Check if the file is already saved in any active collection."""
+    """Check if the file is already saved in the collection."""
     if file_size:
         query = {'$or': [{'file_id': file_id}, {'file_name': file_name, 'file_size': file_size}]}
     else:
         query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
 
-    active_collections = [c for c in [col, sec_col, thi_col] if c is not None]
-    for collection in active_collections:
-        if await collection.find_one(query):
-            print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
-            return True
+    if await col.find_one(query):
+        print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
+        return True
             
     return False
 
@@ -170,30 +123,14 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             
             filter = {"$and": filter_and}
             
-            
-    active_collections = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
-    
+    total_results = await col.count_documents(filter)
     files = []
-    total_results = 0
-    remaining_offset = offset
-    remaining_limit = max_results
     
-    for collection in active_collections:
-        c_count = await collection.count_documents(filter)
-        total_results += c_count
-        
-        if remaining_limit > 0:
-            if remaining_offset >= c_count:
-                remaining_offset -= c_count
-            else:
-                cursor = collection.find(filter).sort('$natural', -1).skip(remaining_offset).limit(remaining_limit)
-                async for file in cursor:
-                    file['file_id'] = file.get('file_id', file.get('_id'))
-                    files.append(file)
-                
-                fetched = len(files) - (max_results - remaining_limit)
-                remaining_limit -= fetched
-                remaining_offset = 0
+    if offset < total_results:
+        cursor = col.find(filter).sort('$natural', -1).skip(offset).limit(max_results)
+        async for file in cursor:
+            file['file_id'] = file.get('file_id', file.get('_id'))
+            files.append(file)
                 
     next_offset = "" if (offset + max_results) >= total_results else (offset + max_results)
     return files, next_offset, total_results
@@ -231,33 +168,18 @@ async def get_bad_files(query, file_type=None, use_filter=False):
             }
             filter_criteria = {'$or': [filter_criteria, caption_filter]}
 
-    active_cols = [c for c in [col, sec_col, thi_col] if c is not None] if MULTIPLE_DATABASE else [col]
-
-    async def count_documents(collection):
-        return await collection.count_documents(filter_criteria)
-
-    total_results = sum([await count_documents(c) for c in active_cols])
-
-    async def find_documents(collection):
-        return await collection.find(filter_criteria).to_list(length=10000)
-
+    total_results = await col.count_documents(filter_criteria)
+    docs = await col.find(filter_criteria).to_list(length=10000)
     files = []
-    for c in active_cols:
-        docs = await find_documents(c)
-        for doc in docs:
-            doc['file_id'] = doc.get('file_id', doc.get('_id'))
-        files.extend(docs)
+    for doc in docs:
+        doc['file_id'] = doc.get('file_id', doc.get('_id'))
+    files.extend(docs)
 
     return files, total_results
 
 async def get_file_details(query):
     filter_query = {'$or': [{'file_id': query}, {'_id': query}]}
     file = await col.find_one(filter_query)
-    if not file and sec_col is not None:
-        file = await sec_col.find_one(filter_query)
-    if not file and thi_col is not None:
-        file = await thi_col.find_one(filter_query)
-    
     if file:
         file['file_id'] = file.get('file_id', file.get('_id'))
     return file
