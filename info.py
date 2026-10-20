@@ -90,25 +90,8 @@ AUTO_FILTER = is_enabled(environ.get('AUTO_FFILTER', True), True)
 AUTO_DELETE = is_enabled(environ.get('AUTO_DELETE', True), True)
 USE_CAPTION_FILTER = is_enabled(environ.get('USE_CAPTION_FILTER', True), True)
 
-# Tutorial Link (Used for both Verification and Shortlinks)
+# Tutorial Link (Used for Shortlinks)
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/TheInsomniacsClub/459')
-
-# Token Verification Info :
-# VERIFY is auto-disabled when VERIFY_SHORTLINK_URL or VERIFY_SHORTLINK_API are empty,
-# because an enabled VERIFY with no working shortlink backend is an unusable state.
-VERIFY_SHORTLINK_URL = environ.get('VERIFY_SHORTLINK_URL', '').strip()
-VERIFY_SHORTLINK_API = environ.get('VERIFY_SHORTLINK_API', '').strip()
-VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 900))
-_verify_requested = is_enabled(environ.get('VERIFY', False), False)
-if _verify_requested and (not VERIFY_SHORTLINK_URL or not VERIFY_SHORTLINK_API):
-    import logging as _logging
-    _logging.getLogger(__name__).warning(
-        "VERIFY is enabled but VERIFY_SHORTLINK_URL or VERIFY_SHORTLINK_API is not set. "
-        "VERIFY has been automatically disabled. Set both values to enable verification."
-    )
-    VERIFY = False
-else:
-    VERIFY = _verify_requested
 
 # Shortlink Info
 # SHORTLINK_MODE is auto-disabled when SHORTLINK_URL or SHORTLINK_API are empty,
