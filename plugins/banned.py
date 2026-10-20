@@ -18,14 +18,14 @@ disabled_group=filters.create(disabled_chat)
 @Client.on_message(filters.private & banned_user & filters.incoming)
 async def ban_reply(bot, message):
     ban = await db.get_ban_status(message.from_user.id)
-    await message.reply(f'ꜱᴏʀʀʏ, ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ꜰʀᴏᴍ ᴜꜱɪɴɢ ᴍᴇ.\nʙᴀɴ ʀᴇᴀꜱᴏɴ: {ban["ban_reason"]}')
+    await message.reply(f'<b>🚫 ꜱᴏʀʀʏ, ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ꜰʀᴏᴍ ᴜꜱɪɴɢ ᴍᴇ.\n\nʙᴀɴ ʀᴇᴀꜱᴏɴ:</b> <code>{ban["ban_reason"]}</code>')
 
 @Client.on_message(filters.group & disabled_group & filters.incoming)
 async def grp_bd(bot, message):
     vazha = await db.get_chat(message.chat.id)
     reason = vazha.get('reason', 'Disabled by Admin') if isinstance(vazha, dict) else 'Disabled by Admin'
     k = await message.reply(
-        text=f"ᴄʜᴀᴛ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ\n\nᴍʏ ᴀᴅᴍɪɴꜱ ʜᴀᴠᴇ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴍᴇ ꜰʀᴏᴍ ᴡᴏʀᴋɪɴɢ ʜᴇʀᴇ!\nʀᴇᴀꜱᴏɴ: <code>{reason}</code>."
+        text=f"<b>🚫 ᴄʜᴀᴛ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ\n\nᴍʏ ᴀᴅᴍɪɴꜱ ʜᴀᴠᴇ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴍᴇ ꜰʀᴏᴍ ᴡᴏʀᴋɪɴɢ ʜᴇʀᴇ!\n\nʀᴇᴀꜱᴏɴ:</b> <code>{reason}</code>."
     )
     try:
         await k.pin()
