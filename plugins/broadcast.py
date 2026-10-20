@@ -54,7 +54,7 @@ async def run_pm_broadcast(b_msg, sts):
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
     rem_users = await db.total_users_count()
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_users}")
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\n\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_users}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_users}")
 
 
 async def run_grp_broadcast(b_msg, sts):
@@ -98,13 +98,13 @@ async def run_grp_broadcast(b_msg, sts):
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
     rem_groups = await db.total_chat_count()
-    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_groups}")
+    await sts.edit(f"<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}:</b>\n\nᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ {time_taken}\n\nᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ: {total_groups}\nᴄᴏᴍᴘʟᴇᴛᴇᴅ: {done} / {total_groups}\nꜱᴜᴄᴄᴇꜱꜱ: {success}\nꜰᴀɪʟᴇᴅ: {failed} (ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇᴅ)\nʀᴇᴍᴀɪɴɪɴɢ ᴀᴄᴛɪᴠᴇ: {rem_groups}")
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
 async def pm_broadcast(bot, message):
     if BROADCAST_STATE.get("status") in ["running", "paused"]:
-        return await message.reply_text("<b>ᴀ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴀɴᴄᴇʟ ɪᴛ ꜰɪʀꜱᴛ.</b>")
+        return await message.reply_text("<b>ᴀ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ!\n\nᴘʟᴇᴀꜱᴇ ᴄᴀɴᴄᴇʟ ɪᴛ ꜰɪʀꜱᴛ.</b>")
 
     if message.reply_to_message:
         b_msg = message.reply_to_message
@@ -120,7 +120,7 @@ async def pm_broadcast(bot, message):
     ]]
     
     await message.reply_text(
-        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ᴜꜱᴇʀꜱ?</b>",
+        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ.\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ᴜꜱᴇʀꜱ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         reply_to_message_id=b_msg.id
     )
@@ -129,7 +129,7 @@ async def pm_broadcast(bot, message):
 @Client.on_message(filters.command("grp_broadcast") & filters.user(ADMINS))
 async def broadcast_group(bot, message):
     if BROADCAST_STATE.get("status") in ["running", "paused"]:
-        return await message.reply_text("<b>ᴀ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ! ᴘʟᴇᴀꜱᴇ ᴄᴀɴᴄᴇʟ ɪᴛ ꜰɪʀꜱᴛ.</b>")
+        return await message.reply_text("<b>ᴀ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ!\n\nᴘʟᴇᴀꜱᴇ ᴄᴀɴᴄᴇʟ ɪᴛ ꜰɪʀꜱᴛ.</b>")
 
     if message.reply_to_message:
         b_msg = message.reply_to_message
@@ -145,7 +145,7 @@ async def broadcast_group(bot, message):
     ]]
     
     await message.reply_text(
-        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ. ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ɢʀᴏᴜᴘꜱ?</b>",
+        "<b>ʙʀᴏᴀᴅᴄᴀꜱᴛ ᴘʀᴇᴠɪᴇᴡ\n\nᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀʙᴏᴠᴇ.\n\nᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʙʀᴏᴀᴅᴄᴀꜱᴛ ɪᴛ ᴛᴏ ᴀʟʟ ɢʀᴏᴜᴘꜱ?</b>",
         reply_markup=InlineKeyboardMarkup(btn),
         reply_to_message_id=b_msg.id
     )
@@ -168,7 +168,7 @@ async def broadcast_callbacks(bot, query):
         
         b_msg = PENDING_BROADCASTS.get(msg_key)
         if not b_msg:
-            return await query.answer("ᴇʀʀᴏʀ: ᴍᴇꜱꜱᴀɢᴇ ɴᴏᴛ ꜰᴏᴜɴᴅ. ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ.", show_alert=True)
+            return await query.answer("ᴇʀʀᴏʀ: ᴍᴇꜱꜱᴀɢᴇ ɴᴏᴛ ꜰᴏᴜɴᴅ.\n\nᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ.", show_alert=True)
             
         btn = [[
             InlineKeyboardButton("ᴘᴀᴜꜱᴇ", callback_data="broadcast_pause"),
@@ -210,4 +210,4 @@ async def broadcast_callbacks(bot, query):
         
     elif action == "cancel":
         BROADCAST_STATE["status"] = "cancelled"
-        await query.answer("ᴄᴀɴᴄᴇʟʟɪɴɢ ʙʀᴏᴀᴅᴄᴀꜱᴛ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ᴛʜᴇ ꜰɪɴᴀʟ ʀᴇᴘᴏʀᴛ.", show_alert=True)
+        await query.answer("ᴄᴀɴᴄᴇʟʟɪɴɢ ʙʀᴏᴀᴅᴄᴀꜱᴛ...\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ᴛʜᴇ ꜰɪɴᴀʟ ʀᴇᴘᴏʀᴛ.", show_alert=True)
