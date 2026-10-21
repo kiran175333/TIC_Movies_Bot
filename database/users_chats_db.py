@@ -359,6 +359,24 @@ class Database:
     async def get_verify_token(self, token):
         return await self.tokens.find_one({"token": token})
         
+    async def consume_verify_token(self, token: str, user_id: int, max_age: int = 900):
+        if not token:
+            return None
+        import time
+        min_time = time.time() - max_age
+        user_id_int = int(user_id) if str(user_id).lstrip("-").isdigit() else user_id
+        query = {
+            "token": token,
+            "used": False,
+            "time": {"$gte": min_time},
+            "$or": [{"user_id": user_id_int}, {"user_id": str(user_id)}]
+        }
+        doc = await self.tokens.find_one_and_update(
+            query,
+            {"$set": {"used": True}}
+        )
+        return doc
+
     async def update_verify_token(self, token, used=True):
         await self.tokens.update_one({"token": token}, {"$set": {"used": used}})
         
