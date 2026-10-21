@@ -1253,9 +1253,15 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             search = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|film(s)?|new|latest|bro(o+)?|bruh|helo|hello|hey|hi|sir|admin|that|find|dubbed|link|any(one)|with\ssubtitle(s)?|want|need|available|upload(ed)?|watch|download)", "", search, flags=re.IGNORECASE)
             search = re.sub(r"\s+", " ", search).strip()
             search = search.replace("’", "'").replace("‘", "'")
-            search = search.replace("-", " ")
-            search = search.replace(":", "")
-            search = search.replace(".", "")
+            # 1. Collapse dotted single-letter acronyms (e.g. K.G.F. -> KGF, R.R.R -> RRR)
+            search = re.sub(r'(?:\b[a-zA-Z0-9]\.)+(?:[a-zA-Z0-9]\.?\b)', lambda m: m.group(0).replace('.', ''), search)
+            # 2. Collapse space-separated single letters (e.g. K G F -> KGF)
+            search = re.sub(r'\b([a-zA-Z0-9])\s+(?=[a-zA-Z0-9]\b)', r'\1', search)
+            # 3. Replace word separators (., -, _, +, :, /) with spaces (e.g. Star.Wars.2005 -> Star Wars 2005)
+            search = re.sub(r"[\.\+\-_:\/]", " ", search)
+            search = re.sub(r"\s+", " ", search).strip()
+
+
             settings = await get_settings(message.chat.id)
             b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
             
