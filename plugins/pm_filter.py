@@ -930,10 +930,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
         btn = [[
-                InlineKeyboardButton("ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"unavailable#{from_user}"),
-                InlineKeyboardButton("ᴜᴘʟᴏᴀᴅᴇᴅ", callback_data=f"uploaded#{from_user}")
-             ],[
+                InlineKeyboardButton("ᴜᴘʟᴏᴀᴅᴇᴅ", callback_data=f"uploaded#{from_user}"),
                 InlineKeyboardButton("ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"already_available#{from_user}")
+             ],[
+                InlineKeyboardButton("ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"unavailable#{from_user}"),
+                InlineKeyboardButton("ɴᴇᴇᴅ ᴅᴇᴛᴀɪʟꜱ", callback_data=f"missing_info#{from_user}")
               ]]
         if query.from_user and is_admin(query.from_user):
             reply_markup = InlineKeyboardMarkup(btn)
@@ -1018,12 +1019,42 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴘᴇʟʟɪɴɢ ᴏʀ ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
             await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
-    elif query.data.startswith("alalert") or query.data.startswith("upalert") or query.data.startswith("unalert"):
+    elif query.data.startswith("missing_info"):
+        try:
+            ident, from_user = query.data.split("#")
+        except (ValueError, AttributeError):
+            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        btn = [[InlineKeyboardButton("ɴᴇᴇᴅ ᴅᴇᴛᴀɪʟꜱ", callback_data=f"mialert#{from_user}")]]
+        if query.from_user and is_admin(query.from_user):
+            user_mention = "User"
+            try:
+                user = await client.get_users(int(from_user))
+                user_mention = user.mention
+            except Exception:
+                pass
+            reply_markup = InlineKeyboardMarkup(btn)
+            content = query.message.text or ""
+            movie_name = content.split("ᴍᴇꜱꜱᴀɢᴇ : ")[1] if "ᴍᴇꜱꜱᴀɢᴇ : " in content else content
+            safe_content = content.replace('<', '&lt;').replace('>', '&gt;')
+            safe_movie = movie_name.replace('<', '&lt;').replace('>', '&gt;')
+            await query.message.edit_text(f"<b><strike>{safe_content}</strike></b>")
+            await query.message.edit_reply_markup(reply_markup)
+            await query.answer("ꜱᴇᴛ ᴛᴏ ɴᴇᴇᴅ ᴅᴇᴛᴀɪʟꜱ!")
+            try:
+                await client.send_message(
+                    chat_id=int(from_user),
+                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ / ᴜɴᴄʟᴇᴀʀ!\n\nᴘʟᴇᴀꜱᴇ ꜱᴜʙᴍɪᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ᴡɪᴛʜ ᴄᴏᴍᴘʟᴇᴛᴇ ᴅᴇᴛᴀɪʟꜱ:\n• ᴍᴏᴠɪᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ʀᴇʟᴇᴀꜱᴇ ʏᴇᴀʀ (ᴇ.ɢ. 2026)\n• ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ꜱᴇᴀꜱᴏɴ (ᴇ.ɢ. ꜱ01, ꜱ02)\n\n⚠️ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ʀᴇǫᴜᴇꜱᴛ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>"
+                )
+            except Exception:
+                pass
+        else:
+            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
+    elif query.data.startswith("alalert") or query.data.startswith("upalert") or query.data.startswith("unalert") or query.data.startswith("mialert"):
         if query.from_user and is_admin(query.from_user):
             await query.answer("ꜱᴛᴀᴛᴜꜱ ᴜᴘᴅᴀᴛᴇᴅ", show_alert=True)
         else:
