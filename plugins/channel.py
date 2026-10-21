@@ -19,7 +19,7 @@ async def media(bot, message):
                 file_name = html.escape(raw_name)
                 file_size = get_size(getattr(media, "file_size", 0))
                 dup_text = (
-                    f"<b>#ᴅᴜᴘʟɪᴄᴀᴛᴇ 1️⃣</b>\n"
+                    f"<b>#ᴅᴜᴘʟɪᴄᴀᴛᴇ 1️⃣</b>\n\n"
                     f"<b>• ꜰɪʟᴇ:</b> <code>{file_name}</code> [{file_size}]\n"
                     f"<b>• ʟɪɴᴋ:</b> <a href=\"{html.escape(msg_link)}\"><b>ᴠɪᴇᴡ ᴍᴇꜱꜱᴀɢᴇ</b></a>"
                 )
