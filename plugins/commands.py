@@ -211,10 +211,10 @@ async def start(client, message):
         
     
     # --- NEW SEARCH TRIGGER BLOCK ---
-    if data.startswith("getsrc-") or data.startswith("b64-"):
-        pm_search_enabled = await db.get_pm_search_status()
-        is_premium = await db.has_premium_access(message.from_user.id)
-        if not pm_search_enabled and not is_premium:
+    if data.startswith("b64-") or data.startswith("getsrc-"):
+        # Group deep-link search: unrestricted access for group members
+        # Bypasses PM search block so users clicking Manager Bot buttons get results
+        if False:  # Disabled to allow group deep-links through
             btn = [
                 [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
                 [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
@@ -270,10 +270,8 @@ async def start(client, message):
             if TUTORIAL:
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
                 
-            text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
-            if PREMIUM_MODE == True:
-                text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
-            
+            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+            text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
             return await message.reply_text(
                 text.format(message.from_user.mention),
                 reply_markup=InlineKeyboardMarkup(btn)
@@ -297,9 +295,8 @@ async def start(client, message):
         ]]
         if TUTORIAL:
             btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
-        text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
-        if PREMIUM_MODE == True:
-            text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+        btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+        text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
         k = await client.send_message(chat_id=user, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
         from utils import delayed_delete
         delayed_delete([k], 900)
@@ -323,9 +320,8 @@ async def start(client, message):
             ]]
             if TUTORIAL:
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
-            text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.\n\n</b>"
-            if PREMIUM_MODE == True:
-                text += "<b>💎 ᴡᴀɴᴛ ɪɴꜱᴛᴀɴᴛ ꜰɪʟᴇꜱ ᴡɪᴛʜᴏᴜᴛ ᴀᴅꜱ? ʙᴜʏ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ!\n\nꜱᴇɴᴅ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ.</b>"
+            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+            text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
             k = await client.send_message(chat_id=message.from_user.id, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
             from utils import delayed_delete
             delayed_delete([k], 900)
@@ -562,7 +558,7 @@ async def settings(client, message):
             ],
             [
                 InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
+                    'ᴍᴀx ʙᴜᴛᴛᴏꜱ',
                     callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
                 ),
                 InlineKeyboardButton(
@@ -602,6 +598,7 @@ async def settings(client, message):
         except Exception:
             pass
 
+
 @Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & filters.private)
 async def requests(bot, message):
     reporter = str(message.from_user.id)
@@ -638,6 +635,7 @@ async def requests(bot, message):
                 )
             except Exception:
                 pass
+    
         await message.reply_text("<b>✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴜʙᴍɪᴛᴛᴇᴅ ᴛᴏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ꜰᴏʀ ɪᴛ ᴛᴏ ʙᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.</b>")
     except Exception as e:
         await message.reply_text(f"<b>❌ ᴇʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ ʀᴇǫᴜᴇꜱᴛ:</b> <code>{html.escape(str(e))}</code>")
@@ -901,7 +899,7 @@ async def check_plans_cmd(client, message):
         
         msg = await message.reply_text(
             text="<b>ℹ️ ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ: /plan</b>", 
-            reply_markup=reply_markup,
+            reply_markup=reply_markup, 
             parse_mode=enums.ParseMode.HTML
         )
 
