@@ -33,6 +33,8 @@ def get_header_buttons(key):
     ]
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
+    if AUTH_GROUP and message.chat.id == AUTH_GROUP:
+        return
     settings = await get_settings(message.chat.id)
     chatid = message.chat.id 
     user_id = message.from_user.id if message.from_user else 0
