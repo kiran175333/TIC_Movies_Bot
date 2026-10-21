@@ -200,12 +200,13 @@ async def start(client, message):
     is_token_verified = False
     if data.startswith("t_"):
         token = data.split("_", 1)[1]
-        t = await db.get_verify_token(token)
-        if not t or t.get("used"):
+        t = await db.consume_verify_token(token, message.from_user.id, max_age=900)
+        if not t:
+            existing = await db.get_verify_token(token)
+            if existing and str(existing.get("user_id")) != str(message.from_user.id):
+                return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴅᴏᴇꜱ ɴᴏᴛ ʙᴇʟᴏɴɢ ᴛᴏ ʏᴏᴜ!</b>")
             return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ʜᴀꜱ ᴇxᴘɪʀᴇᴅ ᴏʀ ᴀʟʀᴇᴀᴅʏ ʙᴇᴇɴ ᴜꜱᴇᴅ!\n\nᴘʟᴇᴀꜱᴇ ɢᴇɴᴇʀᴀᴛᴇ ᴀ ɴᴇᴡ ʟɪɴᴋ ꜰʀᴏᴍ ᴛʜᴇ ʙᴏᴛ.</b>")
-        if str(t.get("user_id")) != str(message.from_user.id):
-            return await message.reply_text("<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴅᴏᴇꜱ ɴᴏᴛ ʙᴇʟᴏɴɢ ᴛᴏ ʏᴏᴜ!</b>")
-        await db.update_verify_token(token, True)
+
         data = t.get("file_data")
         is_token_verified = True
         
