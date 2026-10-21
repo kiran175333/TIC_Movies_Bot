@@ -264,6 +264,8 @@ def last_online(from_user):
 async def get_shortlink(link):
     URL = SHORTLINK_URL
     API = SHORTLINK_API
+    if not URL or not API:
+        return None
     if URL == "api.shareus.io":
         url = f'https://{URL}/easy_api'
         params = {
