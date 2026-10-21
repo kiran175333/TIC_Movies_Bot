@@ -343,6 +343,7 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
     settings = await get_settings(message.chat.id)
     b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
     files, offset, total_results = await get_search_results(chat_id, search, max_results=b_limit, offset=0, filter=True)
+    # files = [file for file in files if re.search(lang, file["file_name"], re.IGNORECASE)]
     if not files:
         await query.answer("❌ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
         return
@@ -525,7 +526,9 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
             pass
     else:
         try:
-            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(btn))
+            await query.edit_message_reply_markup(
+                reply_markup=InlineKeyboardMarkup(btn)
+            )
         except MessageNotModified:
             pass
     await query.answer()
@@ -660,6 +663,19 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ])
         )
 
+    elif query.data == "buy_premium_send":
+        buttons = [
+            [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
+            [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
+        ]
+        await client.send_message(
+            chat_id=query.message.chat.id,
+            text=PAYMENT_TEXT,
+            reply_markup=InlineKeyboardMarkup(buttons),
+            parse_mode=enums.ParseMode.HTML
+        )
+        return await query.answer()
+
     elif query.data.startswith("buy_premium"):
         # Check if the user came from the text-only /myplan command
         is_myplan = query.data == "buy_premium_myplan"
@@ -682,14 +698,29 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 media=InputMediaPhoto(random.choice(PICS), caption=PAYMENT_TEXT),
                 reply_markup=reply_markup
             )
-        else:
-            # Came from /myplan (text only)
+            return
+        elif is_myplan or query.data == "buy_premium_pmsearch":
+            # Came from /myplan or PM Search notice (text only)
             await query.message.edit_text(
                 text=PAYMENT_TEXT,
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
-        return 
+            return
+        else:
+            # Download / verification prompt: send new message below
+            btn = [
+                [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
+                [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
+            ]
+            await client.send_message(
+                chat_id=query.message.chat.id,
+                text=PAYMENT_TEXT,
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=enums.ParseMode.HTML
+            )
+            return await query.answer()
+
     elif query.data == "myplan_back":
         btn = [
             [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_myplan")],
@@ -1375,6 +1406,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                 btn.append(
                     [InlineKeyboardButton("ᴘᴀɢᴇ", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}",callback_data="pages"), InlineKeyboardButton(text="ɴᴇxᴛ ⟶",callback_data=f"next_{req}_{key}_{offset}")]
                 )
+    
             else:
                 btn.append(
                     [InlineKeyboardButton("ᴘᴀɢᴇ", callback_data="pages"), InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/int(MAX_B_TN))}",callback_data="pages"), InlineKeyboardButton(text="ɴᴇxᴛ ⟶",callback_data=f"next_{req}_{key}_{offset}")]
