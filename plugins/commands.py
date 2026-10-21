@@ -19,7 +19,7 @@ DOWNTIME_TEXT = (
     "ᴡᴀɴᴛ ᴛᴏ ꜱᴋɪᴘ ᴀʟʟ ʟɪɴᴋꜱ? ɢᴇᴛ ɪɴꜱᴛᴀɴᴛ, ᴀᴅ-ꜰʀᴇᴇ ꜰɪʟᴇꜱ ᴠɪᴀ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.</b>"
 )
 DOWNTIME_BUTTONS = InlineKeyboardMarkup([
-    [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
+    [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_send")]
 ])
 
 def make_search_slug(title: str) -> str:
@@ -271,7 +271,7 @@ async def start(client, message):
             if TUTORIAL:
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
                 
-            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium_send')])
             text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
             return await message.reply_text(
                 text.format(message.from_user.mention),
@@ -296,7 +296,7 @@ async def start(client, message):
         ]]
         if TUTORIAL:
             btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
-        btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+        btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium_send')])
         text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
         k = await client.send_message(chat_id=user, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
         from utils import delayed_delete
@@ -321,7 +321,7 @@ async def start(client, message):
             ]]
             if TUTORIAL:
                 btn.append([InlineKeyboardButton('? ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ?', url=TUTORIAL)])
-            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium')])
+            btn.append([InlineKeyboardButton('★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ (ꜱᴋɪᴘ ᴀᴅꜱ) ★', callback_data='buy_premium_send')])
             text = "<b>ʜᴇʏ {},\n\n📦 ʏᴏᴜʀ ꜰɪʟᴇ ɪꜱ ʀᴇᴀᴅʏ!\n\nᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ 'ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ' ʙᴜᴛᴛᴏɴ ᴀɴᴅ ᴏᴘᴇɴ ᴛʜᴇ ʟɪɴᴋ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇ.</b>"
             k = await client.send_message(chat_id=message.from_user.id, text=text.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
             from utils import delayed_delete
