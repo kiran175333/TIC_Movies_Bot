@@ -59,6 +59,7 @@ class temp(object):
     CANCEL = {}
     U_NAME = None
     B_NAME = None
+    GETALL = TTLCache(maxsize=2000, ttl=3600)
     SHORT = TTLCache(maxsize=2000, ttl=3600)
     SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
     SETTINGS = TTLCache(maxsize=500, ttl=3600)
