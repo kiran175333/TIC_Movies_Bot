@@ -89,20 +89,15 @@ USE_CAPTION_FILTER = is_enabled(environ.get('USE_CAPTION_FILTER', True), True)
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/TheInsomniacsClub/459')
 
 # Shortlink Info
-# SHORTLINK_MODE is auto-disabled when SHORTLINK_URL or SHORTLINK_API are empty,
-# because shortlinking with no configured backend will fail every request.
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'nowshort.com').strip()
 SHORTLINK_API = environ.get('SHORTLINK_API', '86668b40e4986c631ca9a2a56a0d85c1d35e9c63').strip()
-_shortlink_requested = is_enabled(environ.get('SHORTLINK_MODE', True), True)
-if _shortlink_requested and (not SHORTLINK_URL or not SHORTLINK_API):
+SHORTLINK_MODE = is_enabled(environ.get('SHORTLINK_MODE', True), True)
+if SHORTLINK_MODE and (not SHORTLINK_URL or not SHORTLINK_API):
     import logging as _logging
     _logging.getLogger(__name__).warning(
         "SHORTLINK_MODE is enabled but SHORTLINK_URL or SHORTLINK_API is not set. "
-        "SHORTLINK_MODE has been automatically disabled. Set both values to enable shortlinks."
+        "Shortlink requests will fail closed to protect files until configured."
     )
-    SHORTLINK_MODE = False
-else:
-    SHORTLINK_MODE = _shortlink_requested
 
 # Others
 MAX_B_TN = environ.get("MAX_B_TN", "5")
