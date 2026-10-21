@@ -98,7 +98,10 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             if query.lower() in LANGUAGE_SYNONYMS:
                 raw_pattern = LANGUAGE_SYNONYMS[query.lower()]
             else:
-                escaped_word = re.escape(query)
+                if (2 <= len(query) <= 3 and query.isalpha()) or query.lower() in {"swat", "abcd"}:
+                    escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in query)
+                else:
+                    escaped_word = re.escape(query)
                 escaped_word = re.sub(r"\\?['’‘]", "['’]", escaped_word)
                 if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
                     escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
@@ -115,7 +118,10 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
                 if word.lower() in LANGUAGE_SYNONYMS:
                     filter_and.append({"file_name": {"$regex": LANGUAGE_SYNONYMS[word.lower()], "$options": "i"}})
                 else:
-                    escaped_word = re.escape(word)
+                    if (2 <= len(word) <= 3 and word.isalpha()) or word.lower() in {"swat", "abcd"}:
+                        escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in word)
+                    else:
+                        escaped_word = re.escape(word)
                     escaped_word = re.sub(r"\\?['’‘`]", "['’`]", escaped_word)
                     if escaped_word.endswith("['’`]s") or escaped_word.endswith("s"):
                         escaped_word = re.sub(r"(\['’`\]s|s)$", r"(?:['’`]s|s)", escaped_word)
