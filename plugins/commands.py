@@ -918,10 +918,10 @@ async def get_bot_stats(bot, message):
 
     stats_text = (
         "<b><u>ᴅᴀᴛᴀʙᴀꜱᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ</u></b>\n\n"
-        f"<b>★ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ:</b> <code>{total_files}</code>\n"
-        f"<b>★ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n"
+        f"<b>★ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ:</b> <code>{total_files}</code>\n\n"
+        f"<b>★ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ:</b> <code>{total_users}</code>\n\n"
         f"<b>★ ᴛᴏᴛᴀʟ ɢʀᴏᴜᴘꜱ:</b> <code>{totl_chats}</code>\n\n"
-        f"<b>★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ:</b> <code>{round(used_db, 2)} MB</code>\n"
+        f"<b>★ ᴜꜱᴇᴅ ꜱᴛᴏʀᴀɢᴇ:</b> <code>{round(used_db, 2)} MB</code>\n\n"
         f"<b>★ ꜰʀᴇᴇ ꜱᴛᴏʀᴀɢᴇ:</b> <code>{round(free_db, 2)} MB</code>"
     )
     
