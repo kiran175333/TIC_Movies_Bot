@@ -3,7 +3,6 @@ from datetime import datetime, timedelta, date, time
 from cachetools import TTLCache
 
 SPAM_TRACKER = TTLCache(maxsize=10000, ttl=1.5)
-CALLBACK_SPAM = TTLCache(maxsize=10000, ttl=1.5)
 from Script import script
 from info import *
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatPermissions, WebAppInfo
@@ -121,16 +120,6 @@ async def pm_text(bot, message):
             ])
         )
     
-
-
-@Client.on_callback_query(group=-1)
-async def callback_spam_guard(client: Client, query: CallbackQuery):
-    user_id = query.from_user.id if query.from_user else 0
-    if user_id and user_id not in ADMINS:
-        if user_id in CALLBACK_SPAM:
-            await query.answer("⚠️ ʏᴏᴜ ᴀʀᴇ ᴄʟɪᴄᴋɪɴɢ ᴛᴏᴏ ꜰᴀꜱᴛ!\n\nᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ ᴀ ꜱᴇᴄᴏɴᴅ..", show_alert=True)
-            query.stop_propagation()
-        CALLBACK_SPAM[user_id] = True
 
 
 @Client.on_callback_query(filters.regex(r"^next"))
@@ -258,7 +247,7 @@ async def next_page(bot, query):
                     InlineKeyboardButton("ɴᴇxᴛ ⟶", callback_data=f"next_{req}_{key}_{n_offset}")
                 ],
             )
-    if BUTTONS.get(key) and FRESH.get(key) and BUTTONS.get(key) != FRESH.get(key):
+    if FRESH.get(key) and BUTTONS.get(key) != FRESH.get(key):
         btn.append([InlineKeyboardButton(text="⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋", callback_data=f"back_home#{key}")])
     if not settings["button"]:
         cur_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
@@ -623,6 +612,12 @@ async def back_to_home_cb_handler(client: Client, query: CallbackQuery):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    user_id = query.from_user.id if query.from_user else 0
+    if user_id and user_id not in ADMINS:
+        if user_id in SPAM_TRACKER:
+            return await query.answer("⏳ ʏᴏᴜ ᴀʀᴇ ᴄʟɪᴄᴋɪɴɢ ᴛᴏᴏ ғᴀsᴛ!\n\nᴘʟᴇᴀsᴇ ᴡᴀɪᴛ ᴀ sᴇᴄᴏɴᴅ.", show_alert=True)
+        SPAM_TRACKER[user_id] = True
+
     if query.data == "close_data":
         if query.message.chat.type == enums.ChatType.PRIVATE:
             if query.from_user and query.message.chat.id == query.from_user.id:
@@ -1086,7 +1081,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             try:
                 await client.send_message(
                     chat_id=int(from_user),
-                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ / ᴜɴᴄʟᴇᴀʀ!\n\nᴘʟᴇᴀꜱᴇ ꜱᴜʙᴍɪᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ᴡɪᴛʜ ᴄᴏᴍᴘʟᴇᴛᴇ ᴅᴇᴛᴀɪʟꜱ:\n\n🎬 ᴍᴏᴠɪᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ʀᴇʟᴇᴀꜱᴇ ʏᴇᴀʀ (ᴇ.ɢ. 2026)\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ꜱᴇᴀꜱᴏɴ (ᴇ.ɢ. ꜱ01, ꜱ02)</b>"
+                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ / ᴜɴᴄʟᴇᴀʀ!\n\nᴘʟᴇᴀꜱᴇ ꜱᴜʙᴍɪᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ᴡɪᴛʜ ᴄᴏᴍᴘʟᴇᴛᴇ ᴅᴇᴛᴀɪʟꜱ:\n• ᴍᴏᴠɪᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ʀᴇʟᴇᴀꜱᴇ ʏᴇᴀʀ (ᴇ.ɢ. 2026)\n• ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ꜱᴇᴀꜱᴏɴ (ᴇ.ɢ. ꜱ01, ꜱ02)\n\n⚠️ ᴍᴀᴋᴇ ꜱᴜʀᴇ ʏᴏᴜ ʀᴇǫᴜᴇꜱᴛ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>"
                 )
             except Exception:
                 pass
@@ -1390,7 +1385,6 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
     user_id = message.chat.id if message.chat.type == enums.ChatType.PRIVATE else (message.from_user.id if message.from_user else 0)
     req = user_id
     FRESH[key] = search
-    BUTTONS[key] = search
     if user_id:
         temp.SHORT[user_id] = message.chat.id
     if settings["button"]:
