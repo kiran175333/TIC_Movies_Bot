@@ -557,7 +557,7 @@ async def back_to_home_cb_handler(client: Client, query: CallbackQuery):
     if not files:
         return await query.answer("❌ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ", show_alert=1)
 
-    temp.GETALL[key] = files
+    pass
     pre = 'file'
     if settings["button"]:
         btn = [
