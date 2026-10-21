@@ -558,7 +558,7 @@ async def settings(client, message):
             ],
             [
                 InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏꜱ',
+                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
                     callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
                 ),
                 InlineKeyboardButton(
