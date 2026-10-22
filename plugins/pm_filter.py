@@ -1,4 +1,4 @@
-import os, logging, string, asyncio, time, re, ast, random, math, pytz, pyrogram
+import os, logging, string, asyncio, time, re, ast, random, math, pytz, pyrogram, html
 from datetime import datetime, timedelta, date, time
 from cachetools import TTLCache
 
@@ -1009,7 +1009,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\n⚠️ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ ᴏʀ ᴏɴɢᴏɪɴɢ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ᴏɴᴄᴇ ʀᴇʟᴇᴀꜱᴇᴅ/ᴄᴏᴍᴘʟᴇᴛᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\n⚠️ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ ᴏʀ ᴏɴɢᴏɪɴɢ ᴡᴇʙ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ᴏɴᴄᴇ ʀᴇʟᴇᴀꜱᴇᴅ/ᴄᴏᴍᴘʟᴇᴛᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
             except Exception:
                 pass
         else:
@@ -1311,10 +1311,10 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     if not spoll:
         message = msg
-        if message.text.startswith("/"): return  # ignore commands
-        if re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+        if not is_spell_check and message.text.startswith("/"): return  # ignore commands
+        if not is_spell_check and re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
-        if len(message.text) < 100:
+        if len(name) < 100:
             search = name
             search = search.lower()
             find = search.split(" ")
@@ -1331,7 +1331,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             # 1. Collapse dotted single-letter acronyms (e.g. K.G.F. -> KGF, R.R.R -> RRR)
             search = re.sub(r'(?:\b[a-zA-Z0-9]\.)+(?:[a-zA-Z0-9]\.?\b)', lambda m: m.group(0).replace('.', ''), search)
             # 2. Collapse space-separated single letters (e.g. K G F -> KGF)
-            search = re.sub(r'\b([a-zA-Z0-9])\s+(?=[a-zA-Z0-9]\b)', r'\1', search)
+            search = re.sub(r"(?<!['’`])\b([a-zA-Z0-9])\s+(?=[a-zA-Z0-9]\b(?!['’`]))", r'\1', search)
             # 3. Replace word separators (., -, _, +, :, /) with spaces (e.g. Star.Wars.2005 -> Star Wars 2005)
             search = re.sub(r"[\.\+\-_:\/]", " ", search)
             search = re.sub(r"\s+", " ", search).strip()
