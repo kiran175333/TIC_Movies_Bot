@@ -57,7 +57,7 @@ async def run_pm_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    rem_users = await db.total_users_count()
+    rem_users = max(0, total_users - failed)
     await sts.edit(
         f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}</u>\n\n"
         f"• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ:</b> <code>{time_taken}</code>\n\n"
@@ -88,7 +88,7 @@ async def run_grp_broadcast(b_msg, sts):
         if BROADCAST_STATE["status"] == "cancelled":
             break
             
-        pti, sh = await broadcast_messages_group(int(group['id']), b_msg)
+        pti, sh = await broadcast_messages_group(int(group.get('id', 0)), b_msg)
         if pti:
             success += 1
         elif pti == False:
@@ -113,7 +113,7 @@ async def run_grp_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "stopped"
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     
-    rem_groups = await db.total_chat_count()
+    rem_groups = max(0, total_groups - failed)
     await sts.edit(
         f"<b><u>ʙʀᴏᴀᴅᴄᴀꜱᴛ {status_text}</u>\n\n"
         f"• ᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ:</b> <code>{time_taken}</code>\n\n"
