@@ -559,7 +559,7 @@ async def settings(client, message):
             ],
             [
                 InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
+                    'ᴍᴀx ʙᴜᴛᴛᴏꜱ',
                     callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
                 ),
                 InlineKeyboardButton(
@@ -598,7 +598,6 @@ async def settings(client, message):
             await message.delete()
         except Exception:
             pass
-
 
 @Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & filters.private)
 async def requests(bot, message):
@@ -795,7 +794,7 @@ async def give_premium_cmd_handler(client, message):
             base_time = current_expiry if (current_expiry and isinstance(current_expiry, datetime.datetime) and current_expiry > now) else now
             expiry_time = base_time + datetime.timedelta(seconds=seconds)
             user_data = {"id": user_id, "expiry_time": expiry_time} 
-            await db.update_user(user_data)
+            await db.update_user(user_data) 
             await message.reply_text(f"<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ (ɪᴅ: {user_id}).</b>")            
             display_time = time_str.replace("day", " Days").replace("month", " Months").replace("year", " Years")
             try:
@@ -845,8 +844,7 @@ async def plans_cmd_handler(client, message):
     if PREMIUM_MODE == False:
         return 
     btn = [            
-        [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
-        [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
+        [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)]
     ]
     reply_markup = InlineKeyboardMarkup(btn)
     msg = await message.reply_text(
@@ -883,8 +881,7 @@ async def check_plans_cmd(client, message):
             )
         else:
             btn = [
-                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")],
-                [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
+                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
             ]
             msg = await message.reply_text(
                 text="<b>ℹ️ ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>", 
@@ -893,8 +890,7 @@ async def check_plans_cmd(client, message):
             )
     else:
         btn = [
-            [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")],
-            [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
+            [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
         ]
         reply_markup = InlineKeyboardMarkup(btn)
         
@@ -1004,7 +1000,7 @@ async def recent_uploads(client, message):
             [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
         ]
         return await message.reply_text(
-            "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ꜱᴜʙꜱᴄʀɪʙᴇᴅ ᴜꜱᴇʀꜱ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>",
+            "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>",
             reply_markup=InlineKeyboardMarkup(btn),
             quote=True
         )
