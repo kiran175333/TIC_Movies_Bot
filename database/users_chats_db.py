@@ -146,14 +146,14 @@ class Database:
 
     async def delete_user(self, user_id):
         try:
-            await self.col.delete_many({'id': int(user_id)})
+            await self.col.delete_many({'id': {'$in': [int(user_id), str(user_id)]}})
         except Exception as e:
             logger.error("delete_user(%s): database error: %s", user_id, e, exc_info=True)
 
 
     async def delete_chat(self, chat_id):
         try:
-            await self.grp.delete_many({'id': int(chat_id)})
+            await self.grp.delete_many({'id': {'$in': [int(chat_id), str(chat_id)]}})
         except Exception as e:
             logger.error("delete_chat(%s): database error: %s", chat_id, e, exc_info=True)
 
