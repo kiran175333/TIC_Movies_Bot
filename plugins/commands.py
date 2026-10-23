@@ -559,7 +559,7 @@ async def settings(client, message):
             ],
             [
                 InlineKeyboardButton(
-                    'ᴍᴀx ʙᴜᴛᴛᴏꜱ',
+                    'ᴍᴀx ʙᴜᴛᴛᴏɴꜱ',
                     callback_data=f'setgs#max_btn#{settings["max_btn"]}#{grp_id}',
                 ),
                 InlineKeyboardButton(
@@ -794,7 +794,7 @@ async def give_premium_cmd_handler(client, message):
             base_time = current_expiry if (current_expiry and isinstance(current_expiry, datetime.datetime) and current_expiry > now) else now
             expiry_time = base_time + datetime.timedelta(seconds=seconds)
             user_data = {"id": user_id, "expiry_time": expiry_time} 
-            await db.update_user(user_data) 
+            await db.update_user(user_data)
             await message.reply_text(f"<b>ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ (ɪᴅ: {user_id}).</b>")            
             display_time = time_str.replace("day", " Days").replace("month", " Months").replace("year", " Years")
             try:
@@ -1000,7 +1000,7 @@ async def recent_uploads(client, message):
             [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
         ]
         return await message.reply_text(
-            "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴜꜱᴇʀꜱ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>",
+            "<b>🔒 ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ᴇxᴄʟᴜꜱɪᴠᴇ ᴛᴏ ꜱᴜʙꜱᴄʀɪʙᴇᴅ ᴜꜱᴇʀꜱ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>",
             reply_markup=InlineKeyboardMarkup(btn),
             quote=True
         )
