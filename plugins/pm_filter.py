@@ -22,6 +22,7 @@ logger.setLevel(logging.ERROR)
 lock = asyncio.Lock()
 BUTTONS = TTLCache(maxsize=2000, ttl=3600)
 FRESH = TTLCache(maxsize=2000, ttl=3600)
+BUY_PREV_CACHE = TTLCache(maxsize=3000, ttl=3600)
 def get_header_buttons(key):
     return [
         [
@@ -117,7 +118,7 @@ async def pm_text(bot, message):
             "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ғᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ᴏʀ ɢᴇᴛ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
-                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_pmsearch")]
+                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
             ])
         )
     
@@ -665,37 +666,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception:
             pass
         
-    elif query.data == "pmsearch_back":
-        await query.message.edit_text(
-            "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ꜰᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ᴏʀ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖", url=GRP_LNK)],
-                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_pmsearch")]
-            ])
-        )
-
-    elif query.data == "buy_premium_send":
-        buttons = [
-            [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
-            [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
-        ]
-        await client.send_message(
-            chat_id=query.message.chat.id,
-            text=PAYMENT_TEXT,
-            reply_markup=InlineKeyboardMarkup(buttons),
-            parse_mode=enums.ParseMode.HTML
-        )
-        return await query.answer()
-
     elif query.data.startswith("buy_premium"):
-        # Check if the user came from the text-only /myplan command
-        is_myplan = query.data == "buy_premium_myplan"
-        if is_myplan:
-            back_callback = "myplan_back"
-        elif query.data == "buy_premium_pmsearch":
-            back_callback = "pmsearch_back"
-        else:
+        if query.message.media:
             back_callback = "start"
+        else:
+            orig_text = getattr(query.message.text, 'html', None) or query.message.text or ""
+            orig_markup = query.message.reply_markup
+            BUY_PREV_CACHE[query.message.id] = (orig_text, orig_markup)
+            back_callback = f"buy_back#{query.message.id}"
         
         buttons = [
             [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
@@ -709,40 +687,34 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 media=InputMediaPhoto(random.choice(PICS), caption=PAYMENT_TEXT),
                 reply_markup=reply_markup
             )
-            return
-        elif is_myplan or query.data == "buy_premium_pmsearch":
-            # Came from /myplan or PM Search notice (text only)
+        else:
             await query.message.edit_text(
                 text=PAYMENT_TEXT,
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
-            return
-        else:
-            # Download / verification prompt: send new message below
-            btn = [
-                [InlineKeyboardButton("ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ", url=SUPPORT_LINK)],
-                [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
-            ]
-            await client.send_message(
-                chat_id=query.message.chat.id,
-                text=PAYMENT_TEXT,
-                reply_markup=InlineKeyboardMarkup(btn),
+        return 
+
+    elif query.data.startswith("buy_back#"):
+        try:
+            msg_id = int(query.data.split("#", 1)[1])
+        except (IndexError, ValueError):
+            return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ.", show_alert=True)
+        cached = BUY_PREV_CACHE.get(msg_id)
+        if not cached:
+            return await query.answer("⚠️ ꜱᴇꜱꜱɪᴏɴ ᴇxᴘɪʀᴇᴅ. ᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ.", show_alert=True)
+        orig_text, orig_markup = cached
+        try:
+            await query.message.edit_text(
+                text=orig_text,
+                reply_markup=orig_markup,
+                disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML
             )
-            return await query.answer()
-
-    elif query.data == "myplan_back":
-        btn = [
-            [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium_myplan")],
-            [InlineKeyboardButton("⤬ ᴄʟᴏꜱᴇ ⤬", callback_data="close_data")]
-        ]
-        
-        await query.message.edit_text(
-            text="<b>ℹ️ ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴜʀ ᴘʟᴀɴꜱ: /plan</b>", 
-            reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.HTML
-        )
+        except MessageNotModified:
+            pass
+        except Exception as e:
+            logger.error(f"Error restoring buy_back message: {e}")
         return 
     if query.data.startswith("file"):
         if not check_callback_owner(query):
