@@ -144,11 +144,11 @@ async def broadcast_messages(user_id, message):
             await db.delete_user(int(user_id))
             logging.info(f"{user_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ᴛʜᴇ ᴀᴄᴄᴏᴜɴᴛ ᴡᴀꜱ ᴅᴇʟᴇᴛᴇᴅ.")
             return False, "ᴅᴇʟᴇᴛᴇᴅ"
-        except UserIsBlocked:
+        except (UserIsBlocked, Forbidden):
             await db.delete_user(int(user_id))
             logging.info(f"{user_id} - ʙʟᴏᴄᴋᴇᴅ ᴛʜᴇ ʙᴏᴛ.")
-            return False, "ʙʟᴏᴄᴋᴇᴅ"
-        except PeerIdInvalid:
+            return False, "ᴅᴇʟᴇᴛᴇᴅ"
+        except (PeerIdInvalid, BadRequest):
             await db.delete_user(int(user_id))
             logging.info(f"{user_id} - PeerIdInvalid")
             return False, "ᴇʀʀᴏʀ"
@@ -164,7 +164,7 @@ async def broadcast_messages_group(chat_id, message):
         except FloodWait as e:
             await asyncio.sleep(e.value)
             continue
-        except (ChatAdminRequired, ChatWriteForbidden, ChannelPrivate, UserNotParticipant, PeerIdInvalid, ChannelInvalid, ChatRestricted, UserBannedInChannel):
+        except (ChatAdminRequired, ChatWriteForbidden, ChannelPrivate, UserNotParticipant, PeerIdInvalid, ChannelInvalid, ChatRestricted, UserBannedInChannel, Forbidden, BadRequest):
             await db.delete_chat(int(chat_id))
             logging.info(f"{chat_id} - ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴅᴀᴛᴀʙᴀꜱᴇ ʙᴇᴄᴀᴜꜱᴇ ʙᴏᴛ ʟᴀᴄᴋꜱ ᴀᴄᴄᴇꜱꜱ/ᴋɪᴄᴋᴇᴅ.")
             return False, "ᴅᴇʟᴇᴛᴇᴅ"
