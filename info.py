@@ -76,7 +76,7 @@ PAYMENT_TEXT = environ.get('PAYMENT_TEXT', '<b>💎 ꜱᴜʙꜱᴄʀɪᴘᴛɪ�
 # Links
 GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+jDDUYiaz6yVhOWNl')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/TheInsomniacsClub')
-SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/TICSupportBot')
+SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/TIC_Manager_Bot')
 
 # True Or False
 BUTTON_MODE = is_enabled(environ.get('BUTTON_MODE', True), True)
