@@ -350,7 +350,7 @@ async def get_spell_check(query):
     
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=5) as response:
+            async with session.get(url, timeout=1.2) as response:
                 text = await response.text()
                 
                 # IMDb returns JSONP format: imdb$query({"d": [...]})
