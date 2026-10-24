@@ -36,6 +36,7 @@ class Database:
         self.bot_setgs = self.db.bot_settings  # New collection for global bot config
         self.tokens = self.db.tokens
         self.verified = self.db.verified_users
+        self._pm_search_cache = None
 
     async def setup_indices(self):
         """Ensure required TTL indexes exist for tokens collection and time index for delayed deletes.
@@ -43,6 +44,8 @@ class Database:
         """
         await self.tokens.create_index('time', expireAfterSeconds=900)
         await self.delete_col.create_index('time')
+        await self.col.create_index('id', unique=True, sparse=True)
+        await self.grp.create_index('id', unique=True, sparse=True)
 
     def new_user(self, id, name):
         return dict(
@@ -340,12 +343,17 @@ class Database:
             logger.error("remove_delete: database error: %s", e)
 
     async def get_pm_search_status(self):
+        if self._pm_search_cache is not None:
+            return self._pm_search_cache
         config = await self.bot_setgs.find_one({'_id': 'bot_config'})
         if config:
-            return config.get('pm_search_enabled', True)
+            self._pm_search_cache = config.get('pm_search_enabled', True)
+            return self._pm_search_cache
+        self._pm_search_cache = True
         return True
         
     async def update_pm_search_status(self, status: bool):
+        self._pm_search_cache = status
         await self.bot_setgs.update_one(
             {'_id': 'bot_config'}, 
             {'$set': {'pm_search_enabled': status}}, 
