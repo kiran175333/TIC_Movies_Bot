@@ -56,7 +56,6 @@ async def save_group(bot, message):
         except Exception:
             pass
 
-
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if not message.from_user:
@@ -108,12 +107,6 @@ async def start(client, message):
             ]
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
-        m = await message.reply_sticker("CAACAgIAAxkBAAEKDU1k3hdblAMuXWkapN9YbcsWdhHKXAAC_g4AAudvIEnxNZjTX_WA2DAE") 
-        await asyncio.sleep(1.5)
-        try:
-            await m.delete()
-        except Exception:
-            pass
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention),
@@ -187,7 +180,7 @@ async def start(client, message):
                 InlineKeyboardButton("⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖", url=GRP_LNK)
             ]
         ]
-        reply_markup = InlineKeyboardMarkup(buttons)      
+        reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention),
@@ -215,7 +208,7 @@ async def start(client, message):
     if data.startswith("b64-") or data.startswith("getsrc-"):
         # Group deep-link search: unrestricted access for group members
         # Bypasses PM search block so users clicking Manager Bot buttons get results
-        if False:  # Disabled to allow group deep-links through
+  # Disabled to allow group deep-links through
             btn = [
                 [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
                 [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
