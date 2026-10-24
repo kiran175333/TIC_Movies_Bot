@@ -61,6 +61,7 @@ class temp(object):
     B_NAME = None
     GETALL = TTLCache(maxsize=2000, ttl=3600)
     SHORT = TTLCache(maxsize=2000, ttl=3600)
+    SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
     SETTINGS = TTLCache(maxsize=500, ttl=3600)
     ALERTS = TTLCache(maxsize=2000, ttl=3600)
     DEL_KEYWORDS = TTLCache(maxsize=1000, ttl=3600)
@@ -260,9 +261,10 @@ def last_online(from_user):
             time += "ᴏꜰꜰʟɪɴᴇ"
     return time
 
-async def get_verify_shorted_link(link, url, api):
-    API = api
-    URL = url
+                           
+async def get_shortlink(link):
+    URL = SHORTLINK_URL
+    API = SHORTLINK_API
     if not URL or not API:
         return None
     if URL == "api.shareus.io":
@@ -287,59 +289,6 @@ async def get_verify_shorted_link(link, url, api):
         except Exception as e:
             logger.error(f"Shortener Down: {e}")
             return None
-        
-async def check_token(bot, userid, token):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-        
-    t = await db.get_verify_token(token)
-    if t and str(t.get("user_id")) == str(user.id):
-        if t.get("used"):
-            return False
-        if (time.time() - t.get("time", 0)) > 900:  # 15 minutes expiry
-            return False
-        return True
-    return False
-
-async def get_token(bot, userid, link, file_data=None):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
-    await db.create_verify_token(user.id, token, file_data)
-    link = f"{link}verify-{user.id}-{token}"
-    shortened_verify_url = await get_verify_shorted_link(link, VERIFY_SHORTLINK_URL, VERIFY_SHORTLINK_API)
-    return shortened_verify_url
-
-async def verify_user(bot, userid, token):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-        
-    t = await db.consume_verify_token(token, user.id, max_age=VERIFY_EXPIRE)
-    if t:
-        await db.add_verified_user(user.id)
-        if t.get("file_data"):
-            return t.get("file_data")
-        return True
-    return False
-
-async def check_verification(bot, userid):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    v = await db.get_verified_user(user.id)
-    if v:
-        verified_time = v.get("time", 0)
-        if (time.time() - verified_time) > VERIFY_EXPIRE:
-            return False
-        return True
-    return False  
         
 async def get_cap(settings, remaining_seconds, files, query, total_results, search):
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
@@ -401,7 +350,7 @@ async def get_spell_check(query):
     
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=1.2) as response:
+            async with session.get(url, timeout=5) as response:
                 text = await response.text()
                 
                 # IMDb returns JSONP format: imdb$query({"d": [...]})
