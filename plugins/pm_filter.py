@@ -105,13 +105,7 @@ async def pm_text(bot, message):
 
     if pm_search_enabled or is_premium:
         ai_search = True
-        # Clamp button text to 25 chars to prevent Telegram 64-byte button limits
-        btn_label = content if len(content) <= 25 else f"{content[:22]}..."
-        reply_msg = await message.reply_sticker(
-            "CAACAgQAAxkBAAEKeqNlIpmeUoOEsEWOWEiPxPi3hH5q-QACbg8AAuHqsVDaMQeY6CcRojAE", 
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(f'sᴇᴀʀᴄʜɪɴɢ ғᴏʀ {btn_label}', url=CHNL_LNK)]])
-        )
-        await auto_filter(bot, content, message, reply_msg, ai_search)
+        await auto_filter(bot, content, message, None, ai_search)
     else:
         # Block normal users when OFF
         await message.reply_text(
