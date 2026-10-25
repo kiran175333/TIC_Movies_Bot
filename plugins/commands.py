@@ -208,17 +208,6 @@ async def start(client, message):
     if data.startswith("b64-") or data.startswith("getsrc-"):
         # Group deep-link search: unrestricted access for group members
         # Bypasses PM search block so users clicking Manager Bot buttons get results
-  # Disabled to allow group deep-links through
-            btn = [
-                [InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=GRP_LNK)],
-                [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
-            ]
-            return await message.reply_text(
-                "<b>🚫 ᴘᴍ ꜱᴇᴀʀᴄʜ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ᴅɪꜱᴀʙʟᴇᴅ ғᴏʀ ɴᴏʀᴍᴀʟ ᴜꜱᴇʀꜱ.\n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴇᴀʀᴄʜ ғᴏʀ ᴍᴏᴠɪᴇꜱ, ᴡᴇʙ sᴇʀɪᴇs & ᴀɴɪᴍᴇ ᴏʀ ɢᴇᴛ ᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴛᴏ ꜱᴇᴀʀᴄʜ ᴅɪʀᴇᴄᴛʟʏ ɪɴ ʙᴏᴛ ᴘᴍ!</b>",
-                reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode=enums.ParseMode.HTML
-            )
-
         if data.startswith("getsrc-"):
             search_query = data.replace("getsrc-", "", 1).replace("-", " ").strip()
         else:
