@@ -44,8 +44,8 @@ class Database:
         """
         await self.tokens.create_index('time', expireAfterSeconds=900)
         await self.delete_col.create_index('time')
-        await self.col.create_index('id', unique=True, sparse=True)
-        await self.grp.create_index('id', unique=True, sparse=True)
+        await self.col.create_index('id')
+        await self.grp.create_index('id')
 
     def new_user(self, id, name):
         return dict(
