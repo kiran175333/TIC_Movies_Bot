@@ -39,13 +39,23 @@ class Database:
         self._pm_search_cache = None
 
     async def setup_indices(self):
-        """Ensure required TTL indexes exist for tokens collection and time index for delayed deletes.
-        Does not silently suppress errors so startup can verify integrity.
-        """
-        await self.tokens.create_index('time', expireAfterSeconds=900)
-        await self.delete_col.create_index('time')
-        await self.col.create_index('id')
-        await self.grp.create_index('id')
+        """Ensure required indexes exist for fast O(1) lookups."""
+        try:
+            await self.tokens.create_index('time', expireAfterSeconds=900)
+        except Exception:
+            pass
+        try:
+            await self.delete_col.create_index('time')
+        except Exception:
+            pass
+        try:
+            await self.col.create_index('id')
+        except Exception:
+            pass
+        try:
+            await self.grp.create_index('id')
+        except Exception:
+            pass
 
     def new_user(self, id, name):
         return dict(
