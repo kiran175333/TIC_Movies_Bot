@@ -370,27 +370,6 @@ async def start(client, message):
     delayed_delete([msg, k], 900)
     return   
 
-@Client.on_message(filters.command('channel') & filters.user(ADMINS))
-async def channel_info(bot, message):
-    text = '<b>ɪɴᴅᴇxᴇᴅ ᴄʜᴀɴɴᴇʟꜱ/ɢʀᴏᴜᴘꜱ</b>\n\n'
-    for channel in CHANNELS:
-        chat = await bot.get_chat(channel)
-        if chat.username:
-            text += '\n@' + chat.username
-        else:
-            text += '\n' + chat.title or chat.first_name
-
-    text += f'\n\n<b>ᴛᴏᴛᴀʟ:</b> {len(CHANNELS)}'
-
-    if len(text) < 4096:
-        await message.reply(text)
-    else:
-        file = 'Indexed channels.txt'
-        with open(file, 'w', encoding='utf-8') as f:
-            f.write(text)
-        await message.reply_document(file)
-        os.remove(file)
-
 @Client.on_message(filters.command('delete') & filters.user(ADMINS))
 async def delete(bot, message):
     if message.reply_to_message and message.reply_to_message.media:
