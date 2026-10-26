@@ -63,6 +63,8 @@ class Bot(Client):
 
         from utils import background_deleter
         self.deleter_task = asyncio.create_task(background_deleter(self))
+        from plugins.pm_filter import spell_trigger_listener
+        self.trigger_task = asyncio.create_task(spell_trigger_listener(self))
 
         await super().start()
         global is_healthy
@@ -99,6 +101,8 @@ class Bot(Client):
         await super().stop()
         if hasattr(self, 'deleter_task'):
             self.deleter_task.cancel()
+        if hasattr(self, 'trigger_task'):
+            self.trigger_task.cancel()
         if hasattr(self, 'runner'):
             await self.runner.cleanup()
             logging.info("ʜᴇᴀʟᴛʜ ꜱᴇʀᴠᴇʀ ꜱᴛᴏᴘᴘᴇᴅ.")
