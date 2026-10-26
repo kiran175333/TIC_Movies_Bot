@@ -35,8 +35,6 @@ def get_header_buttons(key):
     ]
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
-    if AUTH_GROUP and message.chat.id == AUTH_GROUP:
-        return
     settings = await get_settings(message.chat.id)
     chatid = message.chat.id 
     user_id = message.from_user.id if message.from_user else 0
@@ -1430,3 +1428,75 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             delayed_delete([fuk, message], 900)
     except Exception as e:
         logger.error(f"Auto-delete error: {e}")
+
+
+async def _process_spell_trigger(bot, doc):
+    try:
+        chat_id = doc.get("chat_id")
+        user_id = doc.get("user_id")
+        title = doc.get("title")
+        reply_to_id = doc.get("reply_to_id")
+        if not chat_id or not title:
+            return
+
+        SPAM_TRACKER.pop(user_id, None)
+
+        orig_msg = None
+        if reply_to_id:
+            try:
+                orig_msg = await bot.get_messages(chat_id, reply_to_id)
+                if orig_msg and orig_msg.empty:
+                    orig_msg = None
+            except Exception:
+                orig_msg = None
+
+        if not orig_msg:
+            class DummyUser:
+                def __init__(self, uid):
+                    self.id = uid
+                    self.mention = f"<a href='tg://user?id={uid}'>User</a>" if uid else "User"
+                    self.first_name = "User"
+
+            class DummyChat:
+                def __init__(self, cid):
+                    self.id = cid
+                    self.type = enums.ChatType.SUPERGROUP
+                    self.title = "Group"
+
+            class DummyMessage:
+                def __init__(self, b, cid, uid, mid):
+                    self._bot = b
+                    self.chat = DummyChat(cid)
+                    self.from_user = DummyUser(uid)
+                    self.id = mid or 1
+                    self.text = title
+
+                async def reply_text(self, text, reply_markup=None, disable_web_page_preview=True, **kwargs):
+                    return await self._bot.send_message(
+                        chat_id=self.chat.id,
+                        text=text,
+                        reply_markup=reply_markup,
+                        disable_web_page_preview=disable_web_page_preview,
+                        **kwargs
+                    )
+            orig_msg = DummyMessage(bot, chat_id, user_id, reply_to_id)
+
+        await auto_filter(bot, title, orig_msg, None, False, is_spell_check=True)
+    except Exception as e:
+        logger.error(f"Error handling spell trigger: {e}")
+
+
+async def spell_trigger_listener(bot):
+    trigger_col = fir_db['spell_triggers']
+    while True:
+        try:
+            doc = await trigger_col.find_one_and_delete({})
+            if doc:
+                asyncio.create_task(_process_spell_trigger(bot, doc))
+            else:
+                await asyncio.sleep(0.5)
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"Error in spell_trigger_listener: {e}")
+            await asyncio.sleep(1)
