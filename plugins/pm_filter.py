@@ -276,7 +276,7 @@ async def next_page(bot, query):
 async def languages_cb_handler(client: Client, query: CallbackQuery):
     if not check_callback_owner(query):
         return await query.answer(
-            f"✋ ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\n⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     try:
@@ -326,7 +326,7 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
         return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
     if not check_callback_owner(query):
         return await query.answer(
-            f"✋ ʜᴇʟʟᴏ {query.from_user.first_name if query.from_user else ''},\n\n⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
+            "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True,
         )
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
