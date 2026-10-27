@@ -451,6 +451,7 @@ async def qualities_cb_handler(client: Client, query: CallbackQuery):
 @Client.on_callback_query(filters.regex(r"^fq#"))
 async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     try:
+        curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
         _, qual, key = query.data.split("#")
     except (ValueError, AttributeError):
         return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
