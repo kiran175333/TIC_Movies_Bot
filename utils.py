@@ -87,6 +87,9 @@ def check_callback_owner(query) -> bool:
     return False
 
 async def pub_is_subscribed(bot, query, channel):
+    user_id = getattr(query, "from_user", None) and query.from_user.id
+    if user_id and await db.has_premium_access(user_id):
+        return []
     btn = []
     for id in channel:
         chat = await bot.get_chat(int(id))
@@ -101,6 +104,9 @@ async def pub_is_subscribed(bot, query, channel):
     return btn
 
 async def is_subscribed(bot, query):
+    user_id = getattr(query, "from_user", None) and query.from_user.id
+    if user_id and await db.has_premium_access(user_id):
+        return True
     if not AUTH_CHANNEL and not AUTH_GROUP:
         return True
     
