@@ -122,7 +122,6 @@ async def is_subscribed(bot, query):
             return False
 
     if AUTH_GROUP:
-        from database.users_chats_db import db
         if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
             pass 
         else:
