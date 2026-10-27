@@ -826,6 +826,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except (ValueError, AttributeError):
             return await query.answer("⚠️ ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
 
+        user_id = query.from_user.id if query.from_user else 0
+        if user_id and await db.has_premium_access(user_id):
+            await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start={kk}_{file_id}")
+            try:
+                await query.message.delete()
+            except Exception:
+                pass
+            return
+
         in_channel = True
         in_group = True
 
