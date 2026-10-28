@@ -5,7 +5,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, db as fir_db, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db
-from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, REQ_TO_JOIN)
+from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_shortlink, get_seconds, get_ist_now, IST)
 
 logger = logging.getLogger(__name__)
@@ -128,15 +128,12 @@ async def start(client, message):
                     in_channel = False
             
             if AUTH_GROUP:
-                if REQ_TO_JOIN and await db.has_req_group(message.from_user.id):
-                    pass
-                else:
-                    try:
-                        member = await client.get_chat_member(AUTH_GROUP, message.from_user.id)
-                        if member.status == enums.ChatMemberStatus.BANNED:
-                            in_group = False
-                    except Exception:
+                try:
+                    member = await client.get_chat_member(AUTH_GROUP, message.from_user.id)
+                    if member.status == enums.ChatMemberStatus.BANNED:
                         in_group = False
+                except Exception:
+                    in_group = False
             btn = []
             if AUTH_CHANNEL and not in_channel:
                 chat = await client.get_chat(int(AUTH_CHANNEL))
@@ -180,7 +177,7 @@ async def start(client, message):
                 InlineKeyboardButton("⌖ ᴏᴜʀ ɢʀᴏᴜᴘ ⌖", url=GRP_LNK)
             ]
         ]
-        reply_markup = InlineKeyboardMarkup(buttons)
+        reply_markup = InlineKeyboardMarkup(buttons)      
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention),
@@ -1087,21 +1084,13 @@ async def premium_users_list(client, message):
         if i % 15 == 0:
             messages.append(text)
             text = ""
-    
+        
     if text:
         messages.append(text)
     
     await msg.delete()
     for chunk in messages:
         await message.reply_text(chunk)
-
-
-@Client.on_chat_join_request()
-async def join_reqs(client, message):
-    if AUTH_GROUP and message.chat.id == AUTH_GROUP and REQ_TO_JOIN:
-        if not await db.is_user_exist(message.from_user.id):
-            await db.add_user(message.from_user.id, message.from_user.first_name)
-        await db.add_req_group(message.from_user.id)
 
 
 @Client.on_message(filters.command("id") & filters.private)
