@@ -113,7 +113,6 @@ async def pm_text(bot, message):
                 [InlineKeyboardButton("★ ʙᴜʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ★", callback_data="buy_premium")]
             ])
         )
-    
 
 
 @Client.on_callback_query(group=-1)
@@ -849,17 +848,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 in_channel = False
 
         if AUTH_GROUP:
-            if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
-                pass
-            else:
-                try:
-                    member = await client.get_chat_member(AUTH_GROUP, query.from_user.id)
-                    if member.status == enums.ChatMemberStatus.BANNED:
-                        in_group = False
-                except UserNotParticipant:
+            try:
+                member = await client.get_chat_member(AUTH_GROUP, query.from_user.id)
+                if member.status == enums.ChatMemberStatus.BANNED:
                     in_group = False
-                except Exception:
-                    in_group = False
+            except UserNotParticipant:
+                in_group = False
+            except Exception:
+                in_group = False
 
         if not in_channel or not in_group:
             btn = []
