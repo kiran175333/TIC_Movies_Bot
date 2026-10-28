@@ -198,7 +198,7 @@ class Database:
         
     
     async def get_settings(self, id):
-        chat = await self.grp.find_one({'id':int(chat)})
+        chat = await self.grp.find_one({'id':int(id)})
         if chat:
             return chat.get('settings', default_setgs)
         return default_setgs
