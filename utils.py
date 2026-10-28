@@ -59,6 +59,8 @@ class temp(object):
     CANCEL = {}
     U_NAME = None
     B_NAME = None
+    B_LINK = None
+    START_TIME = datetime.now()
     GETALL = TTLCache(maxsize=2000, ttl=3600)
     SHORT = TTLCache(maxsize=2000, ttl=3600)
     SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
@@ -122,18 +124,15 @@ async def is_subscribed(bot, query):
             return False
 
     if AUTH_GROUP:
-        if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
-            pass 
-        else:
-            try:
-                user = await bot.get_chat_member(AUTH_GROUP, query.from_user.id)
-                if user.status == enums.ChatMemberStatus.BANNED:
-                    return False
-            except UserNotParticipant:
+        try:
+            user = await bot.get_chat_member(AUTH_GROUP, query.from_user.id)
+            if user.status == enums.ChatMemberStatus.BANNED:
                 return False
-            except Exception as e:
-                logger.exception(e)
-                return False
+        except UserNotParticipant:
+            return False
+        except Exception as e:
+            logger.exception(e)
+            return False
             
     return True
 
