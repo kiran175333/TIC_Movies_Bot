@@ -59,8 +59,6 @@ class temp(object):
     CANCEL = {}
     U_NAME = None
     B_NAME = None
-    B_LINK = None
-    START_TIME = datetime.now()
     GETALL = TTLCache(maxsize=2000, ttl=3600)
     SHORT = TTLCache(maxsize=2000, ttl=3600)
     SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
