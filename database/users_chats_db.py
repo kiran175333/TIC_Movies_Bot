@@ -72,17 +72,6 @@ class Database:
             expiry_time=None,
         )
 
-
-    async def add_req_group(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        if user:
-            await self.col.update_one({'id': int(id)}, {'$set': {'req_group': True}})
-
-    async def has_req_group(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('req_group', False) if user else False
-
-
     def new_group(self, id, title):
         return dict(
             id = id,
@@ -209,7 +198,7 @@ class Database:
         
     
     async def get_settings(self, id):
-        chat = await self.grp.find_one({'id':int(id)})
+        chat = await self.grp.find_one({'id':int(chat)})
         if chat:
             return chat.get('settings', default_setgs)
         return default_setgs
