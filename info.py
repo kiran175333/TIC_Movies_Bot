@@ -61,9 +61,6 @@ AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_chan
 auth_group = environ.get('AUTH_GROUP', '-1004453122759')
 AUTH_GROUP = int(auth_group) if auth_group and id_pattern.search(auth_group) else None
 
-req_to_join = environ.get('REQ_TO_JOIN', 'True').lower()
-REQ_TO_JOIN = req_to_join == 'true'
-
 # MongoDB Configuration
 DATABASE_URI = environ.get('DATABASE_URI', 'mongodb+srv://MovieFiles:TICMovieFiles@cluster0.7uj6gaw.mongodb.net/?retryWrites=true&w=majority')
 DATABASE_NAME = environ.get('DATABASE_NAME', 'Cluster0').strip() or 'Cluster0'
