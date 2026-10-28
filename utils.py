@@ -49,28 +49,42 @@ def delayed_delete(messages, delay=900):
         if getattr(msg, "chat", None) and getattr(msg, "id", None):
             asyncio.create_task(db.add_delete(msg.chat.id, msg.id, now + delay))
 
-class Temp(object):
-    ME = None
-    U_NAME = None
-    B_NAME = None
-    START_TIME = datetime.now()
-    SHORT = {}
-    GETALL = {}
-    DEL_KEYWORDS = {}
+# temp db for banned 
+class temp(object):
     BANNED_USERS = []
     BANNED_CHATS = []
+    ME = None
+    BOT = None
+    CURRENT=int(os.environ.get("SKIP", 2))
+    CANCEL = {}
+    U_NAME = None
+    B_NAME = None
+    GETALL = TTLCache(maxsize=2000, ttl=3600)
+    SHORT = TTLCache(maxsize=2000, ttl=3600)
+    SHORT_TOKEN_STORE = TTLCache(maxsize=10000, ttl=900)
+    SETTINGS = TTLCache(maxsize=500, ttl=3600)
+    ALERTS = TTLCache(maxsize=2000, ttl=3600)
+    DEL_KEYWORDS = TTLCache(maxsize=1000, ttl=3600)
 
-temp = Temp()
-
-def check_callback_owner(query):
-    if not query.message or not query.message.reply_to_message:
-        return True
-    
-    orig_sender = query.message.reply_to_message.from_user
-    if orig_sender and query.from_user:
-        return orig_sender.id == query.from_user.id
-        
-    return True
+def check_callback_owner(query) -> bool:
+    """
+    Validates that query.from_user is authorized to interact with query.message.
+    In private chat: authorized if message is in user's private chat.
+    In group chats: authorized ONLY if query.message.reply_to_message exists,
+    has from_user, and query.from_user.id matches the original requester.
+    Returns True if authorized, False otherwise (fail closed).
+    """
+    if not query or not getattr(query, "from_user", None) or not getattr(query, "message", None):
+        return False
+    chat_type = query.message.chat.type
+    if chat_type == enums.ChatType.PRIVATE:
+        return query.message.chat.id == query.from_user.id
+    if chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+        reply = getattr(query.message, "reply_to_message", None)
+        if not reply or not getattr(reply, "from_user", None):
+            return False
+        return query.from_user.id == reply.from_user.id
+    return False
 
 async def pub_is_subscribed(bot, query, channel):
     user_id = getattr(query, "from_user", None) and query.from_user.id
@@ -108,15 +122,18 @@ async def is_subscribed(bot, query):
             return False
 
     if AUTH_GROUP:
-        try:
-            user = await bot.get_chat_member(AUTH_GROUP, query.from_user.id)
-            if user.status == enums.ChatMemberStatus.BANNED:
+        if REQ_TO_JOIN and await db.has_req_group(query.from_user.id):
+            pass 
+        else:
+            try:
+                user = await bot.get_chat_member(AUTH_GROUP, query.from_user.id)
+                if user.status == enums.ChatMemberStatus.BANNED:
+                    return False
+            except UserNotParticipant:
                 return False
-        except UserNotParticipant:
-            return False
-        except Exception as e:
-            logger.exception(e)
-            return False
+            except Exception as e:
+                logger.exception(e)
+                return False
             
     return True
 
