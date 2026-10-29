@@ -1,4 +1,4 @@
-import logging, asyncio, os, re, random, pytz, aiohttp, string, time, uuid
+import logging, asyncio, os, re, random, pytz, aiohttp, string, time
 import json
 from urllib.parse import quote_plus
 from info import *
@@ -7,8 +7,8 @@ from pyrogram import enums
 from pyrogram.errors import *
 from typing import Union
 from Script import script
-from datetime import datetime, date
-from typing import List
+from datetime import datetime
+
 from database.users_chats_db import db
 from shortzy import Shortzy
 from cachetools import TTLCache
