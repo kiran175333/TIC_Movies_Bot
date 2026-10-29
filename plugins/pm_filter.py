@@ -1,5 +1,5 @@
-import os, logging, string, asyncio, time, re, ast, random, math, pytz, pyrogram, html
-from datetime import datetime, timedelta, date, time
+import os, logging, string, asyncio, time, re, random, math, pytz, pyrogram, html
+from datetime import datetime, timedelta
 from cachetools import TTLCache
 
 SPAM_TRACKER = TTLCache(maxsize=10000, ttl=1.5)
@@ -9,12 +9,10 @@ from info import *
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatPermissions, WebAppInfo
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid, UserNotParticipant
-from pyrogram.errors import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from utils import remove_junk, get_size, is_subscribed, pub_is_subscribed, temp, get_settings, save_group_settings, get_cap, check_callback_owner
 from database.users_chats_db import db
 from database.ia_filterdb import col, db as fir_db, get_file_details, get_search_results, get_bad_files
 from urllib.parse import quote_plus
-from cachetools import TTLCache
 def clean_filename(name):
     return remove_junk(name)
 logger = logging.getLogger(__name__)
@@ -922,9 +920,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     
                     result = await col.delete_one({'_id': file['_id']})
                     # single database mode
-                    pass
-                    pass
-                    pass
                         
                     if result.deleted_count:
                         logger.info(f"File Found for your query {keyword}! Successfully deleted {file_name} from database.")
@@ -1278,7 +1273,6 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             return
         SPAM_TRACKER[user_id] = True
 
-    curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     if not spoll:
         message = msg
         if not is_spell_check and message.text.startswith("/"): return  # ignore commands
@@ -1402,9 +1396,6 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
         btn.append(
             [InlineKeyboardButton(text="ɴᴏ ᴍᴏʀᴇ ᴘᴀɢᴇꜱ ᴀᴠᴀɪʟᴀʙʟᴇ",callback_data="pages")]
         )
-    cur_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
-    time_difference = timedelta(hours=cur_time.hour, minutes=cur_time.minute, seconds=(cur_time.second+(cur_time.microsecond/1000000))) - timedelta(hours=curr_time.hour, minutes=curr_time.minute, seconds=(curr_time.second+(curr_time.microsecond/1000000)))
-    remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
     
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
     user_mention = message.from_user.mention if message.from_user else (message.chat.title or "User")
