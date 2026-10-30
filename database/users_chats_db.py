@@ -3,7 +3,7 @@ import logging
 from pymongo.errors import DuplicateKeyError
 import motor.motor_asyncio
 import asyncio
-from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FILTER
+from info import DATABASE_NAME, DATABASE_URI, CUSTOM_FILE_CAPTION, BUTTON_MODE, AUTO_DELETE, MAX_BTN, AUTO_FILTER, VERIFY_EXPIRE
 import time
 import datetime
 import pytz
@@ -42,20 +42,20 @@ class Database:
         """Ensure required indexes exist for fast O(1) lookups."""
         try:
             await self.tokens.create_index('time', expireAfterSeconds=900)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(f"Failed to create index on tokens.time: {e}")
         try:
             await self.delete_col.create_index('time')
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(f"Failed to create index on delete_col.time: {e}")
         try:
-            await self.col.create_index('id')
-        except Exception:
-            pass
+            await self.col.create_index('id', unique=True)
+        except Exception as e:
+            logger.error(f"Failed to create unique index on users.id: {e}")
         try:
-            await self.grp.create_index('id')
-        except Exception:
-            pass
+            await self.grp.create_index('id', unique=True)
+        except Exception as e:
+            logger.error(f"Failed to create unique index on groups.id: {e}")
 
     def new_user(self, id, name):
         return dict(
@@ -198,10 +198,11 @@ class Database:
         
     
     async def get_settings(self, id):
-        chat = await self.grp.find_one({'id':int(id)})
-        if chat:
-            return chat.get('settings', default_setgs)
-        return default_setgs
+        chat = await self.grp.find_one({'id': int(id)})
+        settings = default_setgs.copy()
+        if chat and isinstance(chat.get('settings'), dict):
+            settings.update(chat['settings'])
+        return settings
     
 
     async def disable_chat(self, chat, reason="ɴᴏ ʀᴇᴀꜱᴏɴ ᴘʀᴏᴠɪᴅᴇᴅ"):
@@ -287,7 +288,7 @@ class Database:
             logger.error("has_premium_access(%s): database error: %s", user_id, e, exc_info=True)
             return False
     
-    async def check_remaining_uasge(self, userid):
+    async def check_remaining_usage(self, userid):
         if not userid:
             return None
         try:
@@ -305,10 +306,10 @@ class Database:
                 return None
             return expiry_time - now
         except Exception as e:
-            logger.error("check_remaining_uasge(%s): database error: %s", userid, e, exc_info=True)
+            logger.error("check_remaining_usage(%s): database error: %s", userid, e, exc_info=True)
             return None
 
-    check_remaining_usage = check_remaining_uasge
+
     
     async def all_premium_users(self):
         try:
@@ -360,22 +361,24 @@ class Database:
         )
 
     async def create_verify_token(self, user_id, token, file_data=None):
-        import time
-        await self.tokens.update_one({"token": token}, {"$set": {"user_id": user_id, "used": False, "time": time.time(), "file_data": file_data}}, upsert=True)
+
+        await self.tokens.update_one({"token": token}, {"$set": {"user_id": user_id, "used": False, "time": datetime.datetime.now(datetime.timezone.utc), "file_data": file_data}}, upsert=True)
         
     async def get_verify_token(self, token):
         return await self.tokens.find_one({"token": token})
         
-    async def consume_verify_token(self, token: str, user_id: int, max_age: int = 900):
+    async def consume_verify_token(self, token: str, user_id: int, max_age: int = VERIFY_EXPIRE):
         if not token:
             return None
-        import time
-        min_time = time.time() - max_age
+
+        if max_age is None:
+            max_age = VERIFY_EXPIRE
+        min_time_dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=max_age)
         user_id_int = int(user_id) if str(user_id).lstrip("-").isdigit() else user_id
         query = {
             "token": token,
             "used": False,
-            "time": {"$gte": min_time},
+            "time": {"$gte": min_time_dt},
             "$or": [{"user_id": user_id_int}, {"user_id": str(user_id)}]
         }
         doc = await self.tokens.find_one_and_update(
@@ -388,7 +391,7 @@ class Database:
         await self.tokens.update_one({"token": token}, {"$set": {"used": used}})
         
     async def add_verified_user(self, user_id):
-        import time
+
         await self.verified.update_one({"user_id": user_id}, {"$set": {"time": time.time()}}, upsert=True)
         
     async def get_verified_user(self, user_id):
