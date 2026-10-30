@@ -942,13 +942,19 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ident, from_user = query.data.split("#")
         except (ValueError, AttributeError):
             return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
-        btn = [[
+        btn = [
+            [
                 InlineKeyboardButton("ᴜᴘʟᴏᴀᴅᴇᴅ", callback_data=f"uploaded#{from_user}"),
                 InlineKeyboardButton("ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"already_available#{from_user}")
-             ],[
-                InlineKeyboardButton("ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"unavailable#{from_user}"),
+            ],
+            [
+                InlineKeyboardButton("ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ", callback_data=f"unavailable#{from_user}")
+            ],
+            [
+                InlineKeyboardButton("ᴡʀᴏɴɢ ʙᴏᴛ", callback_data=f"wrong_bot#{from_user}"),
                 InlineKeyboardButton("ɴᴇᴇᴅ ᴅᴇᴛᴀɪʟꜱ", callback_data=f"missing_info#{from_user}")
-              ]]
+            ]
+        ]
         if query.from_user and is_admin(query.from_user):
             reply_markup = InlineKeyboardMarkup(btn)
             await query.message.edit_reply_markup(reply_markup)
@@ -978,7 +984,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\n⚠️ ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ ᴏʀ ᴏɴɢᴏɪɴɢ ᴡᴇʙ ꜱᴇʀɪᴇꜱ/ᴀɴɪᴍᴇ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ᴏɴᴄᴇ ʀᴇʟᴇᴀꜱᴇᴅ/ᴄᴏᴍᴘʟᴇᴛᴇᴅ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n❌ ꜱᴏʀʀʏ, \"{safe_movie}\" ɪꜱ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n\n⚠️ ᴘᴏꜱꜱɪʙʟᴇ ʀᴇᴀꜱᴏɴꜱ:\n• ꜰɪʟᴇꜱ ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɴᴏᴛ ꜰᴏᴜɴᴅ / ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ.\n• ᴜɴʀᴇʟᴇᴀꜱᴇᴅ ᴍᴏᴠɪᴇꜱ ᴡɪʟʟ ʙᴇ ᴀᴅᴅᴇᴅ ᴏɴᴄᴇ ᴏꜰꜰɪᴄɪᴀʟʟʏ ʀᴇʟᴇᴀꜱᴇᴅ!</b>")
             except Exception:
                 pass
         else:
@@ -1005,7 +1011,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴜᴘʟᴏᴀᴅᴇᴅ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n⚠️ ꜰɪʟᴇꜱ ᴀʀᴇ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴄᴀᴛᴇɢᴏʀʏ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ɪɴ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ ʙᴏᴛ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n✅ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ʜᴀꜱ ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ!\n\n🍿 ʏᴏᴜ ᴄᴀɴ ɴᴏᴡ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ɪᴛ ᴅɪʀᴇᴄᴛʟʏ ʜᴇʀᴇ ɪɴ ᴛʜɪꜱ ᴄʜᴀᴛ ᴏʀ ɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ.</b>")
             except Exception:
                 pass
         else:
@@ -1032,7 +1038,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
             await query.answer("ꜱᴇᴛ ᴛᴏ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ!")
             try:
-                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ꜰɪɴᴅ ɪᴛ, ᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴘᴇʟʟɪɴɢ ᴏʀ ʏᴏᴜ ᴍɪɢʜᴛ ʙᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ:\n\n🎬 ᴍᴏᴠɪᴇꜱ ➔ @TIC_Movies_Bot\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ ➔ @TIC_Web_Series_Anime_Bot</b>")
+                await client.send_message(chat_id=int(from_user), text=f"<b>ʜᴇʏ {user_mention},\n\n🔄 ᴡᴇ ᴀʟʀᴇᴀᴅʏ ʜᴀᴠᴇ \"{safe_movie}\" ɪɴ ᴏᴜʀ ᴍᴏᴠɪᴇ ᴄᴏʟʟᴇᴄᴛɪᴏɴ!\n\n⚠️ ᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ꜱᴘᴇʟʟɪɴɢ ᴀɴᴅ ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ.</b>")
             except Exception:
                 pass
         else:
@@ -1061,13 +1067,43 @@ async def cb_handler(client: Client, query: CallbackQuery):
             try:
                 await client.send_message(
                     chat_id=int(from_user),
-                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ / ᴜɴᴄʟᴇᴀʀ!\n\nᴘʟᴇᴀꜱᴇ ꜱᴜʙᴍɪᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ᴡɪᴛʜ ᴄᴏᴍᴘʟᴇᴛᴇ ᴅᴇᴛᴀɪʟꜱ:\n\n🎬 ᴍᴏᴠɪᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ʀᴇʟᴇᴀꜱᴇ ʏᴇᴀʀ (ᴇ.ɢ. 2026)\n📺 ᴡᴇʙ ꜱᴇʀɪᴇꜱ & ᴀɴɪᴍᴇ: ᴍᴇɴᴛɪᴏɴ ᴛɪᴛʟᴇ & ꜱᴇᴀꜱᴏɴ (ᴇ.ɢ. ꜱ01, ꜱ02)</b>"
+                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ɪɴᴄᴏᴍᴘʟᴇᴛᴇ / ᴜɴᴄʟᴇᴀʀ!\n\nᴘʟᴇᴀꜱᴇ ꜱᴜʙᴍɪᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ᴀɢᴀɪɴ ᴡɪᴛʜ ᴄᴏᴍᴘʟᴇᴛᴇ ᴅᴇᴛᴀɪʟꜱ:\n\n🎬 ᴍᴇɴᴛɪᴏɴ ᴍᴏᴠɪᴇ ᴛɪᴛʟᴇ & ʀᴇʟᴇᴀꜱᴇ ʏᴇᴀʀ (ᴇ.ɢ. {safe_movie} 2026)</b>"
                 )
             except Exception:
                 pass
         else:
             await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
-    elif query.data.startswith("alalert") or query.data.startswith("upalert") or query.data.startswith("unalert") or query.data.startswith("mialert"):
+    elif query.data.startswith("wrong_bot"):
+        try:
+            ident, from_user = query.data.split("#")
+        except (ValueError, AttributeError):
+            return await query.answer("ɪɴᴠᴀʟɪᴅ ʀᴇǫᴜᴇꜱᴛ", show_alert=True)
+        btn = [[InlineKeyboardButton("ᴡʀᴏɴɢ ʙᴏᴛ", callback_data=f"wbalert#{from_user}")]]
+        if query.from_user and is_admin(query.from_user):
+            user_mention = "User"
+            try:
+                user = await client.get_users(int(from_user))
+                user_mention = user.mention
+            except Exception:
+                pass
+            reply_markup = InlineKeyboardMarkup(btn)
+            content = query.message.text or ""
+            movie_name = content.split("ᴍᴇꜱꜱᴀɢᴇ : ")[1] if "ᴍᴇꜱꜱᴀɢᴇ : " in content else content
+            safe_content = content.replace('<', '&lt;').replace('>', '&gt;')
+            safe_movie = movie_name.replace('<', '&lt;').replace('>', '&gt;')
+            await query.message.edit_text(f"<b><strike>{safe_content}</strike></b>")
+            await query.message.edit_reply_markup(reply_markup)
+            await query.answer("ꜱᴇᴛ ᴛᴏ ᴡʀᴏɴɢ ʙᴏᴛ!")
+            try:
+                await client.send_message(
+                    chat_id=int(from_user),
+                    text=f"<b>ʜᴇʏ {user_mention},\n\n⚠️ ʏᴏᴜ ᴀʀᴇ ɪɴ ᴛʜᴇ ᴡʀᴏɴɢ ʙᴏᴛ!\n\nᴛʜɪꜱ ʙᴏᴛ ɪꜱ ᴏɴʟʏ ꜰᴏʀ ᴍᴏᴠɪᴇꜱ. ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ꜰᴏʀ \"{safe_movie}\" ɪꜱ ᴀ ᴡᴇʙ ꜱᴇʀɪᴇꜱ ᴏʀ ᴀɴɪᴍᴇ.\n\n📍 ᴘʟᴇᴀꜱᴇ ɢᴏ ᴛᴏ: @TIC_Web_Series_Anime_Bot\n• ꜱᴇᴀʀᴄʜ ꜰɪʀꜱᴛ ᴛᴏ ᴄʜᴇᴄᴋ ɪꜰ ɪᴛ'ꜱ ᴀᴠᴀɪʟᴀʙʟᴇ.\n• ɪꜰ ɴᴏᴛ ꜰᴏᴜɴᴅ, ʏᴏᴜ ᴄᴀɴ ʀᴇǫᴜᴇꜱᴛ ɪᴛ ᴛʜᴇʀᴇ!</b>"
+                )
+            except Exception:
+                pass
+        else:
+            await query.answer("ʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ!", show_alert=True)
+    elif query.data.startswith("alalert") or query.data.startswith("upalert") or query.data.startswith("unalert") or query.data.startswith("mialert") or query.data.startswith("wbalert"):
         if query.from_user and is_admin(query.from_user):
             await query.answer("ꜱᴛᴀᴛᴜꜱ ᴜᴘᴅᴀᴛᴇᴅ", show_alert=True)
         else:
@@ -1113,7 +1149,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [
             [InlineKeyboardButton('ᴛᴜᴛᴏʀɪᴀʟ ᴠɪᴅᴇᴏ', url="https://t.me/TheInsomniacsClub/461")],
             [
-                InlineKeyboardButton('ʀᴜʟᴇꜱ', callback_data='rules'),
+                InlineKeyboardButton('ꜱᴇᴀʀᴄʜ ᴛɪᴘꜱ', callback_data='rules'),
                 InlineKeyboardButton('ᴄᴏᴍᴍᴀɴᴅꜱ', callback_data='commands')
             ],
             [InlineKeyboardButton('ʜᴏᴡ ᴛᴏ ʀᴇǫᴜᴇꜱᴛ', callback_data='request_help')],
@@ -1317,15 +1353,11 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                 return
 
             if len(search) <= 1:
-                if len(search) == 1:
-                    if reply_msg:
-                        try:
-                            await reply_msg.delete()
-                        except Exception:
-                            pass
-                    warn_msg = await message.reply_text("<b>⚠️ ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ʏᴇᴀʀ ᴏʀ ʟᴀɴɢᴜᴀɢᴇ (ᴇ.ɢ. <code>ɪ 2015</code> ᴏʀ <code>ᴀ 1998</code>) ꜰᴏʀ ꜱʜᴏʀᴛ ᴛɪᴛʟᴇꜱ.</b>")
-                    from utils import delayed_delete
-                    delayed_delete([warn_msg], 30)
+                if reply_msg:
+                    try:
+                        await reply_msg.delete()
+                    except Exception:
+                        pass
                 return
             search = re.sub(r"\s+", " ", search).strip()
 
@@ -1365,7 +1397,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                             text=text,
                             reply_markup=InlineKeyboardMarkup(btn) if btn else None
                         )
-                        from utils import delayed_delete
+    
                         delayed_delete([spell_check_msg, message], 60)
                     except Exception:
                         pass
