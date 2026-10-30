@@ -23,30 +23,22 @@ BOT_TOKEN = environ.get('BOT_TOKEN', '7101615825:AAH4Izx-ObfvetE9nfjG-3xQsO-NDbL
 # This Pictures Is For Start Message Picture, You Can Add Multiple By Giving One Space Between Each.
 PICS = (environ.get('PICS', 'https://telegra.ph/file/3dfa7005df1d8bd279b07.jpg')).split()
 
-# Admins
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '1167803449 5166606892').split()]
+# Admins (Strictly numeric Telegram IDs for stable, unforgeable authorization)
+ADMINS = [int(admin) for admin in environ.get('ADMINS', '1167803449 5166606892').split() if id_pattern.search(admin)]
 
 def is_admin(user):
     if user is None:
         return False
     if isinstance(user, int):
-        return user in ADMINS or str(user) in ADMINS
+        return user in ADMINS
     if isinstance(user, str):
         user = user.strip()
-        if id_pattern.search(user):
-            return int(user) in ADMINS or user in ADMINS
-        clean_uname = user.lstrip('@').lower()
-        return any(
-            str(a).lstrip('@').lower() == clean_uname
-            for a in ADMINS
-        )
+        return int(user) in ADMINS if id_pattern.search(user) else False
+    from_user = getattr(user, 'from_user', None)
+    if from_user is not None and getattr(from_user, 'id', None) is not None:
+        return is_admin(from_user.id)
     uid = getattr(user, 'id', None)
-    if uid is not None and is_admin(uid):
-        return True
-    uname = getattr(user, 'username', None)
-    if uname and is_admin(uname):
-        return True
-    return False
+    return is_admin(uid) if uid is not None else False
 
 # This Channel Is For When User Start Your Bot Then Bot Send That User Name And Id In This Log Channel, Same For Group Also.
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001751854136'))
@@ -84,6 +76,9 @@ USE_CAPTION_FILTER = is_enabled(environ.get('USE_CAPTION_FILTER', True), True)
 
 # Tutorial Link (Used for Shortlinks)
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/TheInsomniacsClub/459')
+
+# Token Verification Info
+VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 900))
 
 # Shortlink Info
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'nowshort.com').strip()
