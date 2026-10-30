@@ -39,23 +39,34 @@ class Database:
         self._pm_search_cache = None
 
     async def setup_indices(self):
-        """Ensure required indexes exist for fast O(1) lookups."""
+        """Ensure required indexes exist for fast O(1) lookups without conflicts."""
         try:
-            await self.tokens.create_index('time', expireAfterSeconds=900)
+            tokens_idx = await self.tokens.index_information()
+            if 'time_1' not in tokens_idx:
+                await self.tokens.create_index('time', expireAfterSeconds=900)
         except Exception as e:
-            logger.error(f"Failed to create index on tokens.time: {e}")
+            logger.error(f"Failed to verify index on tokens: {e}")
+
         try:
-            await self.delete_col.create_index('time')
+            del_idx = await self.delete_col.index_information()
+            if 'time_1' not in del_idx:
+                await self.delete_col.create_index('time')
         except Exception as e:
-            logger.error(f"Failed to create index on delete_col.time: {e}")
+            logger.error(f"Failed to verify index on delete_col: {e}")
+
         try:
-            await self.col.create_index('id', unique=True)
+            user_idx = await self.col.index_information()
+            if 'id_1' not in user_idx:
+                await self.col.create_index('id')
         except Exception as e:
-            logger.error(f"Failed to create unique index on users.id: {e}")
+            logger.error(f"Failed to verify index on users: {e}")
+
         try:
-            await self.grp.create_index('id', unique=True)
+            grp_idx = await self.grp.index_information()
+            if 'id_1' not in grp_idx:
+                await self.grp.create_index('id')
         except Exception as e:
-            logger.error(f"Failed to create unique index on groups.id: {e}")
+            logger.error(f"Failed to verify index on groups: {e}")
 
     def new_user(self, id, name):
         return dict(
