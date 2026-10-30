@@ -1,5 +1,5 @@
 import logging, asyncio, os, re, random, pytz, aiohttp, string, time
-import json
+import json, html
 from urllib.parse import quote_plus
 from info import *
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -21,7 +21,7 @@ def get_ist_now():
 def remove_junk(file_name):
     file_name = str(file_name)
     file_name = re.sub(r"(?i)\b(1tamilmv|movierulz|tamilblasters|tamilmv|hdhub4u|vegamovies|bollyflix|katmoviehd|themoviesboss|moviesflix|moviesmod|dotmovies|uhdmovies|ibomma|filmyzilla|9xmovies|jalshamoviez|mkvcinemas|pahe)(?:\.[a-z]{2,4})?\b", "", file_name)
-    file_name = re.sub(r"(?i)(www\.?|@[a-zA-Z0-9]+|t\.me/[^\s]+|https?://[^\s]+)", "", file_name)
+    file_name = re.sub(r"(?i)(www\.?|@[a-zA-Z0-9_]+|t\.me/[^\s]+|https?://[^\s]+)", "", file_name)
     file_name = re.sub(r"\[\s*\]|\(\s*\)", "", file_name)
     return ' '.join(file_name.split())
 
@@ -36,10 +36,10 @@ async def background_deleter(bot):
             pending = await db.get_pending_deletes(now)
             for item in pending:
                 try:
-                    await bot.delete_messages(item['chat_id'], item['message_id'])
-                except Exception:
-                    pass
-                await db.remove_delete(item['_id'])
+                    await bot.delete_messages(item['chat_id'], item['message_id']); await db.remove_delete(item['_id'])
+                except (MessageIdInvalid, MessageDeleteForbidden):
+                    await db.remove_delete(item['_id'])
+                except Exception as e: logger.warning(f"Delete failed: {e}")
         except Exception as e:
             logger.error(f"Error in background_deleter: {e}")
 
@@ -92,15 +92,30 @@ async def pub_is_subscribed(bot, query, channel):
         return []
     btn = []
     for id in channel:
-        chat = await bot.get_chat(int(id))
+        chat = None
         try:
+            chat = await bot.get_chat(int(id))
             await bot.get_chat_member(id, query.from_user.id)
         except UserNotParticipant:
-            btn.append(
-                [InlineKeyboardButton(f'ᴊᴏɪɴ {chat.title}', url=chat.invite_link)]
-            )
+            if chat:
+                btn.append(
+                    [InlineKeyboardButton(f'ᴊᴏɪɴ {chat.title}', url=chat.invite_link)]
+                )
         except Exception as e:
-            pass
+            logger.error(f"Force-sub check error for channel {id}: {e}")
+            if chat:
+                btn.append(
+                    [InlineKeyboardButton(f'ᴊᴏɪɴ {chat.title}', url=chat.invite_link)]
+                )
+            elif CHNL_LNK:
+                btn.append(
+                    [InlineKeyboardButton('✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪', url=CHNL_LNK)]
+                )
+            else:
+                fallback_url = SUPPORT_LINK or f"https://t.me/{temp.U_NAME}"
+                btn.append(
+                    [InlineKeyboardButton('✪ ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ✪', url=fallback_url)]
+                )
     return btn
 
 async def is_subscribed(bot, query):
@@ -295,7 +310,8 @@ async def get_shortlink(link):
 async def get_cap(settings, remaining_seconds, files, query, total_results, search):
     warn_text = "\n\n<b>⚠️ ᴀꜰᴛᴇʀ 15 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ.</b>" if settings.get('auto_delete', True) else ""
     user_mention = query.from_user.mention if getattr(query, "from_user", None) else "User"
-    cap = f"<b>🫡 ʜᴇʏ {user_mention},\n\n📬 ʜᴇʀᴇ ɪꜱ ᴡʜᴀᴛ ɪ ꜰᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {search.replace('<', '&lt;').replace('>', '&gt;')}.</b>"
+    safe_search = html.escape(str(search), quote=False)
+    cap = f"<b>🫡 ʜᴇʏ {user_mention},\n\n📬 ʜᴇʀᴇ ɪꜱ ᴡʜᴀᴛ ɪ ꜰᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀꜱᴇ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {safe_search}.</b>"
 
     # The warning is now appended directly after the header
     cap += warn_text + "\n\n"
@@ -303,7 +319,7 @@ async def get_cap(settings, remaining_seconds, files, query, total_results, sear
     # The file loop executes after the warning
     if not settings.get("button", True):
         for file in files:
-            safe_name = file['file_name'].replace('<', '&lt;').replace('>', '&gt;')
+            safe_name = html.escape(str(file['file_name']), quote=False)
             cap += f"📂 <a href='https://telegram.me/{temp.U_NAME}?start=getlink_{file['file_id']}'>[{get_size(file['file_size'])}] {safe_name}</a>\n\n"
 
     return cap
