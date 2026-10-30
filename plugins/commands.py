@@ -5,7 +5,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.ia_filterdb import col, db as fir_db, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db
-from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
+from info import (SUPPORT_LINK, CHANNELS, ADMINS, is_admin, SHORTLINK_MODE, AUTH_CHANNEL, AUTH_GROUP, PAYMENT_TEXT, LOG_CHANNEL, PICS, CUSTOM_FILE_CAPTION, CHNL_LNK, GRP_LNK, PREMIUM_MODE, MAX_B_TN, VERIFY_EXPIRE, SHORTLINK_API, SHORTLINK_URL, TUTORIAL)
 from utils import (remove_junk, get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_shortlink, get_seconds, get_ist_now, IST)
 
 logger = logging.getLogger(__name__)
@@ -145,7 +145,7 @@ async def start(client, message):
                 invite_link_grp = chat_grp.invite_link or (await client.create_chat_invite_link(int(AUTH_GROUP))).invite_link
                 btn.append([InlineKeyboardButton("✪ ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ ✪", url=invite_link_grp)])
         except Exception as e:
-            print(e)
+            logger.error(f"Force-sub error: {e}", exc_info=True)
             return
         try:
             if len(message.command) > 1 and message.command[1] != "subscribe":
@@ -164,7 +164,7 @@ async def start(client, message):
             )
             return
         except Exception as e:
-            print(e)
+            logger.error(f"Force-sub error: {e}", exc_info=True)
             return await message.reply_text("<b>❌ ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴡɪᴛʜ ᴛʜᴇ ꜰᴏʀᴄᴇ-ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴇᴀᴛᴜʀᴇ.</b>")
             
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help", "start"]:
@@ -190,7 +190,7 @@ async def start(client, message):
     is_token_verified = False
     if data.startswith("t_"):
         token = data.split("_", 1)[1]
-        t = await db.consume_verify_token(token, message.from_user.id, max_age=900)
+        t = await db.consume_verify_token(token, message.from_user.id, max_age=VERIFY_EXPIRE)
         if not t:
             existing = await db.get_verify_token(token)
             if existing and str(existing.get("user_id")) != str(message.from_user.id):
@@ -820,7 +820,7 @@ async def check_plans_cmd(client, message):
     user_id = message.from_user.id
     
     if await db.has_premium_access(user_id):         
-        remaining_time = await db.check_remaining_uasge(user_id)
+        remaining_time = await db.check_remaining_usage(user_id)
         expiry_time = await db.get_expiry_time(user_id)
         
         if remaining_time and expiry_time:
