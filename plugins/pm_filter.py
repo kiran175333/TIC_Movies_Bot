@@ -51,7 +51,7 @@ async def give_filter(client, message):
                 )
                 return
         except Exception as e:
-            print(e)
+            logger.error(f"Error in group force-sub check: {e}", exc_info=True)
             
     if message.text.startswith("/") or message.text.startswith("#") or message.text.startswith("!"):
         return
@@ -139,7 +139,7 @@ async def next_page(bot, query):
     except ValueError:
         req_id = 0
     
-    if req_id not in [query.from_user.id, 0]:
+    if req_id != query.from_user.id and not check_callback_owner(query):
         return await query.answer(
             "⚠️ ᴛʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ.\n\nᴘʟᴇᴀꜱᴇ ʀᴇǫᴜᴇꜱᴛ ʏᴏᴜʀ ᴏᴡɴ.",
             show_alert=True
@@ -160,7 +160,11 @@ async def next_page(bot, query):
     settings = await get_settings(query.message.chat.id)
     b_limit = 10 if settings.get('max_btn', True) else int(MAX_B_TN)
     
-    files, n_offset, total = await get_search_results(query.message.chat.id, search, max_results=b_limit, offset=offset, filter=True)
+    try:
+        files, n_offset, total = await get_search_results(query.message.chat.id, search, max_results=b_limit, offset=offset, filter=True)
+    except Exception as e:
+        logger.error(f"Error in next_page search: {e}")
+        return await query.answer("⚠️ ᴇʀʀᴏʀ ʟᴏᴀᴅɪɴɢ ᴘᴀɢᴇ. ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ.", show_alert=True)
     try:
         n_offset = int(n_offset)
     except Exception:
@@ -1289,15 +1293,40 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     continue
                 else:
                     search = search + x + " "
-            search = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|film(s)?|new|latest|bro(o+)?|bruh|helo|hello|hey|hi|sir|admin|that|find|dubbed|link|any(one)|with\ssubtitle(s)?|want|need|available|upload(ed)?|watch|download)", "", search, flags=re.IGNORECASE)
+            search = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|film(s)?|new|latest|bro(o+)?|bruh|helo|hello|hey|sir|admin|that|find|dubbed|link|any(one)|with\ssubtitle(s)?|want|need|available|upload(ed)?|watch|download)", "", search, flags=re.IGNORECASE)
             search = re.sub(r"\s+", " ", search).strip()
             search = search.replace("’", "'").replace("‘", "'")
+            search = re.sub(r"\s*&\s*", " & ", search)
+            # Normalize season variations: "Season 1", "Season 01", "S 1", "S01" -> "s1"
+            search = re.sub(r"\b(?:season|s)\s*0*(\d+)\b", r"s\1", search, flags=re.IGNORECASE)
             # 1. Collapse dotted single-letter acronyms (e.g. K.G.F. -> KGF, R.R.R -> RRR)
             search = re.sub(r'(?:\b[a-zA-Z0-9]\.)+(?:[a-zA-Z0-9]\.?\b)', lambda m: m.group(0).replace('.', ''), search)
             # 2. Collapse space-separated single letters (e.g. K G F -> KGF)
             search = re.sub(r"(?<!['’`])\b([a-zA-Z0-9])\s+(?=[a-zA-Z0-9]\b(?!['’`]))", r'\1', search)
             # 3. Replace word separators (., -, _, +, :, /) with spaces (e.g. Star.Wars.2005 -> Star Wars 2005)
             search = re.sub(r"[\.\+\-_:\/]", " ", search)
+            search = re.sub(r"\s+", " ", search).strip()
+
+            # Ignore standalone casual greetings completely
+            if search.lower() in ["hi", "hii", "hiii", "hello", "helo", "hey"]:
+                if 'reply_msg' in locals() and reply_msg:
+                    try:
+                        await reply_msg.delete()
+                    except Exception:
+                        pass
+                return
+
+            if len(search) <= 1:
+                if len(search) == 1:
+                    if reply_msg:
+                        try:
+                            await reply_msg.delete()
+                        except Exception:
+                            pass
+                    warn_msg = await message.reply_text("<b>⚠️ ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ʏᴇᴀʀ ᴏʀ ʟᴀɴɢᴜᴀɢᴇ (ᴇ.ɢ. <code>ɪ 2015</code> ᴏʀ <code>ᴀ 1998</code>) ꜰᴏʀ ꜱʜᴏʀᴛ ᴛɪᴛʟᴇꜱ.</b>")
+                    from utils import delayed_delete
+                    delayed_delete([warn_msg], 30)
+                return
             search = re.sub(r"\s+", " ", search).strip()
 
 
