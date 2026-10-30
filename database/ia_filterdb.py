@@ -1,3 +1,4 @@
+import logging
 import re, base64, json
 from struct import pack
 from pyrogram.file_id import FileId
@@ -5,6 +6,8 @@ import motor.motor_asyncio
 from pymongo.errors import DuplicateKeyError
 from info import DATABASE_URI, DATABASE_NAME, COLLECTION_NAME, USE_CAPTION_FILTER, MAX_B_TN
 from utils import remove_junk
+
+logger = logging.getLogger(__name__)
 
 # Database For File Saving 
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URI)
@@ -23,7 +26,7 @@ async def setup_indices():
         _indices_setup = True
         return True
     except Exception as e:
-        print(f"Error creating indices on {col.name}: {e}")
+        logger.error(f"Error creating indices on {col.name}: {e}")
         _indices_setup = False
         return False
 
@@ -46,13 +49,13 @@ async def save_file(media):
 
     try:
         await col.insert_one(file)
-        print(f"{file_name} ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ.")
+        logger.info(f"{file_name} ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴀᴠᴇᴅ.")
         return True, 1
     except DuplicateKeyError:
-        print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
+        logger.debug(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
         return False, 0
     except Exception as e:
-        print(f"Error saving to DB: {e}")
+        logger.error(f"Error saving to DB: {e}")
         return False, 2
 
 def clean_file_name(file_name):
@@ -70,7 +73,7 @@ async def is_file_already_saved(file_id, file_name, file_size=0):
         query = {'$or': [{'file_id': file_id}, {'file_name': file_name}]}
 
     if await col.find_one(query):
-        print(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
+        logger.debug(f"{file_name} ɪꜱ ᴀʟʀᴇᴀᴅʏ ꜱᴀᴠᴇᴅ.")
         return True
             
     return False
@@ -88,6 +91,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     """For given query return (results, next_offset)"""
     
     query = query.strip()
+    query = re.sub(r"\s*&\s*", " & ", query)
     
     if not query:
         filter = {'file_name': re.compile('.', flags=re.IGNORECASE)}
@@ -97,15 +101,20 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             # Single word search (strict matching)
             if query.lower() in LANGUAGE_SYNONYMS:
                 raw_pattern = LANGUAGE_SYNONYMS[query.lower()]
+            elif re.match(r"^s0*(\d+)$", query, re.IGNORECASE):
+                s_num = re.match(r"^s0*(\d+)$", query, re.IGNORECASE).group(1)
+                raw_pattern = rf'(?:\b|_)(?:s|season)[\s\.\+\-_]*0*{s_num}(?:\b|_|(?=[eE]))'
+            elif query.lower() in ["and", "&"]:
+                raw_pattern = r'(?:(?:\b|_)and(?:\b|_)|&)'
             else:
-                if (2 <= len(query) <= 3 and query.isalpha()) or query.lower() in {"swat", "abcd"}:
+                if (1 <= len(query) <= 3 and query.isalnum()) or query.lower() in {"swat", "abcd"}:
                     escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in query)
                 else:
                     escaped_word = re.escape(query)
                 escaped_word = re.sub(r"\\?['’‘]", "['’]", escaped_word)
                 if escaped_word.endswith("['’]s") or escaped_word.endswith("s"):
                     escaped_word = re.sub(r"(\['’\]s|s)$", r"(?:['’]s|s)", escaped_word)
-                raw_pattern = r'(\b|[\.\+\-_])' + escaped_word + r'(\b|[\.\+\-_])'
+                raw_pattern = r'(?:\b|_)' + escaped_word + r'(?:\b|_)'
             try:
                 regex = re.compile(raw_pattern, flags=re.IGNORECASE)
             except Exception:
@@ -117,14 +126,23 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             for word in query_words:
                 if word.lower() in LANGUAGE_SYNONYMS:
                     filter_and.append({"file_name": {"$regex": LANGUAGE_SYNONYMS[word.lower()], "$options": "i"}})
+                elif re.match(r"^s0*(\d+)$", word, re.IGNORECASE):
+                    s_num = re.match(r"^s0*(\d+)$", word, re.IGNORECASE).group(1)
+                    s_pat = rf'(?:\b|_)(?:s|season)[\s\.\+\-_]*0*{s_num}(?:\b|_|(?=[eE]))'
+                    filter_and.append({"file_name": {"$regex": s_pat, "$options": "i"}})
+                elif word.lower() in ["and", "&"]:
+                    filter_and.append({"file_name": {"$regex": r'(?:(?:\b|_)and(?:\b|_)|&)', "$options": "i"}})
                 else:
-                    if (2 <= len(word) <= 3 and word.isalpha()) or word.lower() in {"swat", "abcd"}:
+                    is_short = (len(word) <= 3 and word.isalnum()) or word.lower() in {"swat", "abcd"}
+                    if is_short:
                         escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in word)
                     else:
                         escaped_word = re.escape(word)
                     escaped_word = re.sub(r"\\?['’‘`]", "['’`]", escaped_word)
                     if escaped_word.endswith("['’`]s") or escaped_word.endswith("s"):
-                        escaped_word = re.sub(r"(\['’`\]s|s)$", r"(?:['’`]s|s)", escaped_word)
+                        escaped_word = re.sub(r"(\['’`]s|s)$", r"(?:['’`]s|s)", escaped_word)
+                    if is_short:
+                        escaped_word = rf'(?:\b|_){escaped_word}(?:\b|_)'
                     filter_and.append({"file_name": {"$regex": escaped_word, "$options": "i"}})
             
             filter = {"$and": filter_and}
@@ -144,6 +162,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
 async def get_bad_files(query, file_type=None, use_filter=False):
     """For given query return (results, next_offset)"""
     query = query.strip()
+    query = re.sub(r"\s*&\s*", " & ", query)
     
     if not query:
         filter_criteria = {'file_name': re.compile('.', flags=re.IGNORECASE)}
@@ -159,7 +178,7 @@ async def get_bad_files(query, file_type=None, use_filter=False):
         else:
             filter_criteria = {
                 "$and": [
-                    {"file_name": {"$regex": re.escape(word), "$options": "i"}} for word in query_words
+                    {"file_name": {"$regex": (rf'(?:\b|_){re.escape(word)}(?:\b|_)' if (len(word) <= 3 and word.isalnum()) else re.escape(word)), "$options": "i"}} for word in query_words
                 ]
             }
 
