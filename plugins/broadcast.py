@@ -8,6 +8,14 @@ from database.users_chats_db import db
 # Global state tracker for broadcasts
 BROADCAST_STATE = {"status": "stopped"} 
 PENDING_BROADCASTS = {}
+ACTIVE_BROADCAST_TASKS = set()
+
+def _on_broadcast_task_done(task):
+    ACTIVE_BROADCAST_TASKS.discard(task)
+    if not task.cancelled() and task.exception():
+        import logging
+        logging.getLogger(__name__).error(f"Broadcast task error: {task.exception()}")
+        BROADCAST_STATE["status"] = "stopped"
 
 async def run_pm_broadcast(b_msg, sts):
     BROADCAST_STATE["status"] = "running"
@@ -204,9 +212,11 @@ async def broadcast_callbacks(bot, query):
         )
         
         if b_type == "pm":
-            asyncio.create_task(run_pm_broadcast(b_msg, query.message))
+            b_task = asyncio.create_task(run_pm_broadcast(b_msg, query.message))
         else:
-            asyncio.create_task(run_grp_broadcast(b_msg, query.message))
+            b_task = asyncio.create_task(run_grp_broadcast(b_msg, query.message))
+        ACTIVE_BROADCAST_TASKS.add(b_task)
+        b_task.add_done_callback(_on_broadcast_task_done)
         return
 
     try:
