@@ -1397,7 +1397,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                             text=text,
                             reply_markup=InlineKeyboardMarkup(btn) if btn else None
                         )
-    
+                        from utils import delayed_delete
                         delayed_delete([spell_check_msg, message], 60)
                     except Exception:
                         pass
