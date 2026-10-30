@@ -16,7 +16,11 @@ is_healthy = False
 async def health_check(request):
     if not is_healthy:
         return web.Response(text="ʙᴏᴛ ɪꜱ ɴᴏᴛ ʀᴇᴀᴅʏ ᴏʀ ɪɴɪᴛɪᴀʟɪᴢᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ!", status=503)
-    return web.Response(text="ʙᴏᴛ ɪꜱ ʀᴜɴɴɪɴɢ ꜱᴍᴏᴏᴛʜʟʏ!", status=200)
+    try:
+        await db.db.command('ping')
+        return web.Response(text="ʙᴏᴛ ɪꜱ ʀᴜɴɴɪɴɢ ꜱᴍᴏᴏᴛʜʟʏ!", status=200)
+    except Exception as e:
+        return web.Response(text=f"ᴅᴀᴛᴀʙᴀꜱᴇ ᴜɴᴀᴠᴀɪʟᴀʙʟᴇ: {e}", status=503)
 
 class Bot(Client):
     def __init__(self):
@@ -99,10 +103,27 @@ class Bot(Client):
         global is_healthy
         is_healthy = False
         await super().stop()
-        if hasattr(self, 'deleter_task'):
+        if hasattr(self, 'deleter_task') and self.deleter_task:
             self.deleter_task.cancel()
-        if hasattr(self, 'trigger_task'):
+            try:
+                await self.deleter_task
+            except (asyncio.CancelledError, Exception):
+                pass
+        if hasattr(self, 'trigger_task') and self.trigger_task:
             self.trigger_task.cancel()
+            try:
+                await self.trigger_task
+            except (asyncio.CancelledError, Exception):
+                pass
+        try:
+            from plugins.broadcast import ACTIVE_BROADCAST_TASKS
+            tasks_to_cancel = list(ACTIVE_BROADCAST_TASKS)
+            for b_task in tasks_to_cancel:
+                b_task.cancel()
+            if tasks_to_cancel:
+                await asyncio.gather(*tasks_to_cancel, return_exceptions=True)
+        except Exception:
+            pass
         if hasattr(self, 'runner'):
             await self.runner.cleanup()
             logging.info("ʜᴇᴀʟᴛʜ ꜱᴇʀᴠᴇʀ ꜱᴛᴏᴘᴘᴇᴅ.")
