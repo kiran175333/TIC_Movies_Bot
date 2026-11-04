@@ -216,6 +216,8 @@ async def start(client, message):
             except Exception:
                 return await message.reply_text("<b>⚠️ ɪɴᴠᴀʟɪᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ ʟɪɴᴋ.\n\nᴘʟᴇᴀꜱᴇ ꜱᴇᴀʀᴄʜ ꜰᴏʀ ᴛʜᴇ ꜰɪʟᴇ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ᴀ ꜰʀᴇꜱʜ ʟɪɴᴋ.</b>")
 
+        if search_query.startswith("#") and not search_query.lower().startswith("#request"):
+            search_query = search_query.lstrip("#").strip()
         message.text = search_query  # Overwrite text to bypass the "/" command block in auto_filter
         try:
             from plugins.pm_filter import auto_filter
@@ -1023,7 +1025,7 @@ async def recent_uploads(client, message):
         for key in ordered_keys:
             data = merged_titles[key]
             lang_str = f" [{' '.join(sorted(data['langs']))}]" if data['langs'] else ""
-            slug = make_search_slug(data['title'])
+            slug = make_search_slug(data['title'].lstrip("#").strip() or data['title'])
             safe_base = data['title'].replace('<', '&lt;').replace('>', '&gt;')
             
             formatted_string = f"▪️ <a href='https://t.me/{temp.U_NAME}?start={slug}'>{safe_base}</a>{lang_str}"
