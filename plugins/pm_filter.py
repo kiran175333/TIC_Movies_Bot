@@ -84,8 +84,13 @@ async def pm_text(bot, message):
     if not content:
         return
     # 1. Ignore commands, hashtags, and prefixes
-    if content.startswith(("/", "#", "!")):
+    if content.startswith(("/", "!")) or content.lower().startswith("#request"):
         return
+    if content.startswith("#"):
+        content = content.lstrip("#").strip()
+        if not content:
+            return
+        message.text = content
     # 2. Ignore multi-line messages (broadcast drafts, recent lists, copied posts)
     if "\n" in content:
         return
@@ -1320,6 +1325,8 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
             return
         if len(name) < 100:
             search = name
+            if search.startswith("#") and not search.lower().startswith("#request"):
+                search = search.lstrip("#").strip()
             search = search.lower()
             find = search.split(" ")
             search = ""
@@ -1329,7 +1336,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False, is_s
                     continue
                 else:
                     search = search + x + " "
-            search = re.sub(r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|film(s)?|new|latest|bro(o+)?|bruh|helo|hello|hey|sir|admin|that|find|dubbed|link|any(one)|with\ssubtitle(s)?|want|need|available|upload(ed)?|watch|download)", "", search, flags=re.IGNORECASE)
+            search = re.sub(r"\b(pl(?:i|e)*?(?:s|z+|ease|se|ese|(?:e+)s(?:e)?)|(?:(?:send|snd|giv(?:e)?|gib)(?:\sme)?)|movies?|films?|new|latest|bro(?:o+)?|bruh|helo|hello|hey|sir|admin|that|find|dubbed|link|anyone|with\ssubtitles?|want|need|available|uploaded?|watch|download)\b", "", search, flags=re.IGNORECASE)
             search = re.sub(r"\s+", " ", search).strip()
             search = search.replace("’", "'").replace("‘", "'")
             search = re.sub(r"\s*&\s*", " & ", search)
