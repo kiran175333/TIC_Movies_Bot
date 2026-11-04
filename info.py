@@ -81,8 +81,8 @@ TUTORIAL = environ.get('TUTORIAL', 'https://t.me/TheInsomniacsClub/459')
 VERIFY_EXPIRE = int(environ.get('VERIFY_EXPIRE', 900))
 
 # Shortlink Info
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'nowshort.com').strip()
-SHORTLINK_API = environ.get('SHORTLINK_API', '86668b40e4986c631ca9a2a56a0d85c1d35e9c63').strip()
+SHORTLINK_URL = environ.get('SHORTLINK_URL', 'vplink.in').strip()
+SHORTLINK_API = environ.get('SHORTLINK_API', '4f73a2d88f5fafd86cd808145e73e4696c9486cd').strip()
 SHORTLINK_MODE = is_enabled(environ.get('SHORTLINK_MODE', True), True)
 if SHORTLINK_MODE and (not SHORTLINK_URL or not SHORTLINK_API):
     import logging as _logging
