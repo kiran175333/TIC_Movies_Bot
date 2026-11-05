@@ -167,6 +167,7 @@ class Database:
     async def delete_chat(self, chat_id):
         try:
             await self.grp.delete_many({'id': {'$in': [int(chat_id), str(chat_id)]}})
+            await self.delete_col.delete_many({'chat_id': {'$in': [int(chat_id), str(chat_id)]}})
         except Exception as e:
             logger.error("delete_chat(%s): database error: %s", chat_id, e, exc_info=True)
 
@@ -352,6 +353,12 @@ class Database:
             await self.delete_col.delete_one({'_id': doc_id})
         except Exception as e:
             logger.error("remove_delete: database error: %s", e)
+
+    async def delete_all_pending_deletes(self, chat_id):
+        try:
+            await self.delete_col.delete_many({'chat_id': {'$in': [int(chat_id), str(chat_id)]}})
+        except Exception as e:
+            logger.error("delete_all_pending_deletes(%s): database error: %s", chat_id, e)
 
     async def get_pm_search_status(self):
         if self._pm_search_cache is not None:
