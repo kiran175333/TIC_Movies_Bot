@@ -608,9 +608,9 @@ async def send_msg(bot, message):
             "<b>ᴜꜱᴀɢᴇ:</b>\n\n"
             "<b>1. ᴅɪʀᴇᴄᴛ ᴛᴇxᴛ:</b>\n"
             "<code>/send user_id your message text</code>\n"
-            "<code>/send id1 id2 id3 your message text</code>\n\n"
+            "<code>/send @username your message text</code>\n            <code>/send id1 @user2 id3 your message text</code>\n\n"
             "<b>2. ʀᴇᴘʟʏ (ꜰᴏʀ ᴍᴇᴅɪᴀ / ꜰɪʟᴇꜱ / ᴛᴇxᴛ):</b>\n"
-            "<b>ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ</b> <code>/send id1 id2 ...</code>"
+            "<b>ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ</b> <code>/send id1 @user2 ...</code>"
         )
 
     # Mode 1: Reply Mode (copies replied media, files, or styled text)
@@ -627,20 +627,20 @@ async def send_msg(bot, message):
         
         for i, token in enumerate(tokens):
             clean_token = token.rstrip(",")
-            if clean_token.lstrip("-").isdigit():
+            if clean_token.lstrip("-").isdigit() or clean_token.startswith("@"):
                 targets.append(clean_token)
             else:
                 text_start_index = i
                 break
                 
         if not targets:
-            return await message.reply_text("<b>ɴᴏ ᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ ꜰᴏᴜɴᴅ.</b>")
+            return await message.reply_text("<b>ɴᴏ ᴠᴀʟɪᴅ ᴜꜱᴇʀ ɪᴅ ᴏʀ ᴜꜱᴇʀɴᴀᴍᴇ ꜰᴏᴜɴᴅ.</b>")
             
         if text_start_index == -1:
             return await message.reply_text(
                 "<b>ɴᴏ ᴍᴇꜱꜱᴀɢᴇ ᴛᴇxᴛ ᴘʀᴏᴠɪᴅᴇᴅ!</b>\n\n"
-                "<b>• ᴇɪᴛʜᴇʀ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ:</b> <code>/send user_id</code>\n\n"
-                "<b>• ᴏʀ ᴛʏᴘᴇ ʏᴏᴜʀ ᴛᴇxᴛ:</b> <code>/send user_id your message text</code>"
+                "<b>• ᴇɪᴛʜᴇʀ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ:</b> <code>/send user_id or @username</code>\n\n"
+                "<b>• ᴏʀ ᴛʏᴘᴇ ʏᴏᴜʀ ᴛᴇxᴛ:</b> <code>/send user_id or @username your message text</code>"
             )
             
         is_direct_text = True
@@ -845,7 +845,7 @@ async def check_plans_cmd(client, message):
             ]
             msg = await message.reply_text(
                 text="<b>ℹ️ ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀɴʏ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ.\n\nᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴏᴜʀ ᴘʟᴀɴꜱ!</b>", 
-                reply_markup=InlineKeyboardMarkup(btn),
+                reply_markup=InlineKeyboardMarkup(btn), 
                 parse_mode=enums.ParseMode.HTML
             )
     else:
@@ -1093,34 +1093,3 @@ async def premium_users_list(client, message):
     await msg.delete()
     for chunk in messages:
         await message.reply_text(chunk)
-
-
-@Client.on_message(filters.command("id") & filters.private)
-async def showid(client: Client, message):
-    rep = message.reply_to_message
-
-    # 1. Privacy-hidden user forward
-    if rep and rep.forward_sender_name:
-        name = f"<code>{html.escape(rep.forward_sender_name)}</code>"
-        text = f"<b>• ɴᴀᴍᴇ:</b> {name}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>ʜɪᴅᴅᴇɴ ʙʏ ᴜꜱᴇʀ ᴘʀɪᴠᴀᴄʏ</code>"
-
-    # 2. Channel / Group (forwarded or anonymous post)
-    elif rep and (rep.forward_from_chat or rep.sender_chat):
-        c = rep.forward_from_chat or rep.sender_chat
-        title = f"<code>{html.escape(c.title or '')}</code>" if getattr(c, "title", None) else ""
-        ctype = f"<code>{str(c.type).split('.')[-1].upper()}</code>" if getattr(c, "type", None) else ""
-        uname = f"@{c.username}" if getattr(c, "username", None) else ""
-        msg_id = f"\n<b>• ᴍᴇꜱꜱᴀɢᴇ ɪᴅ:</b> <code>{rep.forward_from_message_id}</code>" if getattr(rep, "forward_from_message_id", None) else ""
-        text = f"<b>• ᴛɪᴛʟᴇ:</b> {title}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {uname}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{c.id}</code>\n<b>• ᴄʜᴀᴛ ᴛʏᴘᴇ:</b> {ctype}{msg_id}"
-
-    # 3. User (forwarded user, replied user, or sender themselves)
-    else:
-        u = (rep.forward_from or rep.from_user) if rep else message.from_user
-        uid = u.id if u else message.chat.id
-        first = f"<code>{html.escape(u.first_name or '')}</code>" if u and u.first_name else ""
-        last = f"<code>{html.escape(u.last_name or '')}</code>" if u and u.last_name else ""
-        uname = f"@{u.username}" if u and u.username else ""
-        dc = f"<code>{u.dc_id}</code>" if u and getattr(u, "dc_id", None) else ""
-        text = f"<b>• ꜰɪʀꜱᴛ ɴᴀᴍᴇ:</b> {first}\n<b>• ʟᴀꜱᴛ ɴᴀᴍᴇ:</b> {last}\n<b>• ᴜꜱᴇʀɴᴀᴍᴇ:</b> {uname}\n<b>• ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ:</b> <code>{uid}</code>\n<b>• ᴅᴀᴛᴀ ᴄᴇɴᴛʀᴇ:</b> {dc}"
-
-    await message.reply_text(text, quote=True, parse_mode=enums.ParseMode.HTML)
