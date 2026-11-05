@@ -36,10 +36,34 @@ async def background_deleter(bot):
             pending = await db.get_pending_deletes(now)
             for item in pending:
                 try:
-                    await bot.delete_messages(item['chat_id'], item['message_id']); await db.remove_delete(item['_id'])
+                    chat_id = item.get('chat_id'); msg_id = item.get('message_id'); doc_id = item.get('_id')
+                    await bot.delete_messages(chat_id, msg_id); await db.remove_delete(doc_id)
                 except (MessageIdInvalid, MessageDeleteForbidden):
-                    await db.remove_delete(item['_id'])
-                except Exception as e: logger.warning(f"Delete failed: {e}")
+                    await db.remove_delete(doc_id)
+                except FloodWait as f:
+                    await asyncio.sleep(f.value)
+                except (ChannelPrivate, ChannelInvalid, PeerIdInvalid, ChatAdminRequired, ChatWriteForbidden, UserIsBlocked, UserDeactivated) as e:
+                    logger.info(f"Chat {chat_id} is inaccessible ({type(e).__name__}). Purged group and pending deletes from database.")
+                    if chat_id:
+                        await db.delete_chat(chat_id)
+                        await db.delete_all_pending_deletes(chat_id)
+                    else:
+                        await db.remove_delete(doc_id)
+                except RPCError as e:
+                    err_str = str(e).upper()
+                    if any(k in err_str for k in ["CHANNEL_PRIVATE", "CHANNEL_INVALID", "PEER_ID_INVALID", "NOT ACCESSIBLE", "CHANNEL PARAMETER IS INVALID"]):
+                        logger.info(f"Chat {chat_id} is inaccessible ({e}). Purged group and pending deletes from database.")
+                        if chat_id:
+                            await db.delete_chat(chat_id)
+                            await db.delete_all_pending_deletes(chat_id)
+                        else:
+                            await db.remove_delete(doc_id)
+                    else:
+                        logger.warning(f"Delete failed: {e}")
+                        await db.remove_delete(doc_id)
+                except Exception as e:
+                    logger.warning(f"Delete failed: {e}")
+                    await db.remove_delete(doc_id)
         except Exception as e:
             logger.error(f"Error in background_deleter: {e}")
 
