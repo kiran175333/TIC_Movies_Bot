@@ -608,7 +608,8 @@ async def send_msg(bot, message):
             "<b>ᴜꜱᴀɢᴇ:</b>\n\n"
             "<b>1. ᴅɪʀᴇᴄᴛ ᴛᴇxᴛ:</b>\n"
             "<code>/send user_id your message text</code>\n"
-            "<code>/send @username your message text</code>\n            <code>/send id1 @user2 id3 your message text</code>\n\n"
+            "<code>/send @username your message text</code>\n"
+            "<code>/send id1 @user2 id3 your message text</code>\n\n"
             "<b>2. ʀᴇᴘʟʏ (ꜰᴏʀ ᴍᴇᴅɪᴀ / ꜰɪʟᴇꜱ / ᴛᴇxᴛ):</b>\n"
             "<b>ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇꜱꜱᴀɢᴇ ᴡɪᴛʜ</b> <code>/send id1 @user2 ...</code>"
         )
