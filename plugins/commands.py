@@ -1041,13 +1041,13 @@ async def recent_uploads(client, message):
         for i, chunk in enumerate(chunks):
             final_text = f"<b>{HEADER_TEXT}</b>\n\n"
             if i == 0:
-                final_text += "<blockquote><b>👇 ᴊᴜsᴛ ᴛᴀᴘ ᴏɴ ᴀɴʏ ᴛɪᴛʟᴇ ʙᴇʟᴏᴡ ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇs ɪɴsᴛᴀɴᴛʟʏ!</b></blockquote>\n\n"
+                pass
             
             for title in chunk:
                 final_text += f"{title}\n\n"
                 
             if i == len(chunks) - 1:
-                final_text += "<blockquote><b>🍿🎬 ɢʀᴀʙ ʏᴏᴜʀ ᴘᴏᴘᴄᴏʀɴ & ʜᴀᴘᴘʏ ʙɪɴɢɪɴɢ!</b></blockquote>"
+                final_text += "<blockquote><b>👆 ᴊᴜsᴛ ᴛᴀᴘ ᴏɴ ᴀɴʏ ᴛɪᴛʟᴇ ᴀʙᴏᴠᴇ ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ ꜰɪʟᴇs ɪɴsᴛᴀɴᴛʟʏ!</b></blockquote>"
 
             if i == 0:
                 await processing_msg.edit_text(text=final_text, disable_web_page_preview=True)
