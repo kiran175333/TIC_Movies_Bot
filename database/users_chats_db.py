@@ -44,6 +44,8 @@ class Database:
             tokens_idx = await self.tokens.index_information()
             if 'time_1' not in tokens_idx:
                 await self.tokens.create_index('time', expireAfterSeconds=900)
+            if 'token_1' not in tokens_idx:
+                await self.tokens.create_index('token')
         except Exception as e:
             logger.error(f"Failed to verify index on tokens: {e}")
 
@@ -51,6 +53,8 @@ class Database:
             del_idx = await self.delete_col.index_information()
             if 'time_1' not in del_idx:
                 await self.delete_col.create_index('time')
+            if 'chat_id_1' not in del_idx:
+                await self.delete_col.create_index('chat_id')
         except Exception as e:
             logger.error(f"Failed to verify index on delete_col: {e}")
 
@@ -67,6 +71,13 @@ class Database:
                 await self.grp.create_index('id')
         except Exception as e:
             logger.error(f"Failed to verify index on groups: {e}")
+
+        try:
+            ver_idx = await self.verified.index_information()
+            if 'user_id_1' not in ver_idx:
+                await self.verified.create_index('user_id')
+        except Exception as e:
+            logger.error(f"Failed to verify index on verified_users: {e}")
 
     def new_user(self, id, name):
         return dict(
