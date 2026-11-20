@@ -990,7 +990,12 @@ async def recent_uploads(client, message):
         
         async for file in recent_files:
             name = file.get('file_name') or ""
-            clean_name = re.sub(r"(_|\.)", " ", name)
+            # Collapse dotted single-letter acronyms first (e.g. G.O.A.T. -> GOAT, K.G.F. -> KGF)
+            clean_name = re.sub(r'(?:\b[a-zA-Z0-9]\.)+(?:[a-zA-Z0-9]\.?\b)', lambda m: m.group(0).replace('.', ''), name)
+            # Replace remaining dots and underscores with spaces
+            clean_name = re.sub(r"(_|\.)", " ", clean_name)
+            # Collapse space-separated single letters (e.g. G O A T -> GOAT, K G F -> KGF)
+            clean_name = re.sub(r"(?<!['’`])\b([a-zA-Z0-9])\s+(?=[a-zA-Z0-9]\b(?!['’`]))", r'\1', clean_name)
             
             langs_found = re.findall(r"(?i)\b(Hindi|Tamil|Telugu|Malayalam|Kannada|English|Spanish|Punjabi|Bengali|Korean|Chinese|Japanese|French|German|Hin|Tam|Tel|Mal|Kan|Eng|Spa|Pun|Ben|Kor|Chi|Chin|Jap|Fre|Ger)\b", clean_name)
             lang_set = set(l.capitalize() for l in langs_found)
