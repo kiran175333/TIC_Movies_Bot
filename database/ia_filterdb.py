@@ -107,7 +107,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
             elif query.lower() in ["and", "&"]:
                 raw_pattern = r'(?:(?:\b|_)and(?:\b|_)|&)'
             else:
-                if (1 <= len(query) <= 3 and query.isalnum()) or query.lower() in {"swat", "abcd"}:
+                if (1 <= len(query) <= 3 and query.isalnum()) or query.lower() in {"swat", "abcd", "goat", "bmcm"}:
                     escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in query)
                 else:
                     escaped_word = re.escape(query)
@@ -133,7 +133,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
                 elif word.lower() in ["and", "&"]:
                     filter_and.append({"file_name": {"$regex": r'(?:(?:\b|_)and(?:\b|_)|&)', "$options": "i"}})
                 else:
-                    is_short = (len(word) <= 3 and word.isalnum()) or word.lower() in {"swat", "abcd"}
+                    is_short = (len(word) <= 3 and word.isalnum()) or word.lower() in {"swat", "abcd", "goat", "bmcm"}
                     if is_short:
                         escaped_word = r'[\s\.\+\-_]*'.join(re.escape(c) for c in word)
                     else:
